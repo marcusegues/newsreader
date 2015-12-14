@@ -41,7 +41,7 @@ Extras
 
 ## Implementation Timeline
 
-### Phase 1: User Authentication, Note Model and JSON API (1.5 days)
+### Phase 1: User Authentication, Learn about RSS specification (1.5 days)
 
 In Phase 1, I will begin by implementing user signup and authentication (using BCrypt). There will be a single page where the user can sign up or login from. I will also try to learn more about how to actually work with RSS feeds.
 
