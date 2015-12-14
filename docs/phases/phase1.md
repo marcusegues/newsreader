@@ -1,4 +1,4 @@
-# Phase 1: User Authentication, Note Model and JSON API (1 Day)
+# Phase 1: User Authentication, Learn about RSS Specification (1 Day)
 
 ## Rails
 ### Models
