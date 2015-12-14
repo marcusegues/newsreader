@@ -60,13 +60,13 @@ Organization of the RSS feed subscriptions is also a focus. A FeedSource (a subs
 
 [Details][phase-three]
 
-### # Phase 4: Parsing RSS Feeds (2 days)
+### Phase 4: Parsing RSS Feeds (2 days)
 
 This phase focuses on learning more about the RSS specification and how to standardize display of feeds.
 
 [Details][phase-four]
 
-# Phase 5: Styling (2 days)
+### Phase 5: Styling (2 days)
 This phase focuses on making the app look great.
 
 [Details][phase-five]
