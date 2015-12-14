@@ -6,6 +6,32 @@
 
 ## Minimum Viable Product
 
+FeedBlur is a webapplication inspired by Newsblur and Feedly, built using Ruby on Rails and React.js.
+FeedBlur allows users to:
+
+- [ ] Create an account.
+- [ ] Log in / Log out.
+- [ ] Subscribe to RSS feeds.
+- [ ] View Content from RSS feeds (title view which onClick expands into new tab with the content).
+- [ ] Organize list of subscribed feeds into groups with names of their choosing.
+- [ ] Have a view where they can manage their groups using drag and drop into/out of groups
+- [ ] Save selected feeds to a list of "to read later"
+- [ ] Save selected feeds to a list of "must reads"
+
+
+Extras
+- [ ] Add preferences tab lets user choose different options for site interaction, such as:
+  - [ ] Which page to load on startup (Today, Must Reads, All)
+  - [ ] View Setting (Titles only (default), Magazine, Full Article)
+  - [ ] Hide posts once you've read them
+  - [ ] Color of links for read/unread articles (RGB input from user, with default values)
+  - [ ] Reading experience options (font family, size)
+  - [ ] Option to append #category #feedly to tweets sent out through feedly
+- [ ] Have a profile, with private and public portions of their subscriptions
+- [ ] Share subscriptions or particular feeds with other users
+- [ ] Save feeds to a "This week's reading list", so they keep track of what they've read and considered relevant
+- [ ] Integration with Gmail, Evernote, Pinterest, Twitter, Facebook
+
 FresherNote is a web application inspired by Evernote built using Ruby on Rails
 and React.js. FresherNote allows users to:
 
