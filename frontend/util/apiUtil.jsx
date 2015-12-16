@@ -23,11 +23,26 @@ var ApiUtil = {
     });
   },
 
+  fetchCurrentUser: function() {
+    debugger;
+    $.ajax({
+      method: 'GET',
+      url: 'api/current_user',
+      success: function(currentUser) {
+        if (currentUser === {}) {
+          currentUser = undefined;
+        }
+        ApiActions.receiveCurrentUser(currentUser);
+      }
+    });
+  },
+
   fetchUserFeedSources: function() {
     $.ajax({
       method: 'GET',
       url: 'api/feedsources',
       success: function(feedSources) {
+        debugger;
         ApiActions.receiveFeedSources(feedSources);
       }
     });

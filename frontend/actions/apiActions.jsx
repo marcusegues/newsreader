@@ -6,7 +6,7 @@ var ApiActions = {
   receiveCurrentUser: function(currentUser){
     AppDispatcher.dispatch({
       actionType: UserConstants.USER_SIGNED_IN,
-      user: currentUser
+      currentUser: currentUser
     });
   },
 

@@ -6,19 +6,23 @@ var ApiUtil = require('../util/apiUtil');
 
 var Welcome = React.createClass({
   _newCurrentUser: function() {
-    var currentUser = UserStore.currentUser;
+    var currentUser = UserStore.currentUser();
     if (currentUser !== undefined) {
       this.props.history.pushState(null, '/dashboard');
     }
   },
 
   componentWillMount: function() {
-    // this.userListener = UserStore.addListener(this._newCurrentUser);
-    // ApiUtil.fetchCurrentUser();
+    if (window.CURRENT_USER_ID !== -1) {
+      this.props.history.pushState(null, '/dashboard');
+    }
+    this.userListener = UserStore.addListener(this._newCurrentUser);
+    //ApiUtil.fetchCurrentUser();
   },
 
   componentDidMount: function(){
-    this.userListener = UserStore.addListener(this._newCurrentUser);
+    // debugger;
+    // this.userListener = UserStore.addListener(this._newCurrentUser);
     // ApiUtil.fetchCurrentUser();
   },
 

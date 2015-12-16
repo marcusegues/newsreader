@@ -19692,7 +19692,7 @@
 	  displayName: 'Dashboard',
 	
 	  componentDidMount: function () {
-	    ApiUtil.fetchUserFeedSources();
+	    //ApiUtil.fetchUserFeedSources();
 	  },
 	
 	  render: function () {
@@ -19763,19 +19763,23 @@
 	  displayName: 'Welcome',
 	
 	  _newCurrentUser: function () {
-	    var currentUser = UserStore.currentUser;
+	    var currentUser = UserStore.currentUser();
 	    if (currentUser !== undefined) {
 	      this.props.history.pushState(null, '/dashboard');
 	    }
 	  },
 	
 	  componentWillMount: function () {
-	    // this.userListener = UserStore.addListener(this._newCurrentUser);
-	    // ApiUtil.fetchCurrentUser();
+	    if (window.CURRENT_USER_ID !== -1) {
+	      this.props.history.pushState(null, '/dashboard');
+	    }
+	    this.userListener = UserStore.addListener(this._newCurrentUser);
+	    //ApiUtil.fetchCurrentUser();
 	  },
 	
 	  componentDidMount: function () {
-	    this.userListener = UserStore.addListener(this._newCurrentUser);
+	    // debugger;
+	    // this.userListener = UserStore.addListener(this._newCurrentUser);
 	    // ApiUtil.fetchCurrentUser();
 	  },
 	
@@ -20155,11 +20159,26 @@
 	    });
 	  },
 	
+	  fetchCurrentUser: function () {
+	    debugger;
+	    $.ajax({
+	      method: 'GET',
+	      url: 'api/current_user',
+	      success: function (currentUser) {
+	        if (currentUser === {}) {
+	          currentUser = undefined;
+	        }
+	        ApiActions.receiveCurrentUser(currentUser);
+	      }
+	    });
+	  },
+	
 	  fetchUserFeedSources: function () {
 	    $.ajax({
 	      method: 'GET',
 	      url: 'api/feedsources',
 	      success: function (feedSources) {
+	        debugger;
 	        ApiActions.receiveFeedSources(feedSources);
 	      }
 	    });
@@ -20180,7 +20199,7 @@
 	  receiveCurrentUser: function (currentUser) {
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.USER_SIGNED_IN,
-	      user: currentUser
+	      currentUser: currentUser
 	    });
 	  },
 	

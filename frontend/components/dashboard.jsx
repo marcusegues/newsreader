@@ -6,7 +6,7 @@ var ApiUtil = require('../util/apiUtil');
 var Dashboard = React.createClass({
 
   componentDidMount: function() {
-    ApiUtil.fetchUserFeedSources();
+    //ApiUtil.fetchUserFeedSources();
   },
 
   render: function() {
