@@ -7,13 +7,20 @@
 ### Controllers
 * UsersController (create, new)
 * SessionsController (create, new, destroy)
+* StaticpagesController (root)
 
 ### Views
 * users/new.html.erb
 * session/new.html.erb
+* staticpages/root.html.erb
 
 ## Flux
 ### Views (React Components)
+* WelcomeApp
+* UserForm
+* SigninForm
+* SignupForm
+
 
 ### Stores
 

@@ -19691,6 +19691,7 @@
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(162);
+	var ApiUtil = __webpack_require__(167);
 	
 	var SigninForm = React.createClass({
 	  displayName: 'SigninForm',
@@ -19699,6 +19700,12 @@
 	
 	  getInitialState: function () {
 	    return { username: "", password: "" };
+	  },
+	
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	    var user = Object.assign({}, this.state);
+	    ApiUtil.signinUser(user);
 	  },
 	
 	  render: function () {
@@ -19725,7 +19732,7 @@
 	          null,
 	          'Password'
 	        ),
-	        React.createElement('input', { type: 'text', valueLink: this.linkState('password') }),
+	        React.createElement('input', { type: 'password', valueLink: this.linkState('password') }),
 	        React.createElement('br', null),
 	        React.createElement('input', { type: 'submit', value: 'SIGN IN' })
 	      )
@@ -19971,6 +19978,7 @@
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(162);
+	var ApiUtil = __webpack_require__(167);
 	
 	var SignupForm = React.createClass({
 	  displayName: 'SignupForm',
@@ -19984,6 +19992,7 @@
 	  handleSubmit: function (e) {
 	    e.preventDefault();
 	    var newUser = Object.assign({}, this.state);
+	    ApiUtil.createUser(newUser);
 	  },
 	
 	  render: function () {
@@ -20010,7 +20019,7 @@
 	          null,
 	          'Password'
 	        ),
-	        React.createElement('input', { type: 'text', valueLink: this.linkState('password') }),
+	        React.createElement('input', { type: 'password', valueLink: this.linkState('password') }),
 	        React.createElement('br', null),
 	        React.createElement('input', { type: 'submit', value: 'SIGN UP' })
 	      )
@@ -20019,6 +20028,39 @@
 	});
 	
 	module.exports = SignupForm;
+
+/***/ },
+/* 167 */
+/***/ function(module, exports) {
+
+	
+	
+	var ApiUtil = {
+	  createUser: function (newUser) {
+	    $.ajax({
+	      method: 'POST',
+	      url: 'api/users',
+	      data: { user: newUser },
+	      success: function () {
+	        debugger;
+	      }
+	    });
+	  },
+	
+	  signinUser: function (user) {
+	    $.ajax({
+	      method: 'POST',
+	      url: 'api/session',
+	      data: { session: user },
+	      success: function () {
+	        debugger;
+	      }
+	    });
+	  }
+	
+	};
+	
+	module.exports = ApiUtil;
 
 /***/ }
 /******/ ]);
