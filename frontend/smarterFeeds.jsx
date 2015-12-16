@@ -1,8 +1,9 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var WelcomeApp = require('./components/welcomeApp');
-var WelcomeImage = require('./components/welcomeImage');
-var UserForm = require('./components/userForm');
+
+var App = require('./components/App');
+var Dashboard = require('./components/dashboard');
+var Welcome = require('./components/welcome');
 
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
@@ -10,9 +11,10 @@ var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 
 var routes = (
-  <Route path="/" component={WelcomeApp}>
-    <IndexRoute component={WelcomeImage} />
-    <IndexRoute component={UserForm} />
+  <Route path="/" component={App}>
+    <IndexRoute component={Welcome} />
+    <Route path="dashboard" component={Dashboard}>
+    </Route>
   </Route>
 );
 

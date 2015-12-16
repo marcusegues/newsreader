@@ -1,6 +1,7 @@
 var React = require('react');
 
 var WelcomeImage = React.createClass({
+
   render: function() {
     return (
       <div>

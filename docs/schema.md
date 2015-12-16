@@ -12,6 +12,7 @@ session_token      | integer   | not null, indexed, unique
 column name | data type | details
 ------------|-----------|-----------------------
 id          | integer   | not null, primary key
+title       | string    | not null
 url         | string    | not null
 must_read   | boolean   | not null
 category_id | integer   | not null

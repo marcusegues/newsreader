@@ -1,12 +1,13 @@
-
-
+var ApiActions = require('../actions/apiActions.jsx');
+//currentUser returned by ajax requests should probably use Jbuilder
 var ApiUtil = {
-  createUser: function(newUser) {
+  createUser: function(newUser, history) {
     $.ajax({
       method: 'POST',
       url: 'api/users',
       data: {user: newUser},
-      success: function() {
+      success: function(currentUser) {
+        ApiActions.receiveCurrentUser(currentUser);
       }
     });
   },
@@ -16,7 +17,8 @@ var ApiUtil = {
       method: 'POST',
       url: 'api/session',
       data: {session: user},
-      success: function() {
+      success: function(currentUser) {
+        ApiActions.receiveCurrentUser(currentUser);
       }
     });
   }

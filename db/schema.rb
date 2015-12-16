@@ -11,10 +11,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216000628) do
+ActiveRecord::Schema.define(version: 20151216173600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "feed_sources", force: :cascade do |t|
+    t.string   "title",       null: false
+    t.string   "url",         null: false
+    t.integer  "category_id", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "feed_sources", ["url"], name: "index_feed_sources_on_url", unique: true, using: :btree
+
+  create_table "user_feed_sources", force: :cascade do |t|
+    t.integer  "user_id",        null: false
+    t.integer  "feed_source_id", null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "user_feed_sources", ["feed_source_id"], name: "index_user_feed_sources_on_feed_source_id", using: :btree
+  add_index "user_feed_sources", ["user_id", "feed_source_id"], name: "index_user_feed_sources_on_user_id_and_feed_source_id", unique: true, using: :btree
+  add_index "user_feed_sources", ["user_id"], name: "index_user_feed_sources_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "username",        null: false

@@ -1,14 +1,14 @@
 var React = require('react');
 
-var CategoriesIndex = React.createClass({
+var FeedsWindow = React.createClass({
   render: function() {
 
     return (
       <div>
-        CategoriesIndex
+        FeedsWindow
       </div>
     );
   }
 });
 
-module.exports = CategoriesIndex;
+module.exports = FeedsWindow;

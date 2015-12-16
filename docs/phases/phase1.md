@@ -5,6 +5,8 @@
 * User
 
 ### Controllers
+* Api::UsersController (create)
+* Api::SessionsController (create, destroy)
 * UsersController (create, new)
 * SessionsController (create, new, destroy)
 * StaticpagesController (root)
@@ -17,9 +19,10 @@
 ## Flux
 ### Views (React Components)
 * WelcomeApp
-* UserForm
-* SigninForm
-* SignupForm
+  * WelcomeImage
+  * UserForm
+    * SigninForm
+    * SignupForm
 
 
 ### Stores
@@ -27,6 +30,8 @@
 ### Actions
 
 ### ApiUtil
+* createUser
+* signinUser
 
 ## Gems/Libraries
 * BCrypt (Gem)
