@@ -1,8 +1,10 @@
+var path = require('path');
+
 module.exports = {
   context: __dirname,
-  entry: "./hello_world.jsx",
+  entry: "./frontend/smarterFeeds.jsx",
   output: {
-    path: "./",
+    path: path.join(__dirname, 'app', 'assets', 'javascripts'),
     filename: "bundle.js"
   },
   module: {
