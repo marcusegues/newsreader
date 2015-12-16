@@ -12,6 +12,10 @@ class User < ActiveRecord::Base
     foreign_key: :user_id,
     primary_key: :id
 
+  has_many :feed_sources,
+    through: :user_feed_sources,
+    source: :feed_source
+
   def self.find_by_credentials(username, password)
     user = User.find_by(username: username)
     return nil unless user && user.valid_password?(password)

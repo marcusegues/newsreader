@@ -8,8 +8,11 @@ var _feedSources = [];
 
 FeedSourceStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
-    case FeedSourceConstants.USER_SIGNED_IN:
-      currentUser = payload.currentUser;
+    case FeedSourceConstants.RECEIVED_FEED_SOURCES:
+      _feedSources = payload.feedSources;
+      FeedSourceStore.__emitChange();
       break;
   }
 };
+
+module.exports = FeedSourceStore;

@@ -21,9 +21,17 @@ var ApiUtil = {
         ApiActions.receiveCurrentUser(currentUser);
       }
     });
+  },
+
+  fetchUserFeedSources: function() {
+    $.ajax({
+      method: 'GET',
+      url: 'api/feedsources',
+      success: function(feedSources) {
+        ApiActions.receiveFeedSources(feedSources);
+      }
+    });
   }
-
-
 };
 
 module.exports = ApiUtil;

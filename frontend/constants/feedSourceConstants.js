@@ -1,5 +1,5 @@
 var FeedSourceConstants = {
-  USER_SIGNED_IN: "USER_SIGNED_IN",
+  RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES"
 };
 
 module.exports = FeedSourceConstants;
