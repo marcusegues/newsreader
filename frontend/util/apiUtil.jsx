@@ -7,7 +7,6 @@ var ApiUtil = {
       url: 'api/users',
       data: {user: newUser},
       success: function() {
-        debugger;
       }
     });
   },
@@ -18,7 +17,6 @@ var ApiUtil = {
       url: 'api/session',
       data: {session: user},
       success: function() {
-        debugger;
       }
     });
   }
