@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resource :session, only: [:create, :destroy]
     resources :feedsources, only: [:index]
     get '/current_user', to: 'application#current_user'
+    get '/feeds/:id', to: 'feedsources#feeds'
   end
   resource :session, only: [:new, :create, :destroy]
   resources :users, only: [:new, :create, :show]

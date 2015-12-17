@@ -4,4 +4,10 @@ class FeedSource < ActiveRecord::Base
     class_name: 'UserFeedSource',
     foreign_key: :feed_source_id,
     primary_key: :id
+
+  has_many :feeds,
+    class_name: 'FeedItem',
+    foreign_key: :feed_source_id,
+    primary_key: :id
+
 end

@@ -24,7 +24,6 @@ var ApiUtil = {
   },
 
   fetchCurrentUser: function() {
-    debugger;
     $.ajax({
       method: 'GET',
       url: 'api/current_user',
@@ -42,8 +41,18 @@ var ApiUtil = {
       method: 'GET',
       url: 'api/feedsources',
       success: function(feedSources) {
-        debugger;
         ApiActions.receiveFeedSources(feedSources);
+      }
+    });
+  },
+
+  fetchFeedItems: function(feedSourceId) {
+    $.ajax({
+      method: 'GET',
+      url:  'api/feeds/' + feedSourceId,
+      success: function(feeds) {
+        debugger;
+        ApiActions.receiveFeeds(feeds, feedSourceId);
       }
     });
   }

@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.4'
 gem 'annotate'
 gem 'bcrypt'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Use postgresql as the database for Active Record

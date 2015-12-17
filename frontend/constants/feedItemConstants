@@ -1,0 +1,6 @@
+var FeedItemConstants = {
+  RECEIVED_FEEDS: "RECEIVED_FEEDS",
+  CHANGE_DISPLAYED_FEEDS: "CHANGE_DISPLAYED_FEEDS"
+};
+
+module.exports = FeedItemConstants;

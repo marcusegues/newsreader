@@ -15,5 +15,11 @@
  */
 
  #welcomeImage {
-   width: 100%
+   width: 100%;
  }
+
+#mainWindow {
+  float: left;
+  height: 200px;
+  width: 200px;
+}

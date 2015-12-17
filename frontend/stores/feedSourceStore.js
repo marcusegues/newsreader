@@ -1,9 +1,8 @@
 var Store = require('flux/utils').Store;
 var AppDispatcher = require('../dispatcher/dispatcher');
 var FeedSourceStore = new Store(AppDispatcher);
-var FeedSourceConstants = require('feedSourceConstants');
+var FeedSourceConstants = require('../constants/feedSourceConstants');
 
-var currentUser = undefined;
 var _feedSources = [];
 
 FeedSourceStore.__onDispatch = function(payload) {
@@ -13,6 +12,10 @@ FeedSourceStore.__onDispatch = function(payload) {
       FeedSourceStore.__emitChange();
       break;
   }
+};
+
+FeedSourceStore.all = function() {
+  return _feedSources;
 };
 
 module.exports = FeedSourceStore;

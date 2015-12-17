@@ -19685,7 +19685,7 @@
 
 	var React = __webpack_require__(1);
 	var CategoriesIndex = __webpack_require__(161);
-	var FeedsWindow = __webpack_require__(162);
+	var FeedItemsIndex = __webpack_require__(252);
 	var ApiUtil = __webpack_require__(171);
 	
 	var Dashboard = React.createClass({
@@ -19699,8 +19699,8 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement(CategoriesIndex, null),
-	      React.createElement(FeedsWindow, null)
+	      React.createElement(CategoriesIndex, { 'class': 'mainWindows' }),
+	      React.createElement(FeedItemsIndex, { 'class': 'mainWindows' })
 	    );
 	  }
 	});
@@ -19712,16 +19712,34 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var ApiUtil = __webpack_require__(171);
+	var FeedSourceStore = __webpack_require__(248);
+	var FeedSourceItem = __webpack_require__(249);
 	
 	var CategoriesIndex = React.createClass({
 	  displayName: 'CategoriesIndex',
 	
-	  render: function () {
+	  getInitialState: function () {
+	    return { feedSources: [] };
+	  },
 	
+	  componentDidMount: function () {
+	    ApiUtil.fetchUserFeedSources();
+	    FeedSourceStore.addListener(this.handleReceivedFeedSources);
+	  },
+	
+	  handleReceivedFeedSources: function () {
+	    this.setState({ feedSources: FeedSourceStore.all() });
+	  },
+	
+	  render: function () {
+	    var feedSources = this.state.feedSources.map(function (feedSource, idx) {
+	      return React.createElement(FeedSourceItem, { key: idx, feedSource: feedSource });
+	    });
 	    return React.createElement(
 	      'div',
 	      null,
-	      'CategoriesIndex'
+	      feedSources
 	    );
 	  }
 	});
@@ -19729,27 +19747,7 @@
 	module.exports = CategoriesIndex;
 
 /***/ },
-/* 162 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var FeedsWindow = React.createClass({
-	  displayName: 'FeedsWindow',
-	
-	  render: function () {
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      'FeedsWindow'
-	    );
-	  }
-	});
-	
-	module.exports = FeedsWindow;
-
-/***/ },
+/* 162 */,
 /* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -19762,7 +19760,7 @@
 	var Welcome = React.createClass({
 	  displayName: 'Welcome',
 	
-	  _newCurrentUser: function () {
+	  _handleNewCurrentUser: function () {
 	    var currentUser = UserStore.currentUser();
 	    if (currentUser !== undefined) {
 	      this.props.history.pushState(null, '/dashboard');
@@ -19773,7 +19771,7 @@
 	    if (window.CURRENT_USER_ID !== -1) {
 	      this.props.history.pushState(null, '/dashboard');
 	    }
-	    this.userListener = UserStore.addListener(this._newCurrentUser);
+	    this.userListener = UserStore.addListener(this._handleNewCurrentUser);
 	    //ApiUtil.fetchCurrentUser();
 	  },
 	
@@ -20160,7 +20158,6 @@
 	  },
 	
 	  fetchCurrentUser: function () {
-	    debugger;
 	    $.ajax({
 	      method: 'GET',
 	      url: 'api/current_user',
@@ -20178,8 +20175,18 @@
 	      method: 'GET',
 	      url: 'api/feedsources',
 	      success: function (feedSources) {
-	        debugger;
 	        ApiActions.receiveFeedSources(feedSources);
+	      }
+	    });
+	  },
+	
+	  fetchFeedItems: function (feedSourceId) {
+	    $.ajax({
+	      method: 'GET',
+	      url: 'api/feeds/' + feedSourceId,
+	      success: function (feeds) {
+	        debugger;
+	        ApiActions.receiveFeeds(feeds, feedSourceId);
 	      }
 	    });
 	  }
@@ -20193,6 +20200,7 @@
 
 	var AppDispatcher = __webpack_require__(173);
 	var FeedSourceConstants = __webpack_require__(177);
+	var FeedItemConstants = __webpack_require__(250);
 	var UserConstants = __webpack_require__(247);
 	
 	var ApiActions = {
@@ -20206,7 +20214,22 @@
 	  receiveFeedSources: function (feedSources) {
 	    AppDispatcher.dispatch({
 	      actionType: FeedSourceConstants.RECEIVED_FEED_SOURCES,
-	      feedsources: feedSources
+	      feedSources: feedSources
+	    });
+	  },
+	
+	  receiveFeeds: function (feeds, feedSourceId) {
+	    AppDispatcher.dispatch({
+	      actionType: FeedItemConstants.RECEIVED_FEEDS,
+	      feeds: feeds,
+	      feedSourceId: feedSourceId
+	    });
+	  },
+	
+	  changeDisplayedFeeds: function (feedSourceId) {
+	    AppDispatcher.dispatch({
+	      actionType: FeedItemConstants.CHANGE_DISPLAYED_FEEDS,
+	      feedSourceId: feedSourceId
 	    });
 	  }
 	};
@@ -31786,6 +31809,192 @@
 	};
 	
 	module.exports = UserConstants;
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(231).Store;
+	var AppDispatcher = __webpack_require__(173);
+	var FeedSourceStore = new Store(AppDispatcher);
+	var FeedSourceConstants = __webpack_require__(177);
+	
+	var _feedSources = [];
+	
+	FeedSourceStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case FeedSourceConstants.RECEIVED_FEED_SOURCES:
+	      _feedSources = payload.feedSources;
+	      FeedSourceStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	FeedSourceStore.all = function () {
+	  return _feedSources;
+	};
+	
+	module.exports = FeedSourceStore;
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var ApiUtil = __webpack_require__(171);
+	var FeedItemStore = __webpack_require__(251);
+	var ApiActions = __webpack_require__(172);
+	
+	var FeedSourceItem = React.createClass({
+	  displayName: 'FeedSourceItem',
+	
+	  getInitialState: function () {
+	    return { clicked: false, feeds: [] };
+	  },
+	
+	  componentDidMount: function () {
+	    FeedItemStore.addListener(this.handleReceivedFeeds);
+	    this.feedSource = this.props.feedSource;
+	  },
+	
+	  handleReceivedFeeds: function (arg) {
+	    if (this.feedSource.Id === FeedItemStore.lastReceivedId) this.setState({ feeds: FeedItemStore.all(this.feedSource.id) });
+	  },
+	
+	  handleClick: function () {
+	    if (this.state.clicked === false) {
+	      ApiUtil.fetchFeedItems(this.feedSource.id);
+	      this.setState({ clicked: true });
+	    } else {
+	      ApiActions.changeDisplayedFeeds(this.feedSource.id);
+	    }
+	  },
+	
+	  render: function () {
+	    var title = this.props.feedSource.title;
+	    return React.createElement(
+	      'div',
+	      { onClick: this.handleClick },
+	      title
+	    );
+	  }
+	});
+	
+	module.exports = FeedSourceItem;
+
+/***/ },
+/* 250 */
+/***/ function(module, exports) {
+
+	var FeedItemConstants = {
+	  RECEIVED_FEEDS: "RECEIVED_FEEDS",
+	  CHANGE_DISPLAYED_FEEDS: "CHANGE_DISPLAYED_FEEDS"
+	};
+	
+	module.exports = FeedItemConstants;
+
+
+/***/ },
+/* 251 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(231).Store;
+	var AppDispatcher = __webpack_require__(173);
+	var FeedItemStore = new Store(AppDispatcher);
+	var FeedItemConstants = __webpack_require__(250);
+	
+	var _feeds = {};
+	var _lastReceivedId = undefined;
+	
+	FeedItemStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case FeedItemConstants.RECEIVED_FEEDS:
+	      debugger;
+	      _feeds[payload.feedSourceId] = payload.feeds;
+	      _lastReceivedId = payload.feedSourceId;
+	      FeedItemStore.__emitChange();
+	      break;
+	    case FeedItemConstants.CHANGE_DISPLAYED_FEEDS:
+	      _lastReceivedId = payload.feedSourceId;
+	      FeedItemStore.__emitChange();
+	  }
+	};
+	
+	FeedItemStore.all = function (feedSourceId) {
+	  return _feeds[feedSourceId];
+	};
+	
+	FeedItemStore.lastReceivedId = function () {
+	  return _lastReceivedId;
+	};
+	
+	FeedItemStore.lastReceivedFeeds = function () {
+	  debugger;
+	  return _feeds[_lastReceivedId];
+	};
+	
+	module.exports = FeedItemStore;
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var FeedItemStore = __webpack_require__(251);
+	var FeedItem = __webpack_require__(253);
+	
+	var FeedItemsIndex = React.createClass({
+	  displayName: 'FeedItemsIndex',
+	
+	  getInitialState: function () {
+	    return { displayedFeeds: [] };
+	  },
+	
+	  componentDidMount: function () {
+	    FeedItemStore.addListener(this.handleReceivedFeeds);
+	    this.feedSource = this.props.feedSource;
+	  },
+	
+	  handleReceivedFeeds: function () {
+	    this.setState({ displayedFeeds: FeedItemStore.lastReceivedFeeds() });
+	  },
+	
+	  render: function () {
+	    var feeds = this.state.displayedFeeds.map(function (feed, idx) {
+	      return React.createElement(FeedItem, { key: idx, feed: feed });
+	    });
+	    return React.createElement(
+	      'div',
+	      null,
+	      feeds
+	    );
+	  }
+	});
+	
+	module.exports = FeedItemsIndex;
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var FeedItemStore = __webpack_require__(251);
+	var FeedItem = __webpack_require__(253);
+	
+	var FeedItem = React.createClass({
+	  displayName: 'FeedItem',
+	
+	  render: function () {
+	    var title = this.props.feed.title;
+	    return React.createElement(
+	      'div',
+	      null,
+	      title
+	    );
+	  }
+	});
+	
+	module.exports = FeedItem;
 
 /***/ }
 /******/ ]);

@@ -1,6 +1,6 @@
 var React = require('react');
 var CategoriesIndex = require('./categoriesIndex');
-var FeedsWindow = require('./feedsWindow.jsx');
+var FeedItemsIndex = require('./feedItemsIndex.jsx');
 var ApiUtil = require('../util/apiUtil');
 
 var Dashboard = React.createClass({
@@ -12,8 +12,8 @@ var Dashboard = React.createClass({
   render: function() {
     return (
       <div>
-        <CategoriesIndex />
-        <FeedsWindow />
+        <CategoriesIndex class="mainWindows"/>
+        <FeedItemsIndex class="mainWindows"/>
       </div>
     );
   }
