@@ -8,9 +8,13 @@ class Api::FeedsourcesController < ApplicationController
   end
 
   def feeds
-    feedSource = FeedSource.find(params[:id])
-    #make RSS request with specifications from feedSource above,
-    #that will populate the feed_items table
+    feedSourceId = params[:id]
+    feedSource = FeedSource.find(feedSourceId)
+    url = feedSource.url
+    parsedFeed = Feedjira::Feed.fetch_and_parse url
+    parsedFeed.entries.each do |feedItem|
+      FeedItem.create!(title: feedItem.title, feed_source_id: feedSourceId)
+    end
     render json: feedSource.feeds
   end
 end
