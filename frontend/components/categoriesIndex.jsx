@@ -1,7 +1,7 @@
 var React = require('react');
 var ApiUtil = require('../util/apiUtil');
-var FeedSourceStore = require('../stores/FeedSourceStore');
-var FeedSourceItem = require('./FeedSourceItem');
+var FeedSourceStore = require('../stores/feedSourceStore');
+var FeedSourceItem = require('./feedSourceItem');
 
 var CategoriesIndex = React.createClass({
   getInitialState: function() {

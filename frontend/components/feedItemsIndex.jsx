@@ -1,6 +1,6 @@
 var React = require('react');
 var FeedItemStore = require('../stores/feedItemStore');
-var FeedItem = require('./FeedItem');
+var FeedItem = require('./feedItem');
 
 var FeedItemsIndex = React.createClass({
   getInitialState: function() {
