@@ -1,11 +1,12 @@
 var React = require('react');
+var UserForm = require('./userForm');
 
 var WelcomeImage = React.createClass({
 
   render: function() {
     return (
-      <div>
-        <img src="./swiss_field.jpg" id="welcomeImage" />
+      <div className="jumbotron">
+        <UserForm />
       </div>
     );
   }

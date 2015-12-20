@@ -11,6 +11,9 @@ UserStore.__onDispatch = function(payload) {
       currentUser = payload.currentUser;
       UserStore.__emitChange();
       break;
+    case UserConstants.SIGN_OUT_USER:
+      currentUser = undefined;
+      UserStore.__emitChange();
   }
 };
 

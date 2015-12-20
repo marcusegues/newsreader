@@ -19,16 +19,20 @@ var SignupForm = React.createClass({
 
   render: function() {
     return (
-      <div>
+      <div id="userSign">
         <h3>Sign Up</h3>
         <form onSubmit={this.handleSubmit}>
-          <label>Username</label>
-          <input type="text" valueLink={this.linkState('username')} />
-          <br />
-          <label>Password</label>
-          <input type="password" valueLink={this.linkState('password')} />
-          <br />
-          <input type="submit" value="SIGN UP" />
+          <div className="form-group">
+            <label for="signup_username">Username</label>
+            <input type="text" className="form-control input-sm" id="signup_username" valueLink={this.linkState('username')} />
+          </div>
+
+          <div className="form-group">
+            <label for="signup_password">Password</label>
+            <input type="password" className="form-control input-sm" id="signup_password" valueLink={this.linkState('password')} />
+          </div>
+
+          <button className="btn btn-primary" type="submit">Sign Up</button>
         </form>
       </div>
     );

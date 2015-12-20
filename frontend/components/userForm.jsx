@@ -5,7 +5,7 @@ var SignupForm = require('./signupForm');
 var UserForm = React.createClass({
   render: function() {
     return (
-      <div>
+      <div id="userForm">
         <SigninForm />
         <SignupForm />
       </div>

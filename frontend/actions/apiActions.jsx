@@ -31,6 +31,12 @@ var ApiActions = {
       actionType: FeedItemConstants.CHANGE_DISPLAYED_FEEDS,
       feedSourceId: feedSourceId
     });
+  },
+
+  signOutUser: function() {
+    AppDispatcher.dispatch({
+      actionType: UserConstants.SIGN_OUT_USER
+    });
   }
 };
 

@@ -12,7 +12,7 @@ class Api::SessionsController < ApplicationController
 
   def destroy
     sign_out!
-    render json: "Successfully Logged Out"
+    render json: {message: "signed out"}
   end
 
   private

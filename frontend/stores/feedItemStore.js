@@ -9,7 +9,6 @@ var _lastReceivedId = undefined;
 FeedItemStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case FeedItemConstants.RECEIVED_FEEDS:
-    debugger;
       _feeds[payload.feedSourceId] = payload.feeds;
       _lastReceivedId = payload.feedSourceId;
       FeedItemStore.__emitChange();
@@ -29,7 +28,6 @@ FeedItemStore.lastReceivedId = function() {
 };
 
 FeedItemStore.lastReceivedFeeds = function() {
-  debugger;
   return _feeds[_lastReceivedId];
 };
 

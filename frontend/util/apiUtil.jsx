@@ -23,6 +23,18 @@ var ApiUtil = {
     });
   },
 
+  signOutUser: function() {
+    $.ajax({
+      method: 'DELETE',
+      url: 'api/session',
+      success: function() {
+        debugger
+        window.CURRENT_USER_ID = -1;
+        ApiActions.signOutUser();
+      }
+    });
+  },
+
   fetchCurrentUser: function() {
     $.ajax({
       method: 'GET',
@@ -51,7 +63,6 @@ var ApiUtil = {
       method: 'GET',
       url:  'api/feeds/' + feedSourceId,
       success: function(feeds) {
-        debugger;
         ApiActions.receiveFeeds(feeds, feedSourceId);
       }
     });
