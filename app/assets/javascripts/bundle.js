@@ -26807,29 +26807,7 @@
 	module.exports = FeedItemsIndex;
 
 /***/ },
-/* 192 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var FeedItemStore = __webpack_require__(190);
-	var FeedItem = __webpack_require__(192);
-	
-	var FeedItem = React.createClass({
-	  displayName: 'FeedItem',
-	
-	  render: function () {
-	    var title = this.props.feed.title;
-	    return React.createElement(
-	      'div',
-	      null,
-	      title
-	    );
-	  }
-	});
-	
-	module.exports = FeedItem;
-
-/***/ },
+/* 192 */,
 /* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32251,7 +32229,6 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemStore = __webpack_require__(190);
-	var FeedItem = __webpack_require__(192);
 	
 	var FeedItem = React.createClass({
 	  displayName: 'FeedItem',
