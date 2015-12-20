@@ -1,7 +1,7 @@
 var ApiActions = require('../actions/apiActions.jsx');
 //currentUser returned by ajax requests should probably use Jbuilder
 var ApiUtil = {
-  createUser: function(newUser, history) {
+  createUser: function(newUser) {
     $.ajax({
       method: 'POST',
       url: 'api/users',

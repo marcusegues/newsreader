@@ -19781,7 +19781,7 @@
 	var ApiActions = __webpack_require__(162);
 	//currentUser returned by ajax requests should probably use Jbuilder
 	var ApiUtil = {
-	  createUser: function (newUser, history) {
+	  createUser: function (newUser) {
 	    $.ajax({
 	      method: 'POST',
 	      url: 'api/users',
@@ -20305,8 +20305,8 @@
 
 	var React = __webpack_require__(1);
 	var ApiUtil = __webpack_require__(161);
-	var FeedSourceStore = __webpack_require__(255);
-	var FeedSourceItem = __webpack_require__(256);
+	var FeedSourceStore = __webpack_require__(172);
+	var FeedSourceItem = __webpack_require__(189);
 	
 	var CategoriesIndex = React.createClass({
 	  displayName: 'CategoriesIndex',
@@ -20339,7 +20339,32 @@
 	module.exports = CategoriesIndex;
 
 /***/ },
-/* 172 */,
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(173).Store;
+	var AppDispatcher = __webpack_require__(163);
+	var FeedSourceStore = new Store(AppDispatcher);
+	var FeedSourceConstants = __webpack_require__(167);
+	
+	var _feedSources = [];
+	
+	FeedSourceStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case FeedSourceConstants.RECEIVED_FEED_SOURCES:
+	      _feedSources = payload.feedSources;
+	      FeedSourceStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	FeedSourceStore.all = function () {
+	  return _feedSources;
+	};
+	
+	module.exports = FeedSourceStore;
+
+/***/ },
 /* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -26729,7 +26754,52 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 189 */,
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var ApiUtil = __webpack_require__(161);
+	var FeedItemStore = __webpack_require__(190);
+	var ApiActions = __webpack_require__(162);
+	
+	var FeedSourceItem = React.createClass({
+	  displayName: 'FeedSourceItem',
+	
+	  getInitialState: function () {
+	    return { clicked: false, feeds: [] };
+	  },
+	
+	  componentDidMount: function () {
+	    FeedItemStore.addListener(this.handleReceivedFeeds);
+	    this.feedSource = this.props.feedSource;
+	  },
+	
+	  handleReceivedFeeds: function (arg) {
+	    if (this.feedSource.Id === FeedItemStore.lastReceivedId) this.setState({ feeds: FeedItemStore.all(this.feedSource.id) });
+	  },
+	
+	  handleClick: function () {
+	    if (this.state.clicked === false) {
+	      ApiUtil.fetchFeedItems(this.feedSource.id);
+	      this.setState({ clicked: true });
+	    } else {
+	      ApiActions.changeDisplayedFeeds(this.feedSource.id);
+	    }
+	  },
+	
+	  render: function () {
+	    var title = this.props.feedSource.title;
+	    return React.createElement(
+	      'div',
+	      { onClick: this.handleClick },
+	      title
+	    );
+	  }
+	});
+	
+	module.exports = FeedSourceItem;
+
+/***/ },
 /* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -26774,7 +26844,7 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemStore = __webpack_require__(190);
-	var FeedItem = __webpack_require__(257);
+	var FeedItem = __webpack_require__(192);
 	
 	var FeedItemsIndex = React.createClass({
 	  displayName: 'FeedItemsIndex',
@@ -26807,7 +26877,28 @@
 	module.exports = FeedItemsIndex;
 
 /***/ },
-/* 192 */,
+/* 192 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var FeedItemStore = __webpack_require__(190);
+	
+	var FeedItem = React.createClass({
+	  displayName: 'FeedItem',
+	
+	  render: function () {
+	    var title = this.props.feed.title;
+	    return React.createElement(
+	      'div',
+	      null,
+	      title
+	    );
+	  }
+	});
+	
+	module.exports = FeedItem;
+
+/***/ },
 /* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32150,100 +32241,6 @@
 	
 	exports['default'] = useBasename;
 	module.exports = exports['default'];
-
-/***/ },
-/* 255 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(173).Store;
-	var AppDispatcher = __webpack_require__(163);
-	var FeedSourceStore = new Store(AppDispatcher);
-	var FeedSourceConstants = __webpack_require__(167);
-	
-	var _feedSources = [];
-	
-	FeedSourceStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case FeedSourceConstants.RECEIVED_FEED_SOURCES:
-	      _feedSources = payload.feedSources;
-	      FeedSourceStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	FeedSourceStore.all = function () {
-	  return _feedSources;
-	};
-	
-	module.exports = FeedSourceStore;
-
-/***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var ApiUtil = __webpack_require__(161);
-	var FeedItemStore = __webpack_require__(190);
-	var ApiActions = __webpack_require__(162);
-	
-	var FeedSourceItem = React.createClass({
-	  displayName: 'FeedSourceItem',
-	
-	  getInitialState: function () {
-	    return { clicked: false, feeds: [] };
-	  },
-	
-	  componentDidMount: function () {
-	    FeedItemStore.addListener(this.handleReceivedFeeds);
-	    this.feedSource = this.props.feedSource;
-	  },
-	
-	  handleReceivedFeeds: function (arg) {
-	    if (this.feedSource.Id === FeedItemStore.lastReceivedId) this.setState({ feeds: FeedItemStore.all(this.feedSource.id) });
-	  },
-	
-	  handleClick: function () {
-	    if (this.state.clicked === false) {
-	      ApiUtil.fetchFeedItems(this.feedSource.id);
-	      this.setState({ clicked: true });
-	    } else {
-	      ApiActions.changeDisplayedFeeds(this.feedSource.id);
-	    }
-	  },
-	
-	  render: function () {
-	    var title = this.props.feedSource.title;
-	    return React.createElement(
-	      'div',
-	      { onClick: this.handleClick },
-	      title
-	    );
-	  }
-	});
-	
-	module.exports = FeedSourceItem;
-
-/***/ },
-/* 257 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var FeedItemStore = __webpack_require__(190);
-	
-	var FeedItem = React.createClass({
-	  displayName: 'FeedItem',
-	
-	  render: function () {
-	    var title = this.props.feed.title;
-	    return React.createElement(
-	      'div',
-	      null,
-	      title
-	    );
-	  }
-	});
-	
-	module.exports = FeedItem;
 
 /***/ }
 /******/ ]);
