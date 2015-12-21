@@ -18,17 +18,19 @@ var ApiUtil = {
       url: 'api/session',
       data: {session: user},
       success: function(currentUser) {
+        window.CURRENT_USER_ID = currentUser.id;
         ApiActions.receiveCurrentUser(currentUser);
       }
     });
   },
 
   signOutUser: function() {
+    debugger;
     $.ajax({
       method: 'DELETE',
       url: 'api/session',
       success: function() {
-        debugger
+        debugger;
         window.CURRENT_USER_ID = -1;
         ApiActions.signOutUser();
       }
@@ -49,6 +51,7 @@ var ApiUtil = {
   },
 
   fetchUserFeedSources: function() {
+    debugger;
     $.ajax({
       method: 'GET',
       url: 'api/feedsources',

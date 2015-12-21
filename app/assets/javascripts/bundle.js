@@ -19707,7 +19707,7 @@
 	        null,
 	        React.createElement(
 	          'a',
-	          { href: '#', onClick: this.handleSignOut },
+	          { onClick: this.handleSignOut },
 	          'SignOut'
 	        )
 	      );
@@ -19798,12 +19798,14 @@
 	      url: 'api/session',
 	      data: { session: user },
 	      success: function (currentUser) {
+	        window.CURRENT_USER_ID = currentUser.id;
 	        ApiActions.receiveCurrentUser(currentUser);
 	      }
 	    });
 	  },
 	
 	  signOutUser: function () {
+	    debugger;
 	    $.ajax({
 	      method: 'DELETE',
 	      url: 'api/session',
@@ -19829,6 +19831,7 @@
 	  },
 	
 	  fetchUserFeedSources: function () {
+	    debugger;
 	    $.ajax({
 	      method: 'GET',
 	      url: 'api/feedsources',
@@ -20260,9 +20263,7 @@
 	var Dashboard = React.createClass({
 	  displayName: 'Dashboard',
 	
-	  componentDidMount: function () {
-	    //ApiUtil.fetchUserFeedSources();
-	  },
+	  componentDidMount: function () {},
 	
 	  componentWillMount: function () {
 	    if (window.CURRENT_USER_ID === -1) {
@@ -20315,13 +20316,24 @@
 	    return { feedSources: [] };
 	  },
 	
+	  componentWillMount: function () {
+	    // console.log("Mounted categories index");
+	  },
+	
 	  componentDidMount: function () {
+	    this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
+	    debugger;
 	    ApiUtil.fetchUserFeedSources();
-	    FeedSourceStore.addListener(this.handleReceivedFeedSources);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.feedStoreListener.remove();
 	  },
 	
 	  handleReceivedFeedSources: function () {
+	    debugger;
 	    this.setState({ feedSources: FeedSourceStore.all() });
+	    debugger;
 	  },
 	
 	  render: function () {
@@ -26779,6 +26791,7 @@
 	  },
 	
 	  handleClick: function () {
+	    debugger;
 	    if (this.state.clicked === false) {
 	      ApiUtil.fetchFeedItems(this.feedSource.id);
 	      this.setState({ clicked: true });
@@ -26854,8 +26867,11 @@
 	  },
 	
 	  componentDidMount: function () {
-	    FeedItemStore.addListener(this.handleReceivedFeeds);
+	    this.feedListener = FeedItemStore.addListener(this.handleReceivedFeeds);
 	    this.feedSource = this.props.feedSource;
+	  },
+	  componentWillUnmount: function () {
+	    this.feedListener.remove();
 	  },
 	
 	  handleReceivedFeeds: function () {
@@ -26916,6 +26932,7 @@
 	      UserStore.__emitChange();
 	      break;
 	    case UserConstants.SIGN_OUT_USER:
+	      debugger;
 	      currentUser = undefined;
 	      UserStore.__emitChange();
 	  }
@@ -26942,17 +26959,22 @@
 	  displayName: 'Welcome',
 	
 	  _handleNewCurrentUser: function () {
+	    debugger;
 	    var currentUser = UserStore.currentUser();
 	    if (currentUser !== undefined) {
 	      this.props.history.pushState(null, '/dashboard');
 	    }
 	  },
 	
+	  _handleSignOut: function () {},
+	
 	  componentWillMount: function () {
 	    if (window.CURRENT_USER_ID !== -1) {
+	      debugger;
 	      this.props.history.pushState(null, '/dashboard');
 	    }
 	    this.userListener = UserStore.addListener(this._handleNewCurrentUser);
+	    this.signOutListener = UserStore.addListener(this._handleSignOut);
 	    //ApiUtil.fetchCurrentUser();
 	  },
 	
@@ -27071,7 +27093,7 @@
 	          { className: 'form-group' },
 	          React.createElement(
 	            'label',
-	            { 'for': 'signin_username' },
+	            { htmlFor: 'signin_username' },
 	            'Username'
 	          ),
 	          React.createElement('input', { type: 'text', className: 'form-control input-sm', id: 'signin_username', valueLink: this.linkState('username') })
@@ -27081,7 +27103,7 @@
 	          { className: 'form-group' },
 	          React.createElement(
 	            'label',
-	            { 'for': 'signin_password' },
+	            { htmlFor: 'signin_password' },
 	            'Password'
 	          ),
 	          React.createElement('input', { type: 'password', className: 'form-control input-sm', id: 'signin_password', valueLink: this.linkState('password') })
@@ -27368,7 +27390,7 @@
 	          { className: 'form-group' },
 	          React.createElement(
 	            'label',
-	            { 'for': 'signup_username' },
+	            { htmlFor: 'signup_username' },
 	            'Username'
 	          ),
 	          React.createElement('input', { type: 'text', className: 'form-control input-sm', id: 'signup_username', valueLink: this.linkState('username') })
@@ -27378,7 +27400,7 @@
 	          { className: 'form-group' },
 	          React.createElement(
 	            'label',
-	            { 'for': 'signup_password' },
+	            { htmlFor: 'signup_password' },
 	            'Password'
 	          ),
 	          React.createElement('input', { type: 'password', className: 'form-control input-sm', id: 'signup_password', valueLink: this.linkState('password') })

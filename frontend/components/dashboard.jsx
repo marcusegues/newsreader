@@ -6,7 +6,6 @@ var UserStore = require('../stores/userStore');
 var Dashboard = React.createClass({
 
   componentDidMount: function() {
-    //ApiUtil.fetchUserFeedSources();
   },
 
   componentWillMount: function() {

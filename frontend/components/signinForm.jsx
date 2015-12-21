@@ -21,11 +21,11 @@ var SigninForm = React.createClass({
         <h3>Sign In</h3>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
-            <label for="signin_username">Username</label>
+            <label htmlFor="signin_username">Username</label>
             <input type="text" className="form-control input-sm" id="signin_username" valueLink={this.linkState('username')} />
           </div>
           <div className="form-group">
-            <label for="signin_password">Password</label>
+            <label htmlFor="signin_password">Password</label>
             <input type="password" className="form-control input-sm" id="signin_password" valueLink={this.linkState('password')} />
           </div>
 

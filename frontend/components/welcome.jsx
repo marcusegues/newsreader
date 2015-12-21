@@ -7,17 +7,24 @@ var SiteFeatures = require('./siteFeatures');
 
 var Welcome = React.createClass({
   _handleNewCurrentUser: function() {
+    debugger;
     var currentUser = UserStore.currentUser();
     if (currentUser !== undefined) {
       this.props.history.pushState(null, '/dashboard');
     }
   },
 
+  _handleSignOut: function() {
+
+  },
+
   componentWillMount: function() {
     if (window.CURRENT_USER_ID !== -1) {
+      debugger;
       this.props.history.pushState(null, '/dashboard');
     }
     this.userListener = UserStore.addListener(this._handleNewCurrentUser);
+    this.signOutListener = UserStore.addListener(this._handleSignOut);
     //ApiUtil.fetchCurrentUser();
   },
 

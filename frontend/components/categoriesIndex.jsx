@@ -8,13 +8,24 @@ var CategoriesIndex = React.createClass({
     return {feedSources: []};
   },
 
+  componentWillMount: function() {
+    // console.log("Mounted categories index");
+  },
+
   componentDidMount: function() {
+    this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
+    debugger;
     ApiUtil.fetchUserFeedSources();
-    FeedSourceStore.addListener(this.handleReceivedFeedSources);
+  },
+
+  componentWillUnmount: function() {
+    this.feedStoreListener.remove();
   },
 
   handleReceivedFeedSources: function() {
+    debugger;
     this.setState({feedSources: FeedSourceStore.all()});
+    debugger;
   },
 
   render: function() {

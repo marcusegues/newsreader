@@ -9,7 +9,7 @@ var NavigationBar = React.createClass({
   render: function() {
     var signOutButton = "";
     if (window.CURRENT_USER_ID !== -1) {
-      signOutButton = <li><a href="#" onClick={this.handleSignOut}>SignOut</a></li>;
+      signOutButton = <li><a onClick={this.handleSignOut}>SignOut</a></li>;
     }
 
     return (

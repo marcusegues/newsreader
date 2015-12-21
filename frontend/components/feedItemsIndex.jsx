@@ -8,8 +8,11 @@ var FeedItemsIndex = React.createClass({
   },
 
   componentDidMount: function() {
-    FeedItemStore.addListener(this.handleReceivedFeeds);
+    this.feedListener = FeedItemStore.addListener(this.handleReceivedFeeds);
     this.feedSource = this.props.feedSource;
+  },
+  componentWillUnmount: function () {
+    this.feedListener.remove();
   },
 
   handleReceivedFeeds: function() {

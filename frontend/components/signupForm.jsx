@@ -23,12 +23,12 @@ var SignupForm = React.createClass({
         <h3>Sign Up</h3>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
-            <label for="signup_username">Username</label>
+            <label htmlFor="signup_username">Username</label>
             <input type="text" className="form-control input-sm" id="signup_username" valueLink={this.linkState('username')} />
           </div>
 
           <div className="form-group">
-            <label for="signup_password">Password</label>
+            <label htmlFor="signup_password">Password</label>
             <input type="password" className="form-control input-sm" id="signup_password" valueLink={this.linkState('password')} />
           </div>
 
