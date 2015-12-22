@@ -2,6 +2,7 @@ var React = require('react');
 var ApiUtil = require('../util/apiUtil');
 var FeedSourceStore = require('../stores/feedSourceStore');
 var FeedSourceItem = require('./feedSourceItem');
+var CategoryItem = require('./categoryItem');
 
 var CategoriesIndex = React.createClass({
   getInitialState: function() {
@@ -29,12 +30,24 @@ var CategoriesIndex = React.createClass({
   },
 
   render: function() {
-    var feedSources = this.state.feedSources.map(function(feedSource, idx) {
-      return <FeedSourceItem key={idx} feedSource={feedSource} />;
+    var categories = FeedSourceStore.all();
+    var categoriesWithFeedSources = Object.keys(categories).map(function(category, idx_cat) {
+      var list = categories[category].map(function(feedSource, idx_fs) {
+        return <FeedSourceItem key={idx_fs} feedSource={feedSource} />;
+      });
+      return (
+        <div key={idx_cat}>
+          <CategoryItem title={category}/>
+          <ul>
+            {list}
+          </ul>
+        </div>
+      );
     });
+
     return (
       <div>
-        {feedSources}
+        {categoriesWithFeedSources}
       </div>
     );
   }

@@ -20308,6 +20308,7 @@
 	var ApiUtil = __webpack_require__(161);
 	var FeedSourceStore = __webpack_require__(172);
 	var FeedSourceItem = __webpack_require__(189);
+	var CategoryItem = __webpack_require__(257);
 	
 	var CategoriesIndex = React.createClass({
 	  displayName: 'CategoriesIndex',
@@ -20337,13 +20338,27 @@
 	  },
 	
 	  render: function () {
-	    var feedSources = this.state.feedSources.map(function (feedSource, idx) {
-	      return React.createElement(FeedSourceItem, { key: idx, feedSource: feedSource });
+	    var categories = FeedSourceStore.all();
+	    var categoriesWithFeedSources = Object.keys(categories).map(function (category, idx_cat) {
+	      var list = categories[category].map(function (feedSource, idx_fs) {
+	        return React.createElement(FeedSourceItem, { key: idx_fs, feedSource: feedSource });
+	      });
+	      return React.createElement(
+	        'div',
+	        { key: idx_cat },
+	        React.createElement(CategoryItem, { title: category }),
+	        React.createElement(
+	          'ul',
+	          null,
+	          list
+	        )
+	      );
 	    });
+	
 	    return React.createElement(
 	      'div',
 	      null,
-	      feedSources
+	      categoriesWithFeedSources
 	    );
 	  }
 	});
@@ -20359,12 +20374,19 @@
 	var FeedSourceStore = new Store(AppDispatcher);
 	var FeedSourceConstants = __webpack_require__(167);
 	
-	var _feedSources = [];
+	var _feedSources = {};
 	
 	FeedSourceStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case FeedSourceConstants.RECEIVED_FEED_SOURCES:
-	      _feedSources = payload.feedSources;
+	      this.getCategories(payload.feedSources).forEach(function (category, idx_cat) {
+	        _feedSources[category] = [];
+	        payload.feedSources.forEach(function (feedSource, idx_fs) {
+	          if (feedSource.category === category) {
+	            _feedSources[category].push(feedSource);
+	          }
+	        });
+	      });
 	      FeedSourceStore.__emitChange();
 	      break;
 	  }
@@ -20372,6 +20394,18 @@
 	
 	FeedSourceStore.all = function () {
 	  return _feedSources;
+	};
+	
+	FeedSourceStore.getCategories = function (feedSources) {
+	  var unique = [];
+	
+	  feedSources.forEach(function (feedSource, idx) {
+	    if (unique.indexOf(feedSource.category) === -1) {
+	      unique.push(feedSource.category);
+	    }
+	  });
+	
+	  return unique;
 	};
 	
 	module.exports = FeedSourceStore;
@@ -32263,6 +32297,29 @@
 	
 	exports['default'] = useBasename;
 	module.exports = exports['default'];
+
+/***/ },
+/* 255 */,
+/* 256 */,
+/* 257 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var CategoryItem = React.createClass({
+	  displayName: 'CategoryItem',
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      this.props.title
+	    );
+	  }
+	
+	});
+	
+	module.exports = CategoryItem;
 
 /***/ }
 /******/ ]);
