@@ -3,6 +3,8 @@ var CategoriesIndex = require('./categoriesIndex');
 var FeedItemsIndex = require('./feedItemsIndex.jsx');
 var ApiUtil = require('../util/apiUtil');
 var UserStore = require('../stores/userStore');
+var FeedOptions = require('./feedOptions');
+
 var Dashboard = React.createClass({
 
   componentDidMount: function() {
@@ -28,6 +30,7 @@ var Dashboard = React.createClass({
       <div className="row">
         <div className="col-xs-4">
           <CategoriesIndex className="mainWindows"/>
+          <FeedOptions />
         </div>
         <div className="col-xs-8">
           <FeedItemsIndex className="mainWindows"/>

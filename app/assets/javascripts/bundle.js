@@ -20260,6 +20260,8 @@
 	var FeedItemsIndex = __webpack_require__(191);
 	var ApiUtil = __webpack_require__(161);
 	var UserStore = __webpack_require__(193);
+	var FeedOptions = __webpack_require__(258);
+	
 	var Dashboard = React.createClass({
 	  displayName: 'Dashboard',
 	
@@ -20287,7 +20289,8 @@
 	      React.createElement(
 	        'div',
 	        { className: 'col-xs-4' },
-	        React.createElement(CategoriesIndex, { className: 'mainWindows' })
+	        React.createElement(CategoriesIndex, { className: 'mainWindows' }),
+	        React.createElement(FeedOptions, null)
 	      ),
 	      React.createElement(
 	        'div',
@@ -32320,6 +32323,36 @@
 	});
 	
 	module.exports = CategoryItem;
+
+/***/ },
+/* 258 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var FeedOptions = React.createClass({
+	  displayName: "FeedOptions",
+	
+	  createNewFeedSource: function () {},
+	
+	  render: function () {
+	    return React.createElement(
+	      "div",
+	      { className: "row feedOptions" },
+	      React.createElement(
+	        "div",
+	        { className: "col-xs-4" },
+	        React.createElement(
+	          "button",
+	          { onClick: this.createNewFeedSource },
+	          "+"
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = FeedOptions;
 
 /***/ }
 /******/ ]);
