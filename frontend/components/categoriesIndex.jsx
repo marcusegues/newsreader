@@ -15,7 +15,6 @@ var CategoriesIndex = React.createClass({
 
   componentDidMount: function() {
     this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
-    debugger;
     ApiUtil.fetchUserFeedSources();
   },
 
@@ -24,9 +23,8 @@ var CategoriesIndex = React.createClass({
   },
 
   handleReceivedFeedSources: function() {
-    debugger;
+
     this.setState({feedSources: FeedSourceStore.all()});
-    debugger;
   },
 
   render: function() {

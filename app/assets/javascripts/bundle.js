@@ -19787,6 +19787,7 @@
 	      url: 'api/users',
 	      data: { user: newUser },
 	      success: function (currentUser) {
+	        window.CURRENT_USER_ID = currentUser.id;
 	        ApiActions.receiveCurrentUser(currentUser);
 	      }
 	    });
@@ -19805,12 +19806,10 @@
 	  },
 	
 	  signOutUser: function () {
-	    debugger;
 	    $.ajax({
 	      method: 'DELETE',
 	      url: 'api/session',
 	      success: function () {
-	        debugger;
 	        window.CURRENT_USER_ID = -1;
 	        ApiActions.signOutUser();
 	      }
@@ -19831,7 +19830,6 @@
 	  },
 	
 	  fetchUserFeedSources: function () {
-	    debugger;
 	    $.ajax({
 	      method: 'GET',
 	      url: 'api/feedsources',
@@ -20326,7 +20324,6 @@
 	
 	  componentDidMount: function () {
 	    this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
-	    debugger;
 	    ApiUtil.fetchUserFeedSources();
 	  },
 	
@@ -20335,9 +20332,8 @@
 	  },
 	
 	  handleReceivedFeedSources: function () {
-	    debugger;
+	
 	    this.setState({ feedSources: FeedSourceStore.all() });
-	    debugger;
 	  },
 	
 	  render: function () {
@@ -26828,7 +26824,6 @@
 	  },
 	
 	  handleClick: function () {
-	    debugger;
 	    if (this.state.clicked === false) {
 	      ApiUtil.fetchFeedItems(this.feedSource.id);
 	      this.setState({ clicked: true });
@@ -26969,7 +26964,6 @@
 	      UserStore.__emitChange();
 	      break;
 	    case UserConstants.SIGN_OUT_USER:
-	      debugger;
 	      currentUser = undefined;
 	      UserStore.__emitChange();
 	  }
@@ -26996,7 +26990,6 @@
 	  displayName: 'Welcome',
 	
 	  _handleNewCurrentUser: function () {
-	    debugger;
 	    var currentUser = UserStore.currentUser();
 	    if (currentUser !== undefined) {
 	      this.props.history.pushState(null, '/dashboard');
@@ -27007,7 +27000,6 @@
 	
 	  componentWillMount: function () {
 	    if (window.CURRENT_USER_ID !== -1) {
-	      debugger;
 	      this.props.history.pushState(null, '/dashboard');
 	    }
 	    this.userListener = UserStore.addListener(this._handleNewCurrentUser);

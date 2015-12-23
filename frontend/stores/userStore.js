@@ -12,7 +12,6 @@ UserStore.__onDispatch = function(payload) {
       UserStore.__emitChange();
       break;
     case UserConstants.SIGN_OUT_USER:
-      debugger;
       currentUser = undefined;
       UserStore.__emitChange();
   }

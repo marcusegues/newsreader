@@ -20,7 +20,6 @@ var FeedSourceItem = React.createClass({
   },
 
   handleClick: function() {
-    debugger;
     if (this.state.clicked === false) {
       ApiUtil.fetchFeedItems(this.feedSource.id);
       this.setState({clicked: true});
