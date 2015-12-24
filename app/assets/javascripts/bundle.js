@@ -32349,7 +32349,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var NewFeedSourceFormModal = __webpack_require__(260);
+	var NewFeedSourceFormModal = __webpack_require__(261);
 	
 	var CreateNewFeedSource = React.createClass({
 	  displayName: 'CreateNewFeedSource',
@@ -32363,7 +32363,8 @@
 	module.exports = CreateNewFeedSource;
 
 /***/ },
-/* 260 */
+/* 260 */,
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);

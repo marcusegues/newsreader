@@ -1,5 +1,5 @@
 var React = require('react');
-var NewFeedSourceFormModal = require('./NewFeedSourceFormModal');
+var NewFeedSourceFormModal = require('./newFeedSourceFormModal');
 
 var CreateNewFeedSource = React.createClass({
   render: function() {
