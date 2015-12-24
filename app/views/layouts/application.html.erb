@@ -2,13 +2,14 @@
 <html>
 <head>
   <title>Project</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <script>window.CURRENT_USER_ID = <%= current_user ? current_user.id : -1 %></script>
 </head>
 <body>
-  
+
 
 <%= yield %>
 

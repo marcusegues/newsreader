@@ -3,7 +3,6 @@ var WelcomeImage = require('./welcomeImage');
 var UserForm = require('./userForm');
 var UserStore = require('../stores/userStore');
 var ApiUtil = require('../util/apiUtil');
-var SiteFeatures = require('./siteFeatures');
 
 var Welcome = React.createClass({
   _handleNewCurrentUser: function() {
@@ -40,11 +39,8 @@ var Welcome = React.createClass({
 
     return (
       <div>
-        <div id="welcomeJumbo">
-          <WelcomeImage />
-        </div>
         <div>
-          <SiteFeatures />
+          <WelcomeImage />
         </div>
       </div>
     );

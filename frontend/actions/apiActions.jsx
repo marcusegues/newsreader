@@ -37,6 +37,13 @@ var ApiActions = {
     AppDispatcher.dispatch({
       actionType: UserConstants.SIGN_OUT_USER
     });
+  },
+
+  receiveCreatedFeedSource: function(createdFeedSource) {
+    AppDispatcher.dispatch({
+      actionType: FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE,
+      createdFeedSource: createdFeedSource
+    });
   }
 };
 

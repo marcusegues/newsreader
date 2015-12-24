@@ -64,7 +64,19 @@ var ApiUtil = {
       method: 'GET',
       url:  'api/feeds/' + feedSourceId,
       success: function(feeds) {
+        debugger;
         ApiActions.receiveFeeds(feeds, feedSourceId);
+      }
+    });
+  },
+
+  createFeedSource: function(newFeedSource) {
+    $.ajax({
+      method: 'POST',
+      url: 'api/feedsources',
+      data: {feedSource: newFeedSource},
+      success: function(createdFeedSource) {
+        ApiActions.receiveCreatedFeedSource(createdFeedSource);
       }
     });
   }

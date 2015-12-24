@@ -1,5 +1,6 @@
 class FeedSource < ActiveRecord::Base
-
+  validates :url, :category, presence: true;
+  
   has_many :user_feed_sources,
     class_name: 'UserFeedSource',
     foreign_key: :feed_source_id,

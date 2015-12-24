@@ -1,5 +1,6 @@
 var FeedSourceConstants = {
   RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES",
+  RECEIVED_CREATED_FEED_SOURCE: "RECEIVED_CREATED_FEED_SOURCE"
 };
 
 module.exports = FeedSourceConstants;

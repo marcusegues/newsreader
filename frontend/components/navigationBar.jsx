@@ -11,8 +11,17 @@ var NavigationBar = React.createClass({
     if (window.CURRENT_USER_ID !== -1) {
       signOutButton = <li><a onClick={this.handleSignOut}>SignOut</a></li>;
     }
+    // <header className="header">
+    //   <nav className="header-nav group">
+    //     <h1 class="header-logo">
+    //       <a href="#">Swissfeeds</a>
+    //     </h1>
+    //   </nav>
+    // </header>
 
     return (
+
+
       <nav className="navbar navbar-inverse navbar-fixed-top">
         <div className="container">
           <div className="navbar-header">

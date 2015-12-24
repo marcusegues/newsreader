@@ -28,12 +28,12 @@ var Dashboard = React.createClass({
   render: function() {
     return (
       <div className="row">
-        <div className="col-xs-4">
-          <CategoriesIndex className="mainWindows"/>
+        <div className="mainWindows col-xs-4">
+          <CategoriesIndex />
           <FeedOptions />
         </div>
-        <div className="col-xs-8">
-          <FeedItemsIndex className="mainWindows"/>
+        <div className="mainWindows col-xs-8">
+          <FeedItemsIndex />
         </div>
       </div>
     );

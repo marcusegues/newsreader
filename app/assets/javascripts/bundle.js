@@ -19712,6 +19712,13 @@
 	        )
 	      );
 	    }
+	    // <header className="header">
+	    //   <nav className="header-nav group">
+	    //     <h1 class="header-logo">
+	    //       <a href="#">Swissfeeds</a>
+	    //     </h1>
+	    //   </nav>
+	    // </header>
 	
 	    return React.createElement(
 	      'nav',
@@ -19844,7 +19851,19 @@
 	      method: 'GET',
 	      url: 'api/feeds/' + feedSourceId,
 	      success: function (feeds) {
+	        debugger;
 	        ApiActions.receiveFeeds(feeds, feedSourceId);
+	      }
+	    });
+	  },
+	
+	  createFeedSource: function (newFeedSource) {
+	    $.ajax({
+	      method: 'POST',
+	      url: 'api/feedsources',
+	      data: { feedSource: newFeedSource },
+	      success: function (createdFeedSource) {
+	        ApiActions.receiveCreatedFeedSource(createdFeedSource);
 	      }
 	    });
 	  }
@@ -19894,6 +19913,13 @@
 	  signOutUser: function () {
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.SIGN_OUT_USER
+	    });
+	  },
+	
+	  receiveCreatedFeedSource: function (createdFeedSource) {
+	    AppDispatcher.dispatch({
+	      actionType: FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE,
+	      createdFeedSource: createdFeedSource
 	    });
 	  }
 	};
@@ -20221,7 +20247,8 @@
 /***/ function(module, exports) {
 
 	var FeedSourceConstants = {
-	  RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES"
+	  RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES",
+	  RECEIVED_CREATED_FEED_SOURCE: "RECEIVED_CREATED_FEED_SOURCE"
 	};
 	
 	module.exports = FeedSourceConstants;
@@ -20286,14 +20313,14 @@
 	      { className: 'row' },
 	      React.createElement(
 	        'div',
-	        { className: 'col-xs-4' },
-	        React.createElement(CategoriesIndex, { className: 'mainWindows' }),
+	        { className: 'mainWindows col-xs-4' },
+	        React.createElement(CategoriesIndex, null),
 	        React.createElement(FeedOptions, null)
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'col-xs-8' },
-	        React.createElement(FeedItemsIndex, { className: 'mainWindows' })
+	        { className: 'mainWindows col-xs-8' },
+	        React.createElement(FeedItemsIndex, null)
 	      )
 	    );
 	  }
@@ -20373,19 +20400,35 @@
 	var FeedSourceStore = new Store(AppDispatcher);
 	var FeedSourceConstants = __webpack_require__(167);
 	
-	var _feedSources = {};
+	var _feedSources = {}; // keys will be categories, values will be feed sources
+	
+	var populate_feedSources = function (feedSources) {
+	  FeedSourceStore.getUniqueCategories(feedSources).forEach(function (category, idx_cat) {
+	    _feedSources[category] = [];
+	    feedSources.forEach(function (feedSource, idx_fs) {
+	      if (feedSource.category === category) {
+	        _feedSources[category].push(feedSource);
+	      }
+	    });
+	  });
+	};
+	
+	var addCreatedFeedSourceTo_feedSources = function (createdFeedSource) {
+	  var category = createdFeedSource.category;
+	  if (_feedSources[category] === undefined) {
+	    _feedSources[category] = [];
+	  }
+	  _feedSources[category].push(createdFeedSource);
+	};
 	
 	FeedSourceStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case FeedSourceConstants.RECEIVED_FEED_SOURCES:
-	      this.getCategories(payload.feedSources).forEach(function (category, idx_cat) {
-	        _feedSources[category] = [];
-	        payload.feedSources.forEach(function (feedSource, idx_fs) {
-	          if (feedSource.category === category) {
-	            _feedSources[category].push(feedSource);
-	          }
-	        });
-	      });
+	      populate_feedSources(payload.feedSources);
+	      FeedSourceStore.__emitChange();
+	      break;
+	    case FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE:
+	      addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
 	      FeedSourceStore.__emitChange();
 	      break;
 	  }
@@ -20395,7 +20438,7 @@
 	  return _feedSources;
 	};
 	
-	FeedSourceStore.getCategories = function (feedSources) {
+	FeedSourceStore.getUniqueCategories = function (feedSources) {
 	  var unique = [];
 	
 	  feedSources.forEach(function (feedSource, idx) {
@@ -26861,6 +26904,7 @@
 	    case FeedItemConstants.RECEIVED_FEEDS:
 	      _feeds[payload.feedSourceId] = payload.feeds;
 	      _lastReceivedId = payload.feedSourceId;
+	      debugger;
 	      FeedItemStore.__emitChange();
 	      break;
 	    case FeedItemConstants.CHANGE_DISPLAYED_FEEDS:
@@ -26934,12 +26978,32 @@
 	var FeedItem = React.createClass({
 	  displayName: 'FeedItem',
 	
+	  getInitialState: function () {
+	    return { display: false };
+	  },
+	
+	  showFeed: function () {
+	
+	    this.setState({ display: true });
+	  },
+	
 	  render: function () {
+	    debugger;
 	    var title = this.props.feed.title;
+	    var content = this.state.display === true ? this.props.feed.summary : null;
 	    return React.createElement(
 	      'div',
 	      null,
-	      title
+	      React.createElement(
+	        'div',
+	        { onClick: this.showFeed },
+	        title
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'displayed-feed' },
+	        content
+	      )
 	    );
 	  }
 	});
@@ -26984,7 +27048,6 @@
 	var UserForm = __webpack_require__(196);
 	var UserStore = __webpack_require__(193);
 	var ApiUtil = __webpack_require__(161);
-	var SiteFeatures = __webpack_require__(203);
 	
 	var Welcome = React.createClass({
 	  displayName: 'Welcome',
@@ -27024,13 +27087,8 @@
 	      null,
 	      React.createElement(
 	        'div',
-	        { id: 'welcomeJumbo' },
-	        React.createElement(WelcomeImage, null)
-	      ),
-	      React.createElement(
-	        'div',
 	        null,
-	        React.createElement(SiteFeatures, null)
+	        React.createElement(WelcomeImage, null)
 	      )
 	    );
 	  }
@@ -27051,8 +27109,17 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { className: 'jumbotron' },
-	      React.createElement(UserForm, null)
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'welcome' },
+	        React.createElement('div', { className: 'welcomeImage' }),
+	        React.createElement(
+	          'video',
+	          { loop: true, muted: true, autoPlay: true, poster: '/pilatus.jpg', className: 'full-bg-video' },
+	          React.createElement('source', { src: 'http://res.cloudinary.com/dolgs87zk/video/upload/v1450996737/Swiss_Time_360_jbeyuy.mp4', async: true })
+	        )
+	      )
 	    );
 	  }
 	});
@@ -27447,87 +27514,7 @@
 	module.exports = SignupForm;
 
 /***/ },
-/* 203 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var SiteFeatures = React.createClass({
-	  displayName: "SiteFeatures",
-	
-	  render: function () {
-	    return React.createElement(
-	      "div",
-	      { className: "row text-center" },
-	      React.createElement(
-	        "h1",
-	        null,
-	        "Meet the team"
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "col-xs-3" },
-	        React.createElement("img", { src: "/Pilatus.jpg", className: "img-responsive img-rounded", alt: "Matterhorn" }),
-	        React.createElement(
-	          "h2",
-	          null,
-	          "Matterhorn"
-	        ),
-	        React.createElement("p", null)
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "col-xs-3" },
-	        React.createElement("img", { src: "/Pilatus.jpg", className: "img-responsive img-rounded", alt: "Pilatus" }),
-	        React.createElement(
-	          "h2",
-	          null,
-	          "Pilatus"
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Lucerne..."
-	        )
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "col-xs-3" },
-	        React.createElement("img", { src: "/Rigi.jpg", className: "img-responsive img-rounded", alt: "Rigi" }),
-	        React.createElement(
-	          "h2",
-	          null,
-	          "Rigi"
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Dunno this one"
-	        )
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "col-xs-3" },
-	        React.createElement("img", { src: "/Weisshorn.jpg", className: "img-responsive img-rounded", alt: "Weisshorn" }),
-	        React.createElement(
-	          "h2",
-	          null,
-	          "Weisshorn"
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Not this one either"
-	        )
-	      )
-	    );
-	  }
-	
-	});
-	
-	module.exports = SiteFeatures;
-
-/***/ },
+/* 203 */,
 /* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32321,30 +32308,156 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var CreateNewFeedSourceModal = __webpack_require__(259);
 	
 	var FeedOptions = React.createClass({
-	  displayName: "FeedOptions",
+	  displayName: 'FeedOptions',
 	
-	  createNewFeedSource: function () {},
+	  getInitialState: function () {
+	    return { modalOpen: false };
+	  },
+	
+	  createNewFeedSource: function (e) {
+	    e.preventDefault();
+	    this.setState({ modalOpen: true });
+	  },
+	
+	  closeModal: function () {
+	    this.setState({ modalOpen: false });
+	  },
 	
 	  render: function () {
 	    return React.createElement(
-	      "div",
-	      { className: "row feedOptions" },
+	      'div',
+	      null,
 	      React.createElement(
-	        "div",
-	        { className: "col-xs-4" },
-	        React.createElement(
-	          "button",
-	          { onClick: this.createNewFeedSource },
-	          "+"
-	        )
-	      )
+	        'button',
+	        { onClick: this.createNewFeedSource },
+	        'Add New Content'
+	      ),
+	      React.createElement(CreateNewFeedSourceModal, {
+	        modalOpen: this.state.modalOpen,
+	        closeModal: this.closeModal })
 	    );
 	  }
 	});
 	
 	module.exports = FeedOptions;
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var NewFeedSourceFormModal = __webpack_require__(260);
+	
+	var CreateNewFeedSource = React.createClass({
+	  displayName: 'CreateNewFeedSource',
+	
+	  render: function () {
+	
+	    return this.props.modalOpen === false ? null : React.createElement(NewFeedSourceFormModal, { modalOpen: this.props.modalOpen,
+	      closeModal: this.props.closeModal });
+	  }
+	});
+	module.exports = CreateNewFeedSource;
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LinkedStateMixin = __webpack_require__(198);
+	var ApiUtil = __webpack_require__(161);
+	
+	var NewFeedSourceFormModal = React.createClass({
+	  displayName: 'NewFeedSourceFormModal',
+	
+	  mixins: [LinkedStateMixin],
+	
+	  getInitialState: function () {
+	    return { title: "", url: "", category: "" };
+	  },
+	
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	    var newFeedSource = Object.assign({}, this.state);
+	    ApiUtil.createFeedSource(newFeedSource);
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'modal is-open' },
+	      React.createElement(
+	        'form',
+	        { className: 'modal-form', onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'span',
+	          { className: 'modal-close', onClick: this.props.closeModal },
+	          '×'
+	        ),
+	        React.createElement(
+	          'h1',
+	          null,
+	          'Add a new feed'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'input' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'form-title' },
+	            'Title'
+	          ),
+	          React.createElement('input', { type: 'text', id: 'form-title', valueLink: this.linkState('title') })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'input' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'form-url' },
+	            'URL'
+	          ),
+	          React.createElement('input', { type: 'text', id: 'form-url', valueLink: this.linkState('url') })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'input' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'form-category' },
+	            'Category'
+	          ),
+	          React.createElement('input', { type: 'text', id: 'form-category', valueLink: this.linkState('category') })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'submit' },
+	          React.createElement(
+	            'button',
+	            null,
+	            'Add Feed'
+	          ),
+	          React.createElement(
+	            'span',
+	            { className: 'button-alternative' },
+	            'or ',
+	            React.createElement(
+	              'strong',
+	              { onClick: this.props.closeModal },
+	              'Cancel'
+	            )
+	          )
+	        )
+	      ),
+	      React.createElement('div', { className: 'modal-screen', onClick: this.closeModal })
+	    );
+	  }
+	});
+	
+	module.exports = NewFeedSourceFormModal;
 
 /***/ }
 /******/ ]);
