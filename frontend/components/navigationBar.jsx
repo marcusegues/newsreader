@@ -1,47 +1,55 @@
 var React = require('react');
-var apiUtil = require('../util/apiUtil');
+var ApiUtil = require('../util/apiUtil');
 
 var NavigationBar = React.createClass({
   handleSignOut: function() {
-    apiUtil.signOutUser();
+    ApiUtil.signOutUser();
+  },
+
+  signIn: function() {
+    debugger;
+    var signInForm = document.getElementById("userSignForm");
+    signInForm.getElementsByClassName("userSignOption")[0].innerHTML = "Sign In";
+    signInForm.style.right = "10px";
+  },
+
+  signUp: function() {
+    debugger;
+    var signUpForm = document.getElementById("userSignForm");
+    signUpForm.getElementsByClassName("userSignOption")[0].innerHTML = "Sign Up";
+    signUpForm.style.right = "10px";
+  },
+
+  demo: function() {
+    var user = {username: "marcus", password: "password"};
+    ApiUtil.signinUser(user);
   },
 
   render: function() {
-    var signOutButton = "";
+    var signOptions = "";
     if (window.CURRENT_USER_ID !== -1) {
-      signOutButton = <li><a onClick={this.handleSignOut}>SignOut</a></li>;
+        signOptions = (
+          <ul className="header-list group">
+            <li><a onClick={this.handleSignOut}>Sign Out</a></li>
+          </ul>
+        );
+    } else {
+      signOptions = (
+        <ul className="header-list group">
+          <li onClick={this.demo}><a href="#">Demo</a></li>
+          <li onClick={this.signIn}><a href="#">Sign In</a></li>
+          <li onClick={this.signUp}><a href="#">Sign Up</a></li>
+        </ul>
+      );
     }
-    // <header className="header">
-    //   <nav className="header-nav group">
-    //     <h1 class="header-logo">
-    //       <a href="#">Swissfeeds</a>
-    //     </h1>
-    //   </nav>
-    // </header>
 
     return (
-
-
-      <nav className="navbar navbar-inverse navbar-fixed-top">
-        <div className="container">
-          <div className="navbar-header">
-            <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span className="sr-only">Toggle navigation</span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-            </button>
-            <a className="navbar-brand" href="#">Project name</a>
-          </div>
-          <div id="navbar" className="collapse navbar-collapse">
-            <ul className="nav navbar-nav">
-              {signOutButton}
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <header className="header group">
+        <h1 className="header-logo">
+          <a href="#">Swissfeeds</a>
+        </h1>
+        {signOptions}
+      </header>
     );
   }
 

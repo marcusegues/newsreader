@@ -1,8 +1,11 @@
 var React = require('react');
 var WelcomeImage = require('./welcomeImage');
-var UserForm = require('./userForm');
+var SigninForm = require('./signinForm');
 var UserStore = require('../stores/userStore');
 var ApiUtil = require('../util/apiUtil');
+var NavigationBar = require('./navigationBar');
+var WelcomeMessage = require('./welcomeMessage');
+
 
 var Welcome = React.createClass({
   _handleNewCurrentUser: function() {
@@ -39,9 +42,12 @@ var Welcome = React.createClass({
 
     return (
       <div>
+        <NavigationBar/>
         <div>
           <WelcomeImage />
         </div>
+        <WelcomeMessage />
+        <SigninForm />
       </div>
     );
   }

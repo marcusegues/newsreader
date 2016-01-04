@@ -5,8 +5,9 @@ var CreateNewFeedSource = React.createClass({
   render: function() {
 
     return (
-      this.props.modalOpen === false ? null : <NewFeedSourceFormModal modalOpen={this.props.modalOpen}
-    closeModal={this.props.closeModal}/>
+      this.props.modalOpen === false ? null : <NewFeedSourceFormModal
+                                                modalOpen={this.props.modalOpen}
+                                                closeModal={this.props.closeModal}/>
     );
 
   }

@@ -1,3 +1,4 @@
+
 var React = require('react');
 var ApiUtil = require('../util/apiUtil');
 var FeedItemStore = require('../stores/feedItemStore');
@@ -31,7 +32,7 @@ var FeedSourceItem = React.createClass({
   render: function() {
     var title = this.props.feedSource.title;
     return (
-      <div onClick={this.handleClick}>
+      <div className="feedSource" onClick={this.handleClick}>
         {title}
       </div>
     );

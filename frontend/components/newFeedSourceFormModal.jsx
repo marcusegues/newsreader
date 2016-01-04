@@ -17,7 +17,7 @@ var NewFeedSourceFormModal = React.createClass({
 
   render: function() {
     return (
-      <div className="modal is-open">
+      <div className="modal">
 
         <form className="modal-form" onSubmit={this.handleSubmit}>
           <span className="modal-close" onClick={this.props.closeModal}>&times;</span>
@@ -41,7 +41,7 @@ var NewFeedSourceFormModal = React.createClass({
 
           <div className="submit">
             <button>Add Feed</button>
-            <span className="button-alternative">or <strong onClick={this.props.closeModal}>Cancel</strong></span>
+            <div className="button-alternative"> or <strong onClick={this.props.closeModal}>Cancel</strong></div>
           </div>
 
         </form>

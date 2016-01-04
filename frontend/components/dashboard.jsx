@@ -25,16 +25,21 @@ var Dashboard = React.createClass({
     }
   },
 
+  handleSignOut: function() {
+    ApiUtil.signOutUser();
+  },
+
   render: function() {
     return (
-      <div className="row">
-        <div className="mainWindows col-xs-4">
+      <div className="mainWindows group">
+        <div className="mainWindows1">
           <CategoriesIndex />
           <FeedOptions />
         </div>
-        <div className="mainWindows col-xs-8">
+        <div className="mainWindows2">
           <FeedItemsIndex />
         </div>
+        <button onClick={this.handleSignOut}>Sign Out</button>
       </div>
     );
   }

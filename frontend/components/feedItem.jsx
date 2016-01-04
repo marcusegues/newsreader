@@ -7,18 +7,17 @@ var FeedItem = React.createClass({
   },
 
   showFeed: function() {
-
     this.setState({display: true});
   },
 
   render: function() {
-    debugger;
     var title = this.props.feed.title;
-    var content = this.state.display === true ? this.props.feed.summary : null;
+    var content = this.state.display === true ? this.props.feed.content : null;
+    var summary = this.props.feed.summary;
     return (
       <div>
-        <div onClick={this.showFeed}>
-          {title}
+        <div className="feedTitle" onClick={this.showFeed}>
+          <span>{title}</span>    <span className="summary">{summary}</span>
         </div>
         <div className="displayed-feed">
           {content}

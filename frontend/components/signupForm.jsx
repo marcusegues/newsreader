@@ -19,9 +19,9 @@ var SignupForm = React.createClass({
 
   render: function() {
     return (
-      <div id="userSign">
-        <h3>Sign Up</h3>
-        <form onSubmit={this.handleSubmit}>
+      <div className="userSignDiv">
+        <form id="userSignForm" onSubmit={this.handleSubmit}>
+          <h3>Sign Up</h3>
           <div className="form-group">
             <label htmlFor="signup_username">Username</label>
             <input type="text" className="form-control input-sm" id="signup_username" valueLink={this.linkState('username')} />

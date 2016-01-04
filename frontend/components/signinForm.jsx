@@ -11,25 +11,32 @@ var SigninForm = React.createClass({
 
   handleSubmit: function(e) {
     e.preventDefault();
+    var signInForm = document.getElementById("userSignForm");
+    var inner = signInForm.getElementsByClassName("userSignOption")[0].innerHTML;
     var user = Object.assign({}, this.state);
-    ApiUtil.signinUser(user);
+    if (inner === "Sign In") {
+      ApiUtil.signinUser(user);
+    } else {
+      ApiUtil.createUser(user);
+    }
   },
 
   render: function() {
     return (
-      <div id="userSign">
-        <h3>Sign In</h3>
-        <form onSubmit={this.handleSubmit}>
-          <div className="form-group">
+      <div className="userSignDiv">
+        <form id="userSignForm" onSubmit={this.handleSubmit}>
+          <h3 className="userSignOption"></h3>
+          <div className="input">
             <label htmlFor="signin_username">Username</label>
-            <input type="text" className="form-control input-sm" id="signin_username" valueLink={this.linkState('username')} />
+            <input type="text" id="signin_username" valueLink={this.linkState('username')} />
           </div>
-          <div className="form-group">
+          <div className="input">
             <label htmlFor="signin_password">Password</label>
-            <input type="password" className="form-control input-sm" id="signin_password" valueLink={this.linkState('password')} />
+            <input type="password" id="signin_password" valueLink={this.linkState('password')} />
           </div>
 
-          <button className="btn btn-primary" type="submit">Sign In</button>
+          <button type="submit">Sign In</button>
+
         </form>
       </div>
     );
