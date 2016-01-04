@@ -36,7 +36,7 @@ var WelcomeImage = React.createClass({
     return (
       <div>
         <div className="welcome">
-          <img className="image" src="matterhorn_clear.jpg" />
+          <img className="image" src="http://res.cloudinary.com/dolgs87zk/image/upload/v1451911464/matterhorn_clear_z2siu2.jpg" />
         </div>
 
       </div>

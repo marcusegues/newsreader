@@ -27578,7 +27578,7 @@
 	      React.createElement(
 	        "div",
 	        { className: "welcome" },
-	        React.createElement("img", { className: "image", src: "matterhorn_clear.jpg" })
+	        React.createElement("img", { className: "image", src: "http://res.cloudinary.com/dolgs87zk/image/upload/v1451911464/matterhorn_clear_z2siu2.jpg" })
 	      )
 	    );
 	  }
