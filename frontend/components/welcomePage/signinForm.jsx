@@ -1,6 +1,6 @@
 var React = require('react');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
-var ApiUtil = require('../util/apiUtil.jsx');
+var ApiUtil = require('../../util/apiUtil.jsx');
 
 var SigninForm = React.createClass({
   mixins: [LinkedStateMixin],
@@ -35,7 +35,7 @@ var SigninForm = React.createClass({
             <input type="password" id="signin_password" valueLink={this.linkState('password')} />
           </div>
 
-          <button type="submit">Sign In</button>
+          <button type="submitSign">Sign In</button>
 
         </form>
       </div>

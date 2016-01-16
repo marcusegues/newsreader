@@ -1,5 +1,6 @@
 var React = require('react');
 var CreateNewFeedSourceModal = require('./createNewFeedSourceModal');
+var ApiUtil = require('../util/apiUtil');
 
 var FeedOptions = React.createClass({
   getInitialState: function () {
@@ -15,10 +16,18 @@ var FeedOptions = React.createClass({
     this.setState({modalOpen: false});
   },
 
+  handleSignOut: function() {
+    ApiUtil.signOutUser();
+  },
+
+
   render: function() {
     return (
       <div>
-        <button onClick={this.createNewFeedSource}>Add New Content</button>
+        <div className="submit">
+          <button onClick={this.createNewFeedSource}>Add New Content</button>
+          <button onClick={this.handleSignOut}>Sign Out</button>
+        </div>
         <CreateNewFeedSourceModal
           modalOpen={this.state.modalOpen}
           closeModal={this.closeModal}/>

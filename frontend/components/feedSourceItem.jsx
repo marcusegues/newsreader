@@ -9,7 +9,7 @@ var FeedSourceItem = React.createClass({
     return {clicked: false, feeds: []};
   },
 
-  componentDidMount: function() {
+  componentWillMount: function() {
     FeedItemStore.addListener(this.handleReceivedFeeds);
     this.feedSource = this.props.feedSource;
   },
@@ -30,10 +30,12 @@ var FeedSourceItem = React.createClass({
   },
 
   render: function() {
+    debugger;
     var title = this.props.feedSource.title;
+    var faviconURL = "http://www.google.com/s2/favicons?domain=" + this.feedSource.url;
     return (
       <div className="feedSource" onClick={this.handleClick}>
-        {title}
+        <img className="favicon" src={faviconURL} /> {title}
       </div>
     );
   }

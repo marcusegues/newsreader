@@ -17,7 +17,7 @@ var FeedItem = React.createClass({
     return (
       <div>
         <div className="feedTitle" onClick={this.showFeed}>
-          <span>{title}</span>    <span className="summary">{summary}</span>
+          <span>{title}</span> <span className="summary">{summary}</span> 
         </div>
         <div className="displayed-feed">
           {content}

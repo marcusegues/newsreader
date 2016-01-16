@@ -5,9 +5,9 @@ var App = React.createClass({
   render: function() {
     return (
       <div>
-      <div className="main">
-        {this.props.children}
-      </div>
+        <div className="main">
+          {this.props.children}
+        </div>
       </div>
     );
   }

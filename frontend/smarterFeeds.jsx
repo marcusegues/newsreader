@@ -3,7 +3,7 @@ var ReactDOM = require('react-dom');
 
 var App = require('./components/App');
 var Dashboard = require('./components/dashboard');
-var Welcome = require('./components/welcome');
+var Welcome = require('./components/welcomePage/welcome');
 
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;

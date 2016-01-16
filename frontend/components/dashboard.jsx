@@ -39,7 +39,6 @@ var Dashboard = React.createClass({
         <div className="mainWindows2">
           <FeedItemsIndex />
         </div>
-        <button onClick={this.handleSignOut}>Sign Out</button>
       </div>
     );
   }

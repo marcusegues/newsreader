@@ -20330,11 +20330,6 @@
 	        'div',
 	        { className: 'mainWindows2' },
 	        React.createElement(FeedItemsIndex, null)
-	      ),
-	      React.createElement(
-	        'button',
-	        { onClick: this.handleSignOut },
-	        'Sign Out'
 	      )
 	    );
 	  }
@@ -26872,7 +26867,7 @@
 	    return { clicked: false, feeds: [] };
 	  },
 	
-	  componentDidMount: function () {
+	  componentWillMount: function () {
 	    FeedItemStore.addListener(this.handleReceivedFeeds);
 	    this.feedSource = this.props.feedSource;
 	  },
@@ -26891,10 +26886,14 @@
 	  },
 	
 	  render: function () {
+	    debugger;
 	    var title = this.props.feedSource.title;
+	    var faviconURL = "http://www.google.com/s2/favicons?domain=" + this.feedSource.url;
 	    return React.createElement(
 	      'div',
 	      { className: 'feedSource', onClick: this.handleClick },
+	      React.createElement('img', { className: 'favicon', src: faviconURL }),
+	      ' ',
 	      title
 	    );
 	  }
@@ -27037,7 +27036,7 @@
 	          null,
 	          title
 	        ),
-	        '    ',
+	        ' ',
 	        React.createElement(
 	          'span',
 	          { className: 'summary' },
@@ -27090,6 +27089,7 @@
 
 	var React = __webpack_require__(1);
 	var CreateNewFeedSourceModal = __webpack_require__(196);
+	var ApiUtil = __webpack_require__(161);
 	
 	var FeedOptions = React.createClass({
 	  displayName: 'FeedOptions',
@@ -27107,14 +27107,27 @@
 	    this.setState({ modalOpen: false });
 	  },
 	
+	  handleSignOut: function () {
+	    ApiUtil.signOutUser();
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
-	        'button',
-	        { onClick: this.createNewFeedSource },
-	        'Add New Content'
+	        'div',
+	        { className: 'submit' },
+	        React.createElement(
+	          'button',
+	          { onClick: this.createNewFeedSource },
+	          'Add New Content'
+	        ),
+	        React.createElement(
+	          'button',
+	          { onClick: this.handleSignOut },
+	          'Sign Out'
+	        )
 	      ),
 	      React.createElement(CreateNewFeedSourceModal, {
 	        modalOpen: this.state.modalOpen,
@@ -27519,14 +27532,80 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement(NavigationBar, null),
 	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(WelcomeImage, null)
+	        'header',
+	        { id: 'header' },
+	        React.createElement(
+	          'h1',
+	          null,
+	          'Swissfeeds.'
+	        ),
+	        React.createElement(
+	          'p',
+	          null,
+	          "A simple newsreader for all your daily reading",
+	          React.createElement('br', null),
+	          "In need of a break? Explore beautiful",
+	          ' ',
+	          React.createElement(
+	            'a',
+	            { href: 'http://html5up.net' },
+	            'swiss mountains'
+	          ),
+	          '.'
+	        )
 	      ),
-	      React.createElement(WelcomeMessage, null),
-	      React.createElement(SigninForm, null)
+	      React.createElement(
+	        'form',
+	        { className: 'signup-form', method: 'post', action: '#' },
+	        React.createElement('input', { type: 'email', name: 'email', id: 'email', placeholder: 'Email Address' }),
+	        React.createElement('input', { type: 'password', name: 'password', id: 'password', placeholder: 'Password' }),
+	        React.createElement('input', { type: 'submit', value: 'Sign In' })
+	      ),
+	      React.createElement(
+	        'header',
+	        { id: 'bottomNav' },
+	        React.createElement(
+	          'h1',
+	          null,
+	          React.createElement(
+	            'a',
+	            { href: 'index.html' },
+	            React.createElement(
+	              'strong',
+	              null,
+	              'SF'
+	            ),
+	            ' Ramona Ambuehl, hottie'
+	          )
+	        ),
+	        React.createElement(
+	          'nav',
+	          null,
+	          React.createElement(
+	            'ul',
+	            null,
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement(
+	                'a',
+	                { href: '#', className: 'icon fa-info-circle' },
+	                'About'
+	              )
+	            )
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'footer',
+	        null,
+	        React.createElement(
+	          'a',
+	          { href: '#one', className: 'button style2 right' },
+	          'More'
+	        )
+	      )
 	    );
 	  }
 	});
@@ -27645,7 +27724,7 @@
 	        ),
 	        React.createElement(
 	          'button',
-	          { type: 'submit' },
+	          { type: 'submitSign' },
 	          'Sign In'
 	        )
 	      )

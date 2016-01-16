@@ -2,10 +2,11 @@
 <html>
 <head>
   <title>Project</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,300,100italic,300italic' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Oxygen:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900,300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+
   <%= csrf_meta_tags %>
   <script>window.CURRENT_USER_ID = <%= current_user ? current_user.id : -1 %></script>
 </head>
@@ -13,6 +14,78 @@
 
 
 <%= yield %>
+
+<script>
+  (function() {
+    "use strict";
+
+    var $body = document.querySelector('body');
+
+    var settings = {
+      images: {
+        'http://res.cloudinary.com/dolgs87zk/image/upload/v1452932055/swiss-alps-early-in-the-morning-1080p-nature-desktop-wallpaper-27460_ididgk.jpg': 'center',
+        'http://res.cloudinary.com/dolgs87zk/image/upload/v1452907456/basel_ycx01g.jpg': 'center',
+        'http://res.cloudinary.com/dolgs87zk/image/upload/v1452931788/Zurich-Switzerland-Building-Roof-Top-Sunset-Sky-Clouds-WallpapersByte-com-1920x1080_lithe2.jpg': 'center'
+      },
+      delay: 6000
+    };
+
+    var pos = 0,
+        lastPos = 0,
+        $wrapper,
+        $bgs = [],
+        $bg,
+        k,
+        v;
+
+    // Disable animations/transitions until everything's loaded.
+  		$body.classList.add('loading');
+
+  		window.addEventListener('load', function() {
+  			window.setTimeout(function() {
+  				$body.classList.remove('loading');
+  			}, 100);
+  		});
+
+    // BG wrapper
+    $wrapper = document.createElement('div');
+      $wrapper.id = 'bg';
+      $body.appendChild($wrapper);
+
+    for (k in settings.images) {
+
+      // create BG, append to BG wrapper div
+      $bg = document.createElement('div');
+        $bg.style.backgroundImage = 'url("' + k + '")';
+        $bg.style.backgroundPosition = settings.images[k];
+        $wrapper.appendChild($bg);
+
+      $bgs.push($bg);
+    }
+
+    $bgs[pos].classList.add('visible');
+    $bgs[pos].classList.add('top');
+
+    window.setInterval(function() {
+      lastPos = pos;
+      pos++;
+
+      // Wrap to beginning if necessary.
+      if (pos >= $bgs.length)
+        pos = 0;
+
+      // Swap top images.
+        $bgs[lastPos].classList.remove('top');
+        $bgs[pos].classList.add('visible');
+        $bgs[pos].classList.add('top');
+
+      // Hide last image after a short delay.
+        window.setTimeout(function() {
+          $bgs[lastPos].classList.remove('visible');
+        }, settings.delay / 2);
+    }, settings.delay);
+  })();
+</script>
 
 </body>
 </html>

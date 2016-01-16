@@ -1,0 +1,208 @@
+/* MAIN WINDOWS */
+.main {
+  position: relative;
+  z-index: 0;
+}
+
+
+.mainWindows1 {
+  box-sizing: border-box;
+  width: 15%;
+  float: left;
+  padding: 20px 0px 20px 20px;
+  background: rgba(255, 0, 0, 0.3);
+  color: #fff;
+  height: 100vh;
+  font-size: 14px;
+  font-weight: 400;
+
+}
+
+.mainWindows2 {
+  box-sizing: border-box;
+  width: 85%;
+  float: right;
+  padding: 20px 20px 20px 20px;
+}
+
+/* Feed Formatting */
+.feedSource {
+  cursor: pointer;
+}
+
+.feedTitle {
+  border-top: 1px solid rgba(255, 0, 0, 0.3);
+  cursor: pointer;
+  height: 29px;
+  font-size: 14px;
+  font-weight: 900;
+  overflow: hidden;
+}
+
+.feedTitle > span {
+  line-height: 29px;
+  vertical-align: middle;
+}
+
+.feedTitle:last-of-type {
+  border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.summary {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+
+.form-group {
+  padding: 5px;
+}
+
+/* ADD NEW FEEDSOURCE BUTTON */
+button {
+  float: left;
+  padding: 5px 10px;
+  color: #000;
+  background: #fff;
+  font-weight: 700;
+  border-radius: 5px;
+  /* box-shadow: 0 3px 0 0 #000; */
+}
+
+button:active {
+  background: #000;
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 0 3px #000;
+}
+
+button:focus {
+  outline: none;
+}
+
+.input {
+  margin: 0 0 20px 0;
+}
+
+.input > label {
+  display: block;
+  font-weight: 700;
+  padding: 0 0 5px 0;
+}
+
+.input > input,
+.input > textarea {
+  display: block;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: calc(100% - 22px);
+  border-radius: 5px;
+}
+
+.input > input:focus,
+.input > textarea:focus {
+  border-color: #0c0;
+}
+
+.input > textarea {
+  height: 120px;
+}
+
+.submit {
+  margin: 20px 0 0 0;
+  padding: 0 0 3px 0;
+}
+
+
+.submit > button {
+  position: relative;
+  padding: 10px 20px;
+  color: #000;
+  background: #fff;
+  font-weight: 700;
+  border-radius: 5px;
+  border: 1px solid #000;
+  box-shadow: 0 3px 0 0 #fff;
+}
+
+.submit > button:hover {
+  background: #000;
+  color: #fff
+}
+
+.submit > button:active {
+  top: 3px;
+  background: #0a0;
+  box-shadow: none;
+}
+
+.submit > div > strong {
+  height: 39px;
+}
+
+.button-alternative {
+  padding: 0 0 0 5px;
+}
+
+.button-alternative strong {
+  padding: 0px 0px 0px 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.button-alternative strong:hover {
+  color: #f00;
+}
+
+/* MODAL */
+.modal {
+  color: #000;
+  display: block;
+}
+
+.modal-screen {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.7);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.modal-form {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 360px;
+  padding: 20px;
+  background: #fff;
+  z-index: 3;
+  border-radius: 5px;
+  border: 1px solid #000;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 36px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  color: #f00
+}
+
+.modal-form > h1 {
+  font-size: 36px;
+  line-height: 1;
+  font-weight: 300;
+}
+
+.modal-form > p {
+  margin: 0 0 20px 0;
+}
