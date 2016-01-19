@@ -1,3 +1,4 @@
+@import 'colors';
 
 /* body */
 html, body {
@@ -26,12 +27,21 @@ body {
   -ms-flex-direction: column;
   flex-direction: column;
 
+  -moz-transition: opacity 2s ease-in-out;
+  -webkit-transition: opacity 2s ease-in-out;
+  -ms-transition: opacity 2s ease-in-out;
+  transition: all 2s ease-in-out;
+
   -moz-justify-content: center;
   -webkit-justify-content: center;
   -ms-justify-content: center;
   justify-content: center;
-  background-color: #000;
+  background-color: #fff;
   padding: 6em 4em 4em 4em;
+}
+
+body.fadeToBlack {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 body > * {
@@ -69,15 +79,42 @@ body > * {
 		-webkit-transition: opacity 2s ease-in-out;
 		-ms-transition: opacity 2s ease-in-out;
 		transition: opacity 2s ease-in-out;
-
 		height: 100%;
-		left: 0;
+    position: fixed;
+    top: 0;
+    bottom: 0;
 		opacity: 0.5;
-		position: fixed;
-		top: 0;
-		width: 100%;
 		z-index: 1;
 	}
+
+  #bg.bg1 {
+    -moz-transition: right 1s cubic-bezier(.08,.76,.46,.92);
+		-webkit-transition: right 1s cubic-bezier(.08,.76,.46,.92);
+		-ms-transition: right 1s cubic-bezier(.08,.76,.46,.92);
+		transition: right 1s cubic-bezier(.08,.76,.46,.92);
+    left: 0;
+    right: 0;
+  }
+
+  #bg.bg2 {
+    -moz-transition: left 1s cubic-bezier(.08,.76,.46,.92);
+		-webkit-transition: left 1s cubic-bezier(.08,.76,.46,.92);
+		-ms-transition: left 1s cubic-bezier(.08,.76,.46,.92);
+		transition: left 1s cubic-bezier(.08,.76,.46,.92);
+    left: 100%;
+    right: 0;
+    overflow:hidden;
+  }
+
+  #bg.bg1.arrowClicked {
+    right: 100%;
+    overflow: hidden;
+  }
+
+
+  #bg.bg2.arrowClicked {
+    left: 0%;
+  }
 
 		#bg div {
 			-moz-transition: opacity 3s ease, visibility 3s;
@@ -89,7 +126,7 @@ body > * {
 			height: 100%;
 			left: 0;
 			opacity: 0;
-			position: absolute;
+			position: fixed;
 			top: 0;
 			visibility: hidden;
 			width: 150%;
@@ -266,7 +303,7 @@ a {
 
 a:hover {
   border-bottom-color: transparent;
-  color: #1cb495 !important;
+  color: #1cb495;
   text-decoration: none;
 }
 
@@ -332,19 +369,41 @@ header p {
 
 /* Header */
 
-	#header h1 {
-		font-size: 3.25em;
-		margin: 0 0 0.55em 0;
-	}
+  #header {
+    position: relative;
+    z-index: 300;
 
-	#header p {
-		font-size: 1.35em;
-		line-height: 1.65em;
-	}
+    h1 {
+      position: relative;
+  		font-size: 3.25em;
+  		margin: 0 0 0.55em 0;
+      transform: translate(0);
 
-	#header a {
-		color: inherit;
-	}
+      -moz-transition: -moz-all 2s ease;
+      -webkit-transition: -webkit-all 2s ease;
+      -ms-transition: -ms-all 2s ease;
+      transition: all 2s ease;
+      transition-delay: 10s;
+
+  	}
+    p {
+  		font-size: 1.35em;
+  		line-height: 1.65em;
+  	}
+    a {
+  		color: inherit;
+  	}
+  }
+
+  body.loading {
+    #header > h1 {
+      transform: translateX(10em);
+    }
+  }
+
+  body.loading #header > p {
+    left: -5em;
+  }
 
 	@media screen and (max-width: 736px) {
 
@@ -384,13 +443,13 @@ header p {
   user-select: none;
 
   background: #1f2224;
+  position: fixed;
   bottom: -1em;
-  height: 4em;
   left: 0;
+  height: 4em;
   opacity: 0.7;
   line-height: 3em;
   padding: 0 1.5em;
-  position: fixed;
   width: 100%;
   z-index: 7000;
 }
@@ -485,6 +544,8 @@ header p {
 		display: none;
 	}
 
+
+
 /* Arrow Button */
   .button.style2 {
   -moz-appearance: none;
@@ -507,9 +568,11 @@ header p {
   line-height: 3.5em;
   outline: 0;
   padding: 0 2em 0 2em;
-  position: relative;
+  position: absolute;
   text-align: center;
   text-decoration: none;
+
+  right: 0;
 }
 
 .button.right {
@@ -521,7 +584,19 @@ header p {
   background-position: center center;
   background-repeat: no-repeat;
   text-indent: -10em;
+
+  transform: rotate(0);
+  -moz-transition: all 1s ease-in-out;
+  -webkit-transition: all 1s ease-in-out;
+  -ms-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+  transition-delay: 0.2s;
   overflow: hidden;
+}
+
+.button.arrowClicked {
+  transform: rotate(180deg);
+  right: calc(100% - 5em);
 }
 
 .button.style2:hover {
@@ -545,7 +620,8 @@ header p {
 /* Sign Up Button */
 input[type="submit"],
 input[type="reset"],
-input[type="button"]
+input[type="button"],
+.clickButton
  {
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -557,16 +633,17 @@ input[type="button"]
   -ms-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, opacity 0.2s ease-in-out;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, opacity 0.2s ease-in-out;
 
-  background-color: #1cb495;
+  background-color: $swissred;
+  color: #000;
   border-radius: 6px;
   border: 0;
   color: #ffffff !important;
   cursor: pointer;
   display: inline-block;
   font-weight: 700;
-  height: 2.75em;
-  line-height: 2.75em;
-  padding: 0 1.125em;
+  height: 2em;
+  line-height: 2em;
+  padding: 0 1em;
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
@@ -574,8 +651,10 @@ input[type="button"]
 
   input[type="submit"]:hover,
   input[type="reset"]:hover,
-  input[type="button"]:hover{
-    background-color: #1fcaa7;
+  input[type="button"]:hover,
+  .clickButton:hover
+  {
+    background-color: rgba(0, 0, 0, 0.3);
   }
 
   input[type="submit"]:active,
@@ -765,7 +844,32 @@ input[type="button"]
   }
 }
 
+@mixin my-mixin() {
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 1.5em 0;
+}
+/* Submessage */
+  .subMessage {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: auto 0;
+
+    -moz-transition: -moz-all 2s ease;
+    -webkit-transition: -webkit-all 2s ease;
+    -ms-transition: -ms-all 2s ease;
+    transition: all 2s ease;
+    transition-delay: 0.3s;
+  }
+
 /* Signup Form */
+  .signUp_or_learnMore {
+    height: 5em;
+		position: relative;
+    z-index: 2;
+  }
+
 
 	.signup-form {
 		display: -moz-flex;
@@ -791,6 +895,10 @@ input[type="button"]
 			margin: 0 0 0 1em;
 		}
 
+    .signup-form {
+      margin: auto 0;
+    }
+
 		.signup-form > :first-child {
 			margin: 0 0 0 0;
 		}
@@ -812,16 +920,6 @@ input[type="button"]
 
 				.signup-form > * {
 					margin: 1.25em 0 0 0;
-				}
-
-				.signup-form .message {
-					bottom: -1.5em;
-					font-size: 0.9em;
-					height: 1em;
-					left: 0;
-					line-height: inherit;
-					margin-top: 0;
-					position: absolute;
 				}
 
 		}

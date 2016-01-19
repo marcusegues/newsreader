@@ -1,8 +1,6 @@
 var React = require('react');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
-var ApiUtil = require('../util/apiUtil.jsx');
-
-
+var ApiUtil = require('../../util/apiUtil.jsx');
 
 var SignupForm = React.createClass({
   mixins: [LinkedStateMixin],
@@ -19,22 +17,11 @@ var SignupForm = React.createClass({
 
   render: function() {
     return (
-      <div className="userSignDiv">
-        <form id="userSignForm" onSubmit={this.handleSubmit}>
-          <h3>Sign Up</h3>
-          <div className="form-group">
-            <label htmlFor="signup_username">Username</label>
-            <input type="text" className="form-control input-sm" id="signup_username" valueLink={this.linkState('username')} />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="signup_password">Password</label>
-            <input type="password" className="form-control input-sm" id="signup_password" valueLink={this.linkState('password')} />
-          </div>
-
-          <button className="btn btn-primary" type="submit">Sign Up</button>
-        </form>
-      </div>
+      <form className="signup-form" onSubmit={this.handleSubmit}>
+        <input type="text" name="username" id="username" placeholder="Username" valueLink={this.linkState('username')} />
+        <input type="password" name="password" id="password" placeholder="Password" valueLink={this.linkState('password')} />
+        <input type="submit" value="Sign Up" />
+      </form>
     );
   }
 });

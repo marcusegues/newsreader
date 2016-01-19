@@ -1,13 +1,22 @@
 var React = require('react');
 var WelcomeImage = require('./welcomeImage');
-var SigninForm = require('./signinForm');
 var UserStore = require('../../stores/userStore');
 var ApiUtil = require('../../util/apiUtil');
-var NavigationBar = require('../navigationBar');
-var WelcomeMessage = require('./welcomeMessage');
-
+var WelcomeMainMessage = require('./welcomeMainMessage');
+var BottomNav = require('./bottomNav');
+var SigninForm = require('./signinForm');
+var SignupForm = require('./signupForm');
+var WelcomeBackground = require('./welcomeBackground');
+var WelcomeBackground2 = require('./WelcomeBackground2');
+var classNames = require('classnames');
 
 var Welcome = React.createClass({
+  getInitialState: function() {
+      return (
+        {arrowClicked: false}
+      );
+  },
+
   _handleNewCurrentUser: function() {
     var currentUser = UserStore.currentUser();
     if (currentUser !== undefined) {
@@ -38,35 +47,20 @@ var Welcome = React.createClass({
     this.userListener.remove();
   },
 
+  toggleArrowClicked: function() {
+    var arrowClicked = this.state.arrowClicked === true ? false : true;
+    this.setState({arrowClicked: arrowClicked});
+  },
+
   render: function() {
 
     return (
       <div>
-        <header id="header">
-          <h1>Swissfeeds.</h1>
-          <p>{"A simple newsreader for all your daily reading"}<br />
-          {"In need of a break? Explore beautiful"} <a href="http://html5up.net">swiss mountains</a>.</p>
-        </header>
-
-  			<form className="signup-form" method="post" action="#">
-  				<input type="email" name="email" id="email" placeholder="Email Address" />
-          <input type="password" name="password" id="password" placeholder="Password" />
-  				<input type="submit" value="Sign In" />
-  			</form>
-
-        <header id="bottomNav">
-          <h1><a href="index.html"><strong>SF</strong> Ramona Ambuehl, hottie</a></h1>
-          <nav>
-            <ul>
-              <li><a href="#" className="icon fa-info-circle">About</a></li>
-            </ul>
-          </nav>
-        </header>
-
-        <footer>
-          <a href="#one" className="button style2 right">More</a>
-        </footer>
-
+        <WelcomeMainMessage arrowClicked={this.state.arrowClicked}
+                            toggleArrowClicked={this.toggleArrowClicked} />
+        <BottomNav />
+        <WelcomeBackground arrowClicked={this.state.arrowClicked} />
+        <WelcomeBackground2 arrowClicked={this.state.arrowClicked}/>
       </div>
     );
   }

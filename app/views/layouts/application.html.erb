@@ -16,6 +16,18 @@
 <%= yield %>
 
 <script>
+  var $body = document.querySelector('body');
+// Disable animations/transitions until everything's loaded.
+  $body.classList.add('loading');
+
+  window.addEventListener('load', function() {
+    window.setTimeout(function() {
+      $body.classList.remove('loading');
+    }, 100);
+  });
+</script>
+
+<!-- <script>
   (function() {
     "use strict";
 
@@ -85,7 +97,7 @@
         }, settings.delay / 2);
     }, settings.delay);
   })();
-</script>
+</script> -->
 
 </body>
 </html>
