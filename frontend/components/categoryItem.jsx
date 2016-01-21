@@ -17,6 +17,7 @@ var CategoryItem = React.createClass({
     var iconClasses = classNames({
       "fa": true,
       "categoryIcon": true,
+      "verticalCenter": true,
       "fa-angle-down": this.state.categoryOpen,
       "fa-angle-right": !this.state.categoryOpen
     });

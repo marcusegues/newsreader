@@ -6,6 +6,14 @@ var UserStore = require('../stores/userStore');
 var FeedOptions = require('./feedOptions');
 
 var Dashboard = React.createClass({
+  getInitialState: function() {
+    return (
+      {
+        pinned: true,
+        show: true
+      }
+    );
+  },
 
   componentDidMount: function() {
   },
@@ -33,6 +41,7 @@ var Dashboard = React.createClass({
     return (
       <div className="loggedInPage">
         <div className="viewFeedSources">
+          <div id="pinButton">{this.state.pinned ? "Unpin" : "Pin" }</div>
           <CategoriesIndex />
           <FeedOptions />
         </div>

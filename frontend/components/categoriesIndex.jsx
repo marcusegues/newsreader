@@ -6,7 +6,9 @@ var CategoryItem = require('./categoryItem');
 
 var CategoriesIndex = React.createClass({
   getInitialState: function() {
-    return {feedSources: []};
+    return {
+            feedSources: []
+          };
   },
 
   componentDidMount: function() {
@@ -37,7 +39,7 @@ var CategoriesIndex = React.createClass({
     });
 
     return (
-      <div>
+      <div id="categoriesIndex">
         {categoriesWithFeedSources}
       </div>
     );

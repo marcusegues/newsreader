@@ -20294,6 +20294,13 @@
 	var Dashboard = React.createClass({
 	  displayName: 'Dashboard',
 	
+	  getInitialState: function () {
+	    return {
+	      pinned: true,
+	      show: true
+	    };
+	  },
+	
 	  componentDidMount: function () {},
 	
 	  componentWillMount: function () {
@@ -20322,6 +20329,11 @@
 	      React.createElement(
 	        'div',
 	        { className: 'viewFeedSources' },
+	        React.createElement(
+	          'div',
+	          { id: 'pinButton' },
+	          this.state.pinned ? "Unpin" : "Pin"
+	        ),
 	        React.createElement(CategoriesIndex, null),
 	        React.createElement(FeedOptions, null)
 	      ),
@@ -20350,7 +20362,9 @@
 	  displayName: 'CategoriesIndex',
 	
 	  getInitialState: function () {
-	    return { feedSources: [] };
+	    return {
+	      feedSources: []
+	    };
 	  },
 	
 	  componentDidMount: function () {
@@ -20382,7 +20396,7 @@
 	
 	    return React.createElement(
 	      'div',
-	      null,
+	      { id: 'categoriesIndex' },
 	      categoriesWithFeedSources
 	    );
 	  }
@@ -26966,6 +26980,7 @@
 	    var iconClasses = classNames({
 	      "fa": true,
 	      "categoryIcon": true,
+	      "verticalCenter": true,
 	      "fa-angle-down": this.state.categoryOpen,
 	      "fa-angle-right": !this.state.categoryOpen
 	    });
