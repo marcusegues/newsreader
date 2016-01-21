@@ -11,7 +11,6 @@ FeedItemStore.__onDispatch = function(payload) {
     case FeedItemConstants.RECEIVED_FEEDS:
       _feeds[payload.feedSourceId] = payload.feeds;
       _lastReceivedId = payload.feedSourceId;
-      debugger;
       FeedItemStore.__emitChange();
       break;
     case FeedItemConstants.CHANGE_DISPLAYED_FEEDS:

@@ -5,30 +5,99 @@
 }
 
 
-.mainWindows1 {
+.viewFeedSources {
   box-sizing: border-box;
-  width: 15%;
+  width: 50%;
   float: left;
-  padding: 20px 0px 20px 20px;
-  background: rgba(255, 0, 0, 0.3);
+  padding: 2em;
+  background: rgb(42,43,47);
   color: #fff;
   height: 100vh;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 300;
 
 }
 
-.mainWindows2 {
+.viewFeeds {
   box-sizing: border-box;
-  width: 85%;
+  width: 50%;
   float: right;
   padding: 20px 20px 20px 20px;
 }
 
-/* Feed Formatting */
-.feedSource {
+/* FeedSourceItem */
+.feedSourceItem, .categoryItem {
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+
+  -moz-flex-direction: row;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+
   cursor: pointer;
+  position: relative;
+  height: 2em;
+  width: 100%;
+  align-items: flex-start;
 }
+
+.category {
+  margin-bottom: 0.5em;
+}
+
+.categoryItem {
+  color: rgb(190,190,192);
+}
+
+.feedSourceItem {
+  color: rgb(200,200,201);
+}
+
+
+.categoryIcon, .feedSourceItem > *, .categoryItem > * {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.categoryIcon {
+  width: 1.5em;
+  color: rgb(84,85,88);
+}
+
+.categoryIcon:hover {
+  color: rgb(190,190,192)
+}
+
+#categoryTitle {
+  font-weight: 500;
+}
+
+.categoryItem > * {
+  padding: 0.5em;
+}
+
+.feedSourceItem > * {
+  padding: 0.4em;
+}
+
+.feedSourceItem{
+  padding-left: 1.6em;
+}
+
+.feedSourceItemCount {
+  position: absolute;
+  right: 0;
+  font-size: 10px
+}
+
+
+
+/* Feed Formatting */
 
 .feedTitle {
   border-top: 1px solid rgba(255, 0, 0, 0.3);

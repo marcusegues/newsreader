@@ -16,6 +16,18 @@ var populate_feedSources = function(feedSources) {
   });
 };
 
+FeedSourceStore.getUniqueCategories = function(feedSources) {
+  var unique = [];
+
+  feedSources.forEach(function(feedSource, idx) {
+    if (unique.indexOf(feedSource.category) === -1) {
+      unique.push(feedSource.category);
+    }
+  });
+
+  return unique;
+};
+
 var addCreatedFeedSourceTo_feedSources = function(createdFeedSource) {
   var category = createdFeedSource.category;
   if (_feedSources[category] === undefined) {
@@ -41,16 +53,5 @@ FeedSourceStore.all = function() {
   return _feedSources;
 };
 
-FeedSourceStore.getUniqueCategories = function(feedSources) {
-  var unique = [];
-
-  feedSources.forEach(function(feedSource, idx) {
-    if (unique.indexOf(feedSource.category) === -1) {
-      unique.push(feedSource.category);
-    }
-  });
-
-  return unique;
-};
 
 module.exports = FeedSourceStore;

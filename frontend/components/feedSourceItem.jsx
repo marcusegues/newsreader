@@ -14,13 +14,15 @@ var FeedSourceItem = React.createClass({
     this.feedSource = this.props.feedSource;
   },
 
-  handleReceivedFeeds: function(arg) {
-    if (this.feedSource.Id === FeedItemStore.lastReceivedId)
+  handleReceivedFeeds: function() {
+    debugger;
+    if (this.feedSource.id === FeedItemStore.lastReceivedId())
       this.setState({feeds: FeedItemStore.all(this.feedSource.id)});
 
   },
 
   handleClick: function() {
+    debugger;
     if (this.state.clicked === false) {
       ApiUtil.fetchFeedItems(this.feedSource.id);
       this.setState({clicked: true});
@@ -30,12 +32,13 @@ var FeedSourceItem = React.createClass({
   },
 
   render: function() {
-    debugger;
     var title = this.props.feedSource.title;
     var faviconURL = "http://www.google.com/s2/favicons?domain=" + this.feedSource.url;
     return (
-      <div className="feedSource" onClick={this.handleClick}>
-        <img className="favicon" src={faviconURL} /> {title}
+      <div className="feedSourceItem" onClick={this.handleClick}>
+        <div><img src={faviconURL} /></div>
+        <span className="feedSourceItemTitle">{title}</span>
+        <span className="feedSourceItemCount">{this.state.feeds.length}</span>
       </div>
     );
   }

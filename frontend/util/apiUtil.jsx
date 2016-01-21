@@ -64,7 +64,6 @@ var ApiUtil = {
       method: 'GET',
       url:  'api/feeds/' + feedSourceId,
       success: function(feeds) {
-        debugger;
         ApiActions.receiveFeeds(feeds, feedSourceId);
       }
     });

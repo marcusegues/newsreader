@@ -31,12 +31,12 @@ var Dashboard = React.createClass({
 
   render: function() {
     return (
-      <div className="mainWindows group">
-        <div className="mainWindows1">
+      <div className="loggedInPage">
+        <div className="viewFeedSources">
           <CategoriesIndex />
           <FeedOptions />
         </div>
-        <div className="mainWindows2">
+        <div className="viewFeeds">
           <FeedItemsIndex />
         </div>
       </div>

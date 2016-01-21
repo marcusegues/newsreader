@@ -21,8 +21,9 @@ var WelcomeBackground = React.createClass({
   componentDidMount: function() {
     setTimeout(function() {
       this.setState({currentVisible: [0]});
-      var $body = document.querySelector('body');
-      $body.classList.add('fadeToBlack');
+      var $welcomeBody = document.querySelector('#welcomeBody');
+      debugger;
+      $welcomeBody.classList.add('fadeToBlack');
     }.bind(this), 1);
 
     setInterval(function() {

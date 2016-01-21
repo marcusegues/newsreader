@@ -4,11 +4,10 @@ var ApiUtil = require('../../util/apiUtil');
 
 var WelcomeMainMessage = require('./welcomeMainMessage');
 var BottomNav = require('./bottomNav');
-var SigninForm = require('./signinForm');
-var SignupForm = require('./signupForm');
 var WelcomeBackground = require('./welcomeBackground');
 var WelcomeBackground2 = require('./WelcomeBackground2');
-
+var SignUpForm = require('./signupForm');
+var SignInForm = require('./signinForm');
 var classNames = require('classnames');
 
 var Welcome = React.createClass({

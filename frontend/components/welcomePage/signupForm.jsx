@@ -26,7 +26,7 @@ var SignupForm = React.createClass({
   render: function() {
     return (
       this.props.visible === false ? null :
-      <div>
+      <div className="userSignForm">
         <form className="signup-form" onSubmit={this.handleSubmit}>
           <p>Create New User</p>
           <div className="inputIcon">

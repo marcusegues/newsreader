@@ -19856,7 +19856,6 @@
 	      method: 'GET',
 	      url: 'api/feeds/' + feedSourceId,
 	      success: function (feeds) {
-	        debugger;
 	        ApiActions.receiveFeeds(feeds, feedSourceId);
 	      }
 	    });
@@ -20319,16 +20318,16 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { className: 'mainWindows group' },
+	      { className: 'loggedInPage' },
 	      React.createElement(
 	        'div',
-	        { className: 'mainWindows1' },
+	        { className: 'viewFeedSources' },
 	        React.createElement(CategoriesIndex, null),
 	        React.createElement(FeedOptions, null)
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'mainWindows2' },
+	        { className: 'viewFeeds' },
 	        React.createElement(FeedItemsIndex, null)
 	      )
 	    );
@@ -20354,10 +20353,6 @@
 	    return { feedSources: [] };
 	  },
 	
-	  componentWillMount: function () {
-	    // console.log("Mounted categories index");
-	  },
-	
 	  componentDidMount: function () {
 	    this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
 	    ApiUtil.fetchUserFeedSources();
@@ -20380,13 +20375,8 @@
 	      });
 	      return React.createElement(
 	        'div',
-	        { key: idx_cat },
-	        React.createElement(CategoryItem, { title: category }),
-	        React.createElement(
-	          'ul',
-	          null,
-	          list
-	        )
+	        { className: 'category', key: idx_cat },
+	        React.createElement(CategoryItem, { title: category, feedSources: list })
 	      );
 	    });
 	
@@ -20422,6 +20412,18 @@
 	  });
 	};
 	
+	FeedSourceStore.getUniqueCategories = function (feedSources) {
+	  var unique = [];
+	
+	  feedSources.forEach(function (feedSource, idx) {
+	    if (unique.indexOf(feedSource.category) === -1) {
+	      unique.push(feedSource.category);
+	    }
+	  });
+	
+	  return unique;
+	};
+	
 	var addCreatedFeedSourceTo_feedSources = function (createdFeedSource) {
 	  var category = createdFeedSource.category;
 	  if (_feedSources[category] === undefined) {
@@ -20445,18 +20447,6 @@
 	
 	FeedSourceStore.all = function () {
 	  return _feedSources;
-	};
-	
-	FeedSourceStore.getUniqueCategories = function (feedSources) {
-	  var unique = [];
-	
-	  feedSources.forEach(function (feedSource, idx) {
-	    if (unique.indexOf(feedSource.category) === -1) {
-	      unique.push(feedSource.category);
-	    }
-	  });
-	
-	  return unique;
 	};
 	
 	module.exports = FeedSourceStore;
@@ -26872,11 +26862,13 @@
 	    this.feedSource = this.props.feedSource;
 	  },
 	
-	  handleReceivedFeeds: function (arg) {
-	    if (this.feedSource.Id === FeedItemStore.lastReceivedId) this.setState({ feeds: FeedItemStore.all(this.feedSource.id) });
+	  handleReceivedFeeds: function () {
+	    debugger;
+	    if (this.feedSource.id === FeedItemStore.lastReceivedId()) this.setState({ feeds: FeedItemStore.all(this.feedSource.id) });
 	  },
 	
 	  handleClick: function () {
+	    debugger;
 	    if (this.state.clicked === false) {
 	      ApiUtil.fetchFeedItems(this.feedSource.id);
 	      this.setState({ clicked: true });
@@ -26886,15 +26878,26 @@
 	  },
 	
 	  render: function () {
-	    debugger;
 	    var title = this.props.feedSource.title;
 	    var faviconURL = "http://www.google.com/s2/favicons?domain=" + this.feedSource.url;
 	    return React.createElement(
 	      'div',
-	      { className: 'feedSource', onClick: this.handleClick },
-	      React.createElement('img', { className: 'favicon', src: faviconURL }),
-	      ' ',
-	      title
+	      { className: 'feedSourceItem', onClick: this.handleClick },
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('img', { src: faviconURL })
+	      ),
+	      React.createElement(
+	        'span',
+	        { className: 'feedSourceItemTitle' },
+	        title
+	      ),
+	      React.createElement(
+	        'span',
+	        { className: 'feedSourceItemCount' },
+	        this.state.feeds.length
+	      )
 	    );
 	  }
 	});
@@ -26918,7 +26921,6 @@
 	    case FeedItemConstants.RECEIVED_FEEDS:
 	      _feeds[payload.feedSourceId] = payload.feeds;
 	      _lastReceivedId = payload.feedSourceId;
-	      debugger;
 	      FeedItemStore.__emitChange();
 	      break;
 	    case FeedItemConstants.CHANGE_DISPLAYED_FEEDS:
@@ -26946,15 +26948,46 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var classNames = __webpack_require__(262);
 	
 	var CategoryItem = React.createClass({
 	  displayName: 'CategoryItem',
 	
+	  getInitialState: function () {
+	    return { categoryOpen: true };
+	  },
+	
+	  handleClick: function () {
+	    var newState = this.state.categoryOpen ? false : true;
+	    this.setState({ categoryOpen: newState });
+	  },
+	
 	  render: function () {
+	    var iconClasses = classNames({
+	      "fa": true,
+	      "categoryIcon": true,
+	      "fa-angle-down": this.state.categoryOpen,
+	      "fa-angle-right": !this.state.categoryOpen
+	    });
+	
 	    return React.createElement(
 	      'div',
 	      null,
-	      this.props.title
+	      React.createElement(
+	        'div',
+	        { className: 'categoryItem' },
+	        React.createElement('span', { onClick: this.handleClick, className: iconClasses }),
+	        React.createElement(
+	          'div',
+	          { id: "categoryTitle" },
+	          this.props.title
+	        )
+	      ),
+	      React.createElement(
+	        'ul',
+	        null,
+	        this.state.categoryOpen ? this.props.feedSources : null
+	      )
 	    );
 	  }
 	
@@ -27494,11 +27527,10 @@
 	
 	var WelcomeMainMessage = __webpack_require__(204);
 	var BottomNav = __webpack_require__(205);
-	var SigninForm = __webpack_require__(206);
-	var SignupForm = __webpack_require__(207);
 	var WelcomeBackground = __webpack_require__(209);
 	var WelcomeBackground2 = __webpack_require__(263);
-	
+	var SignUpForm = __webpack_require__(207);
+	var SignInForm = __webpack_require__(206);
 	var classNames = __webpack_require__(262);
 	
 	var Welcome = React.createClass({
@@ -27752,7 +27784,7 @@
 	  render: function () {
 	    return this.props.visible === false ? null : React.createElement(
 	      'div',
-	      null,
+	      { className: 'userSignForm' },
 	      React.createElement(
 	        'form',
 	        { className: 'signup-form', onSubmit: this.handleSubmit },
@@ -27828,7 +27860,7 @@
 	  render: function () {
 	    return this.props.visible === false ? null : React.createElement(
 	      'div',
-	      null,
+	      { className: 'userSignForm' },
 	      React.createElement(
 	        'form',
 	        { className: 'signup-form', onSubmit: this.handleSubmit },
@@ -27928,8 +27960,9 @@
 	  componentDidMount: function () {
 	    setTimeout((function () {
 	      this.setState({ currentVisible: [0] });
-	      var $body = document.querySelector('body');
-	      $body.classList.add('fadeToBlack');
+	      var $welcomeBody = document.querySelector('#welcomeBody');
+	      debugger;
+	      $welcomeBody.classList.add('fadeToBlack');
 	    }).bind(this), 1);
 	
 	    setInterval((function () {

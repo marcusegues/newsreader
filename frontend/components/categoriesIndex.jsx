@@ -9,10 +9,6 @@ var CategoriesIndex = React.createClass({
     return {feedSources: []};
   },
 
-  componentWillMount: function() {
-    // console.log("Mounted categories index");
-  },
-
   componentDidMount: function() {
     this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
     ApiUtil.fetchUserFeedSources();
@@ -34,11 +30,8 @@ var CategoriesIndex = React.createClass({
         return <FeedSourceItem key={idx_fs} feedSource={feedSource} />;
       });
       return (
-        <div key={idx_cat}>
-          <CategoryItem title={category}/>
-          <ul>
-            {list}
-          </ul>
+        <div className="category" key={idx_cat}>
+          <CategoryItem title={category} feedSources={list} />
         </div>
       );
     });
