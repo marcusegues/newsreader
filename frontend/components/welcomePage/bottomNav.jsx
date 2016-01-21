@@ -1,6 +1,9 @@
 var React = require('react');
 
 var BottomNav = React.createClass({
+  openSignInForm: function() {
+    this.props.toggleSignInModalVisible(false);
+  },
 
   render: function() {
     return (
@@ -9,6 +12,7 @@ var BottomNav = React.createClass({
         <nav>
           <ul>
               <li><a href="#" className="icon fa-info-circle">About</a></li>
+              <li><a onClick={this.openSignInForm}>Sign In</a></li>
           </ul>
         </nav>
       </header>

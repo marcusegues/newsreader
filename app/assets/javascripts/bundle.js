@@ -27489,22 +27489,50 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var WelcomeImage = __webpack_require__(203);
 	var UserStore = __webpack_require__(194);
 	var ApiUtil = __webpack_require__(161);
+	
 	var WelcomeMainMessage = __webpack_require__(204);
 	var BottomNav = __webpack_require__(205);
 	var SigninForm = __webpack_require__(206);
 	var SignupForm = __webpack_require__(207);
 	var WelcomeBackground = __webpack_require__(209);
 	var WelcomeBackground2 = __webpack_require__(263);
+	
 	var classNames = __webpack_require__(262);
 	
 	var Welcome = React.createClass({
 	  displayName: 'Welcome',
 	
 	  getInitialState: function () {
-	    return { arrowClicked: false };
+	    return { arrowClicked: false,
+	      signUpModalVisible: false,
+	      signInModalVisible: false
+	    };
+	  },
+	
+	  toggleSignUpModalVisible: function (showSignIn) {
+	    var newState = {
+	      signUpModalVisible: this.state.signUpModalVisible ? false : true
+	    };
+	
+	    if (showSignIn) {
+	      newState["signInModalVisible"] = this.state.signInModalVisible ? false : true;
+	    }
+	
+	    this.setState(newState);
+	  },
+	
+	  toggleSignInModalVisible: function (showSignUp) {
+	    var newState = {
+	      signInModalVisible: this.state.signInModalVisible ? false : true
+	    };
+	
+	    if (showSignUp) {
+	      newState["signUpModalVisible"] = this.state.signUpModalVisible ? false : true;
+	    }
+	
+	    this.setState(newState);
 	  },
 	
 	  _handleNewCurrentUser: function () {
@@ -27544,12 +27572,15 @@
 	
 	    return React.createElement(
 	      'div',
-	      null,
+	      { id: 'welcomeBody' },
 	      React.createElement(WelcomeMainMessage, { arrowClicked: this.state.arrowClicked,
-	        toggleArrowClicked: this.toggleArrowClicked }),
-	      React.createElement(BottomNav, null),
+	        toggleArrowClicked: this.toggleArrowClicked,
+	        toggleSignUpModalVisible: this.toggleSignUpModalVisible }),
+	      React.createElement(BottomNav, { toggleSignInModalVisible: this.toggleSignInModalVisible }),
 	      React.createElement(WelcomeBackground, { arrowClicked: this.state.arrowClicked }),
-	      React.createElement(WelcomeBackground2, { arrowClicked: this.state.arrowClicked })
+	      React.createElement(WelcomeBackground2, { arrowClicked: this.state.arrowClicked }),
+	      React.createElement(SignUpForm, { visible: this.state.signUpModalVisible, closeModal: this.toggleSignUpModalVisible }),
+	      React.createElement(SignInForm, { visible: this.state.signInModalVisible, closeModal: this.toggleSignInModalVisible })
 	    );
 	  }
 	});
@@ -27557,68 +27588,21 @@
 	module.exports = Welcome;
 
 /***/ },
-/* 203 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var WelcomeImage = React.createClass({
-	  displayName: "WelcomeImage",
-	
-	  getInitialState: function () {
-	    return { currentVideoIdx: 0, signInOpen: false };
-	  },
-	
-	  componentWillMount: function () {
-	    console.log("willmount");
-	    // this.videoSource = new Array();
-	    // this.videoSource[0]='http://res.cloudinary.com/dolgs87zk/video/upload/v1451026712/MyFirstMovie_kyjyuy.mp4';
-	    // // this.videoSource[1]='http://res.cloudinary.com/dolgs87zk/video/upload/v1450996737/Swiss_Time_360_jbeyuy.mp4';
-	    // this.videoCount = this.videoSource.length;
-	  },
-	
-	  componentDidMount: function () {
-	    console.log("didmount");
-	  },
-	
-	  handleVideoEnd: function () {
-	    console.log("ended");
-	    // alert("hello");
-	    // var i = this.state.currentVideoIdx + 1;
-	    // if (i === (this.videoCount)) {
-	    //   i = 0;
-	    // }
-	    // document.getElementById("fullbgvideo").setAttribute("src", this.videoSource[i]);
-	    // document.getElementById("fullbgvideo").load();
-	    // this.setState({currentVideoIdx: i});
-	  },
-	
-	  render: function () {
-	
-	    return React.createElement(
-	      "div",
-	      null,
-	      React.createElement(
-	        "div",
-	        { className: "welcome" },
-	        React.createElement("img", { className: "image", src: "http://res.cloudinary.com/dolgs87zk/image/upload/v1451911464/matterhorn_clear_z2siu2.jpg" })
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = WelcomeImage;
-
-/***/ },
+/* 203 */,
 /* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var classNames = __webpack_require__(262);
 	var RightArrow = __webpack_require__(208);
+	var SignUpForm = __webpack_require__(207);
 	
 	var WelcomeMainMessage = React.createClass({
 	  displayName: 'WelcomeMainMessage',
+	
+	  openSignUpForm: function () {
+	    this.props.toggleSignUpModalVisible(false);
+	  },
 	
 	  render: function () {
 	    var divClasses = classNames({
@@ -27631,7 +27615,7 @@
 	
 	    return React.createElement(
 	      'header',
-	      { id: 'header' },
+	      { className: transitions, id: 'header' },
 	      React.createElement(
 	        'h1',
 	        null,
@@ -27642,14 +27626,13 @@
 	        null,
 	        "A simple newsreader for all your daily reading",
 	        React.createElement('br', null),
-	        "In need of a break? Explore beautiful",
+	        "Need a break? Discover beautiful",
 	        ' ',
 	        React.createElement(
 	          'a',
-	          { href: 'http://html5up.net' },
+	          null,
 	          'swiss mountains'
-	        ),
-	        '.'
+	        )
 	      ),
 	      React.createElement(
 	        'div',
@@ -27659,7 +27642,7 @@
 	          { className: 'subMessage' },
 	          React.createElement(
 	            'a',
-	            { className: 'clickButton', onclick: this.handleClick },
+	            { className: 'clickButton', onClick: this.openSignUpForm },
 	            'Sign up'
 	          )
 	        ),
@@ -27680,6 +27663,10 @@
 	
 	var BottomNav = React.createClass({
 	  displayName: "BottomNav",
+	
+	  openSignInForm: function () {
+	    this.props.toggleSignInModalVisible(false);
+	  },
 	
 	  render: function () {
 	    return React.createElement(
@@ -27713,6 +27700,15 @@
 	              { href: "#", className: "icon fa-info-circle" },
 	              "About"
 	            )
+	          ),
+	          React.createElement(
+	            "li",
+	            null,
+	            React.createElement(
+	              "a",
+	              { onClick: this.openSignInForm },
+	              "Sign In"
+	            )
 	          )
 	        )
 	      )
@@ -27741,50 +27737,57 @@
 	
 	  handleSubmit: function (e) {
 	    e.preventDefault();
-	    var signInForm = document.getElementById("userSignForm");
-	    var inner = signInForm.getElementsByClassName("userSignOption")[0].innerHTML;
-	    var user = Object.assign({}, this.state);
-	    if (inner === "Sign In") {
-	      ApiUtil.signinUser(user);
-	    } else {
-	      ApiUtil.createUser(user);
-	    }
+	    var newUser = Object.assign({}, this.state);
+	    ApiUtil.signinUser(newUser);
+	  },
+	
+	  closeSignIn: function () {
+	    this.props.closeModal(false);
+	  },
+	
+	  switchToSignUp: function () {
+	    this.props.closeModal(true);
 	  },
 	
 	  render: function () {
-	    return React.createElement(
+	    return this.props.visible === false ? null : React.createElement(
 	      'div',
-	      { className: 'userSignDiv' },
+	      null,
 	      React.createElement(
 	        'form',
-	        { id: 'userSignForm', onSubmit: this.handleSubmit },
-	        React.createElement('h3', { className: 'userSignOption' }),
+	        { className: 'signup-form', onSubmit: this.handleSubmit },
 	        React.createElement(
-	          'div',
-	          { className: 'input' },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'signin_username' },
-	            'Username'
-	          ),
-	          React.createElement('input', { type: 'text', id: 'signin_username', valueLink: this.linkState('username') })
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'input' },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'signin_password' },
-	            'Password'
-	          ),
-	          React.createElement('input', { type: 'password', id: 'signin_password', valueLink: this.linkState('password') })
-	        ),
-	        React.createElement(
-	          'button',
-	          { type: 'submitSign' },
+	          'p',
+	          null,
 	          'Sign In'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'inputIcon' },
+	          React.createElement('span', { className: 'fa fa-user' }),
+	          React.createElement('input', { type: 'text', name: 'username', id: 'username', placeholder: 'Username', valueLink: this.linkState('username') })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'inputIcon' },
+	          React.createElement('span', { className: 'fa fa-key' }),
+	          React.createElement('input', { type: 'password', name: 'password', id: 'password', placeholder: 'Password', valueLink: this.linkState('password') })
+	        ),
+	        React.createElement('input', { className: 'formSubmit', type: 'submit', value: 'Sign In' }),
+	        React.createElement('span', { className: 'lineSeparator' }),
+	        React.createElement(
+	          'p',
+	          null,
+	          "Don't have an account?",
+	          ' ',
+	          React.createElement(
+	            'a',
+	            { onClick: this.switchToSignUp },
+	            'Sign up'
+	          )
 	        )
-	      )
+	      ),
+	      React.createElement('div', { className: 'modal-screen', onClick: this.closeSignIn })
 	    );
 	  }
 	});
@@ -27814,13 +27817,52 @@
 	    ApiUtil.createUser(newUser);
 	  },
 	
+	  closeSignUp: function () {
+	    this.props.closeModal(false);
+	  },
+	
+	  switchToSignIn: function () {
+	    this.props.closeModal(true);
+	  },
+	
 	  render: function () {
-	    return React.createElement(
-	      'form',
-	      { className: 'signup-form', onSubmit: this.handleSubmit },
-	      React.createElement('input', { type: 'text', name: 'username', id: 'username', placeholder: 'Username', valueLink: this.linkState('username') }),
-	      React.createElement('input', { type: 'password', name: 'password', id: 'password', placeholder: 'Password', valueLink: this.linkState('password') }),
-	      React.createElement('input', { type: 'submit', value: 'Sign Up' })
+	    return this.props.visible === false ? null : React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { className: 'signup-form', onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'p',
+	          null,
+	          'Create New User'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'inputIcon' },
+	          React.createElement('span', { className: 'fa fa-user' }),
+	          React.createElement('input', { type: 'text', name: 'username', id: 'username', placeholder: 'Username', valueLink: this.linkState('username') })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'inputIcon' },
+	          React.createElement('span', { className: 'fa fa-key' }),
+	          React.createElement('input', { type: 'password', name: 'password', id: 'password', placeholder: 'Password', valueLink: this.linkState('password') })
+	        ),
+	        React.createElement('input', { className: 'formSubmit', type: 'submit', value: 'Sign Up' }),
+	        React.createElement('span', { className: 'lineSeparator' }),
+	        React.createElement(
+	          'p',
+	          null,
+	          'Already have an account? ',
+	          React.createElement(
+	            'a',
+	            { onClick: this.switchToSignIn },
+	            'Sign in'
+	          )
+	        )
+	      ),
+	      React.createElement('div', { className: 'modal-screen', onClick: this.closeSignUp })
 	    );
 	  }
 	});
@@ -32790,9 +32832,9 @@
 	  getInitialState: function () {
 	    return {
 	      images: {
-	        'http://res.cloudinary.com/dolgs87zk/image/upload/v1452902593/water_fjx7xb.jpg': 'center',
-	        'http://res.cloudinary.com/dolgs87zk/image/upload/v1452902595/beach_ohsamg.jpg': 'center',
-	        'http://res.cloudinary.com/dolgs87zk/image/upload/v1452931954/swiss_alps_savognin-wallpaper-1366x768_rjkajn.jpg': 'center'
+	        'http://res.cloudinary.com/dolgs87zk/image/upload/v1453240570/swiss_alps_night_sky-1920x1080_q0xhof.jpg': 'center',
+	        'http://res.cloudinary.com/dolgs87zk/image/upload/v1453240221/swiss_alps_lake-1600x900_1_acal0r.jpg': 'center',
+	        'http://res.cloudinary.com/dolgs87zk/image/upload/v1453241145/swiss_alps-1280x800_nqssim.jpg': 'center'
 	      },
 	      delay: 6000,
 	      currentVisible: [],
@@ -32823,7 +32865,6 @@
 	  },
 	
 	  render: function () {
-	    debugger;
 	    var backgrounds = Object.keys(this.state.images).map((function (imageURL, i) {
 	      return React.createElement(Background, { visible: this.state.currentVisible.indexOf(i) != -1,
 	        topIm: this.state.currentTop === i,

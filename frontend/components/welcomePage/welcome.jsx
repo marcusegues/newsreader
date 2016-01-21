@@ -1,20 +1,48 @@
 var React = require('react');
-var WelcomeImage = require('./welcomeImage');
 var UserStore = require('../../stores/userStore');
 var ApiUtil = require('../../util/apiUtil');
+
 var WelcomeMainMessage = require('./welcomeMainMessage');
 var BottomNav = require('./bottomNav');
 var SigninForm = require('./signinForm');
 var SignupForm = require('./signupForm');
 var WelcomeBackground = require('./welcomeBackground');
 var WelcomeBackground2 = require('./WelcomeBackground2');
+
 var classNames = require('classnames');
 
 var Welcome = React.createClass({
   getInitialState: function() {
       return (
-        {arrowClicked: false}
-      );
+        {arrowClicked: false,
+         signUpModalVisible: false,
+         signInModalVisible: false
+       }
+     );
+  },
+
+  toggleSignUpModalVisible: function(showSignIn) {
+    var newState = {
+      signUpModalVisible: this.state.signUpModalVisible ? false : true,
+    };
+
+    if (showSignIn) {
+      newState["signInModalVisible"] = this.state.signInModalVisible ? false : true;
+    }
+
+    this.setState(newState);
+  },
+
+  toggleSignInModalVisible: function(showSignUp) {
+    var newState = {
+      signInModalVisible: this.state.signInModalVisible ? false : true,
+    };
+
+    if (showSignUp) {
+      newState["signUpModalVisible"] = this.state.signUpModalVisible ? false : true;
+    }
+
+    this.setState(newState);
   },
 
   _handleNewCurrentUser: function() {
@@ -55,12 +83,15 @@ var Welcome = React.createClass({
   render: function() {
 
     return (
-      <div>
+      <div id="welcomeBody">
         <WelcomeMainMessage arrowClicked={this.state.arrowClicked}
-                            toggleArrowClicked={this.toggleArrowClicked} />
-        <BottomNav />
+                            toggleArrowClicked={this.toggleArrowClicked}
+                            toggleSignUpModalVisible={this.toggleSignUpModalVisible} />
+        <BottomNav toggleSignInModalVisible={this.toggleSignInModalVisible}/>
         <WelcomeBackground arrowClicked={this.state.arrowClicked} />
         <WelcomeBackground2 arrowClicked={this.state.arrowClicked}/>
+        <SignUpForm visible={this.state.signUpModalVisible} closeModal={this.toggleSignUpModalVisible} />
+        <SignInForm visible={this.state.signInModalVisible} closeModal={this.toggleSignInModalVisible} />
       </div>
     );
   }

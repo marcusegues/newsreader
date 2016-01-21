@@ -7,9 +7,9 @@ var WelcomeBackground2 = React.createClass({
     return (
         {
           images: {
-            'http://res.cloudinary.com/dolgs87zk/image/upload/v1452902593/water_fjx7xb.jpg': 'center',
-            'http://res.cloudinary.com/dolgs87zk/image/upload/v1452902595/beach_ohsamg.jpg': 'center',
-            'http://res.cloudinary.com/dolgs87zk/image/upload/v1452931954/swiss_alps_savognin-wallpaper-1366x768_rjkajn.jpg': 'center'
+            'http://res.cloudinary.com/dolgs87zk/image/upload/v1453240570/swiss_alps_night_sky-1920x1080_q0xhof.jpg': 'center',
+            'http://res.cloudinary.com/dolgs87zk/image/upload/v1453240221/swiss_alps_lake-1600x900_1_acal0r.jpg': 'center',
+            'http://res.cloudinary.com/dolgs87zk/image/upload/v1453241145/swiss_alps-1280x800_nqssim.jpg': 'center'
           },
           delay: 6000,
           currentVisible: [],
@@ -41,7 +41,6 @@ var WelcomeBackground2 = React.createClass({
   },
 
   render: function() {
-    debugger;
     var backgrounds = Object.keys(this.state.images).map(function(imageURL, i) {
       return (
         <Background visible={this.state.currentVisible.indexOf(i) != -1}

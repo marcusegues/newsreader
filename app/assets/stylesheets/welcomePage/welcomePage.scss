@@ -303,7 +303,7 @@ a {
 
 a:hover {
   border-bottom-color: transparent;
-  color: #1cb495;
+  color: red;
   text-decoration: none;
 }
 
@@ -371,39 +371,43 @@ header p {
 
   #header {
     position: relative;
-    z-index: 300;
+    z-index: 8;
 
     h1 {
       position: relative;
   		font-size: 3.25em;
   		margin: 0 0 0.55em 0;
-      transform: translate(0);
+      opacity: 1;
 
-      -moz-transition: -moz-all 2s ease;
-      -webkit-transition: -webkit-all 2s ease;
-      -ms-transition: -ms-all 2s ease;
-      transition: all 2s ease;
-      transition-delay: 10s;
-
+      -moz-transition: -moz-opacity 2s ease;
+      -webkit-transition: -webkit-opacity 2s ease;
+      -ms-transition: -ms-opacity 2s ease;
+      transition: opacity 1s ease;
+      transition-delay: 0.5s;
   	}
     p {
   		font-size: 1.35em;
   		line-height: 1.65em;
+      -moz-transition: -moz-opacity 2s ease;
+      -webkit-transition: -webkit-opacity 2s ease;
+      -ms-transition: -ms-opacity 2s ease;
+      transition: opacity 1s ease;
+      transition-delay: 0.5s;
   	}
     a {
   		color: inherit;
   	}
-  }
-
-  body.loading {
-    #header > h1 {
-      transform: translateX(10em);
+    a:hover {
+      color: $swissred;
     }
   }
 
-  body.loading #header > p {
-    left: -5em;
+  body.loading {
+    #header > h1, p {
+      opacity: 0;
+    }
   }
+
 
 	@media screen and (max-width: 736px) {
 
@@ -424,6 +428,17 @@ header p {
 		}
 
 	}
+
+  /* Header Transitions */
+  #header.arrowClicked {
+    .button {
+      transform: rotate(180deg);
+      right: calc(100% - 5em);
+    }
+    h1, p {
+      opacity: 0;
+    }
+  }
 
   /* bottomNav */
   #bottomNav {
@@ -451,7 +466,7 @@ header p {
   line-height: 3em;
   padding: 0 1.5em;
   width: 100%;
-  z-index: 7000;
+  z-index: 10;
 }
 
   body.loading #bottomNav {
@@ -594,11 +609,6 @@ header p {
   overflow: hidden;
 }
 
-.button.arrowClicked {
-  transform: rotate(180deg);
-  right: calc(100% - 5em);
-}
-
 .button.style2:hover {
   background-color: #a8d5a3;
 }
@@ -660,7 +670,7 @@ input[type="button"],
   input[type="submit"]:active,
   input[type="reset"]:active,
   input[type="button"]:active {
-    background-color: #199e83;
+    background-color: rgba(237, 73, 51, 1);
   }
 
   input[type="submit"].disabled, input[type="submit"]:disabled,
@@ -687,55 +697,25 @@ input[type="button"],
 		margin: 0 0 2em 0;
 	}
 
-  input[type="text"],
-	input[type="password"],
-	input[type="email"],
-	select,
-	textarea {
-		-moz-appearance: none;
-		-webkit-appearance: none;
-		-ms-appearance: none;
-		appearance: none;
 
-		-moz-transform: scale(1);
-		-webkit-transform: scale(1);
-		-ms-transform: scale(1);
-		transform: scale(1);
-
-		-moz-transition: border-color 0.2s ease, background-color 0.2s ease;
-		-webkit-transition: border-color 0.2s ease, background-color 0.2s ease;
-		-ms-transition: border-color 0.2s ease, background-color 0.2s ease;
-		transition: border-color 0.2s ease, background-color 0.2s ease;
-
-		background-color: transparent;
-		border-radius: 6px;
-		border: solid 2px rgba(255, 255, 255, 0.35);
-		color: inherit;
-		display: block;
-		outline: 0;
-		padding: 0 1em;
-		text-decoration: none;
-		width: 100%;
-    height: 2.75em;
-	}
 
   ::-webkit-input-placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: $placeholderGrey !important;
   opacity: 1.0;
 }
 
 :-moz-placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: $placeholderGrey !important;
   opacity: 1.0;
 }
 
 ::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: $placeholderGrey !important;
   opacity: 1.0;
 }
 
 :-ms-input-placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: $placeholderGrey !important;
   opacity: 1.0;
 }
 
@@ -864,62 +844,110 @@ input[type="button"],
   }
 
 /* Signup Form */
+
+
   .signUp_or_learnMore {
     height: 5em;
 		position: relative;
-    z-index: 2;
+    z-index: 3;
   }
 
+  .signup-form p {
+    color: black;
+    margin: 0 0 1em 0;
+    font-size: 1em;
+  }
+
+  .signup-form p * {
+    color: black;
+    margin: 0 0 1em 0;
+    font-size: 0.75em;
+  }
 
 	.signup-form {
-		display: -moz-flex;
-		display: -webkit-flex;
-		display: -ms-flex;
-		display: flex;
-		position: relative;
-	}
-
-  .signin-form {
+    width: 20em;
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 25%;
+    transform: translateY(-50%);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1em;
+    background: white;
+    z-index: 9;
+    border-radius: 2px;
   }
 
-		.signup-form input[type="text"],
-		.signup-form input[type="password"],
-		.signup-form input[type="email"] {
-			width: 18em;
-		}
+  .signup-form input[type="submit"] {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
 
-		.signup-form > * {
-			margin: 0 0 0 1em;
-		}
+  input[type="submit"].formSubmit {
+    background: rgba(237, 73, 51, 0.8);
+  }
 
-    .signup-form {
-      margin: auto 0;
-    }
+  input[type="submit"].formSubmit:hover {
+    background: rgba(237, 73, 51, 0.5);
+  }
 
-		.signup-form > :first-child {
-			margin: 0 0 0 0;
-		}
+.inputIcon {
+  position: relative;
+}
 
-		@media screen and (max-width: 480px) {
+.inputIcon input{
+  text-indent: 1em;
+}
 
-			.signup-form {
-				-moz-flex-direction: column;
-				-webkit-flex-direction: column;
-				-ms-flex-direction: column;
-				flex-direction: column;
-			}
+.inputIcon > span {
+  position: absolute;
+  padding: 0.5em;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(51, 102, 255, 0.5);
+  width: 1em;
+}
 
-				.signup-form input[type="type"],
-				.signup-form input[type="password"],
-				.signup-form input[type="email"] {
-					width: 100%;
-				}
+input[type="text"],
+input[type="password"],
+input[type="email"],
+select,
+textarea {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
 
-				.signup-form > * {
-					margin: 1.25em 0 0 0;
-				}
+  -moz-transform: scale(1);
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
 
-		}
+  -moz-transition: border-color 0.2s ease, background-color 0.2s ease;
+  -webkit-transition: border-color 0.2s ease, background-color 0.2s ease;
+  -ms-transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  background-color: transparent;
+  border-radius: 1px;
+  border: solid 1px rgba(145, 146, 147, 0.3);
+  color: black;
+  outline: 0;
+  padding: 0 1em;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  height: 2.75em;
+  margin: 0 0 1em 0;
+}
+
+.lineSeparator {
+    display:block;
+    border:none;
+    color:white;
+    height:1px;
+    background: $placeholderGrey;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}

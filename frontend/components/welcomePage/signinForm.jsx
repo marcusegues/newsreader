@@ -11,33 +11,37 @@ var SigninForm = React.createClass({
 
   handleSubmit: function(e) {
     e.preventDefault();
-    var signInForm = document.getElementById("userSignForm");
-    var inner = signInForm.getElementsByClassName("userSignOption")[0].innerHTML;
-    var user = Object.assign({}, this.state);
-    if (inner === "Sign In") {
-      ApiUtil.signinUser(user);
-    } else {
-      ApiUtil.createUser(user);
-    }
+    var newUser = Object.assign({}, this.state);
+    ApiUtil.signinUser(newUser);
+  },
+
+  closeSignIn: function() {
+    this.props.closeModal(false);
+  },
+
+  switchToSignUp: function() {
+    this.props.closeModal(true);
   },
 
   render: function() {
     return (
-      <div className="userSignDiv">
-        <form id="userSignForm" onSubmit={this.handleSubmit}>
-          <h3 className="userSignOption"></h3>
-          <div className="input">
-            <label htmlFor="signin_username">Username</label>
-            <input type="text" id="signin_username" valueLink={this.linkState('username')} />
+      this.props.visible === false ? null :
+      <div>
+        <form className="signup-form" onSubmit={this.handleSubmit}>
+          <p>Sign In</p>
+          <div className="inputIcon">
+            <span className="fa fa-user"></span>
+            <input type="text" name="username" id="username" placeholder="Username" valueLink={this.linkState('username')} />
           </div>
-          <div className="input">
-            <label htmlFor="signin_password">Password</label>
-            <input type="password" id="signin_password" valueLink={this.linkState('password')} />
+          <div className="inputIcon">
+            <span className="fa fa-key"></span>
+            <input type="password" name="password" id="password" placeholder="Password" valueLink={this.linkState('password')} />
           </div>
-
-          <button type="submitSign">Sign In</button>
-
+          <input className="formSubmit" type="submit" value="Sign In" />
+          <span className="lineSeparator"></span>
+          <p>{"Don't have an account?"} <a onClick={this.switchToSignUp}>Sign up</a></p>
         </form>
+        <div className="modal-screen" onClick={this.closeSignIn} ></div>
       </div>
     );
   }
