@@ -17,17 +17,16 @@ var CategoryItem = React.createClass({
     var iconClasses = classNames({
       "fa": true,
       "categoryIcon": true,
-      "verticalCenter": true,
       "fa-angle-down": this.state.categoryOpen,
       "fa-angle-right": !this.state.categoryOpen
     });
 
     return (
       <div>
-        <div className="categoryItem">
-          <span onClick={this.handleClick} className={iconClasses}></span>
-          <div id={"categoryTitle"}>{this.props.title}</div>
-        </div>
+        <ul className="categoryItem">
+          <li onClick={this.handleClick} className={iconClasses}></li>
+          <li id={"categoryTitle"}>{this.props.title}</li>
+        </ul>
         <ul>
           {this.state.categoryOpen ? this.props.feedSources : null}
         </ul>

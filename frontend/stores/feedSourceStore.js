@@ -4,6 +4,7 @@ var FeedSourceStore = new Store(AppDispatcher);
 var FeedSourceConstants = require('../constants/feedSourceConstants');
 
 var _feedSources = {};  // keys will be categories, values will be feed sources
+var _feedSourcesById = {};
 
 var populate_feedSources = function(feedSources) {
   FeedSourceStore.getUniqueCategories(feedSources).forEach(function(category, idx_cat) {
@@ -14,7 +15,14 @@ var populate_feedSources = function(feedSources) {
       }
     });
   });
+  feedSources.forEach(function(feedSource) {
+    _feedSourcesById[feedSource.id] = feedSource;
+  });
 };
+
+FeedSourceStore.getFeedSourceById = function(id) {
+  return _feedSourcesById[id];
+},
 
 FeedSourceStore.getUniqueCategories = function(feedSources) {
   var unique = [];

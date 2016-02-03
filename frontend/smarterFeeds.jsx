@@ -2,8 +2,10 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var App = require('./components/App');
-var Dashboard = require('./components/dashboard');
+var Dashboard = require('./components/dashboard/dashboard');
 var Welcome = require('./components/welcomePage/welcome');
+var ViewFeeds = require('./components/dashboard/viewFeeds');
+var addContent = require('./components/dashboard/addContent');
 
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
@@ -14,6 +16,8 @@ var routes = (
   <Route path="/" component={App}>
     <IndexRoute component={Welcome} />
     <Route path="dashboard" component={Dashboard}>
+      <IndexRoute component={ViewFeeds} />
+      <Route path="addContent" component={addContent} />
     </Route>
   </Route>
 );

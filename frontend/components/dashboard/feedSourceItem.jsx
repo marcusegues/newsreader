@@ -1,8 +1,8 @@
 
 var React = require('react');
-var ApiUtil = require('../util/apiUtil');
-var FeedItemStore = require('../stores/feedItemStore');
-var ApiActions = require('../actions/apiActions');
+var ApiUtil = require('../../util/apiUtil');
+var FeedItemStore = require('../../stores/feedItemStore');
+var ApiActions = require('../../actions/apiActions');
 
 var FeedSourceItem = React.createClass({
   getInitialState: function() {
@@ -11,35 +11,32 @@ var FeedSourceItem = React.createClass({
 
   componentWillMount: function() {
     FeedItemStore.addListener(this.handleReceivedFeeds);
-    this.feedSource = this.props.feedSource;
   },
 
   handleReceivedFeeds: function() {
-    debugger;
-    if (this.feedSource.id === FeedItemStore.lastReceivedId())
-      this.setState({feeds: FeedItemStore.all(this.feedSource.id)});
+    if (this.props.feedSource.id === FeedItemStore.lastReceivedId())
+      this.setState({feeds: FeedItemStore.all(this.props.feedSource.id)});
 
   },
 
   handleClick: function() {
-    debugger;
     if (this.state.clicked === false) {
-      ApiUtil.fetchFeedItems(this.feedSource.id);
+      ApiUtil.fetchFeedItems(this.props.feedSource.id);
       this.setState({clicked: true});
     } else {
-      ApiActions.changeDisplayedFeeds(this.feedSource.id);
+      ApiActions.changeDisplayedFeeds(this.props.feedSource.id);
     }
   },
 
   render: function() {
     var title = this.props.feedSource.title;
-    var faviconURL = "http://www.google.com/s2/favicons?domain=" + this.feedSource.url;
+    var faviconURL = "http://www.google.com/s2/favicons?domain=" + this.props.feedSource.url;
     return (
-      <div className="feedSourceItem" onClick={this.handleClick}>
-        <div><img src={faviconURL} /></div>
+      <li className="feedSourceItem" onClick={this.handleClick}>
+        <span className="verticalCenter"><img src={faviconURL} /></span>
         <span className="feedSourceItemTitle">{title}</span>
         <span className="feedSourceItemCount">{this.state.feeds.length}</span>
-      </div>
+      </li>
     );
   }
 });

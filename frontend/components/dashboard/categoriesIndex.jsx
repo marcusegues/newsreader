@@ -1,6 +1,6 @@
 var React = require('react');
-var ApiUtil = require('../util/apiUtil');
-var FeedSourceStore = require('../stores/feedSourceStore');
+var ApiUtil = require('../../util/apiUtil');
+var FeedSourceStore = require('../../stores/feedSourceStore');
 var FeedSourceItem = require('./feedSourceItem');
 var CategoryItem = require('./categoryItem');
 

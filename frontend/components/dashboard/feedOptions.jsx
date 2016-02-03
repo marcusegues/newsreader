@@ -1,6 +1,6 @@
 var React = require('react');
 var CreateNewFeedSourceModal = require('./createNewFeedSourceModal');
-var ApiUtil = require('../util/apiUtil');
+var ApiUtil = require('../../util/apiUtil');
 
 var FeedOptions = React.createClass({
   getInitialState: function () {

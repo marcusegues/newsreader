@@ -1,22 +1,10 @@
 var React = require('react');
-var CategoriesIndex = require('./categoriesIndex');
 var FeedItemsIndex = require('./feedItemsIndex.jsx');
-var ApiUtil = require('../util/apiUtil');
-var UserStore = require('../stores/userStore');
-var FeedOptions = require('./feedOptions');
+var ApiUtil = require('../../util/apiUtil');
+var UserStore = require('../../stores/userStore');
+var SideBarShow = require('./sideBarShow');
 
 var Dashboard = React.createClass({
-  getInitialState: function() {
-    return (
-      {
-        pinned: true,
-        show: true
-      }
-    );
-  },
-
-  componentDidMount: function() {
-  },
 
   componentWillMount: function() {
     if (window.CURRENT_USER_ID === -1) {
@@ -40,14 +28,8 @@ var Dashboard = React.createClass({
   render: function() {
     return (
       <div className="loggedInPage">
-        <div className="viewFeedSources">
-          <div id="pinButton">{this.state.pinned ? "Unpin" : "Pin" }</div>
-          <CategoriesIndex />
-          <FeedOptions />
-        </div>
-        <div className="viewFeeds">
-          <FeedItemsIndex />
-        </div>
+        <SideBarShow />
+        {this.props.children}
       </div>
     );
   }
