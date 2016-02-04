@@ -34,7 +34,13 @@ class Api::FeedsourcesController < ApplicationController
                        summary: feedItem.summary,
                        content: feedItem.content)
     end
-    render json: feedSource.feeds
+
+    orderedFeeds = feedSource.feeds.sort do |x,y|
+      xComp = x.updated || x.published
+      yComp = y.updated || y.published
+      yComp <=> xComp
+    end
+    render json: orderedFeeds
   end
 
   private

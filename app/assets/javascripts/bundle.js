@@ -19786,7 +19786,8 @@
 	  },
 	
 	  daysOld: function () {
-	    return Math.floor((Date.now() / 1000 - new Date(this.props.feed.updated) / 1000) / (24 * 3600));
+	    var lastUpdated = this.props.feed.updated ? this.props.feed.updated : this.props.feed.published;
+	    return Math.floor((Date.now() / 1000 - new Date(lastUpdated) / 1000) / (24 * 3600));
 	  },
 	
 	  render: function () {
@@ -27985,7 +27986,7 @@
 	      $welcomeBody.classList.add('fadeToBlack');
 	    }).bind(this), 1);
 	
-	    setInterval((function () {
+	    this.changeImage = setInterval((function () {
 	      var currentTop = this.state.currentTop + 1;
 	      if (currentTop >= Object.keys(this.state.images).length) {
 	        currentTop = 0;
@@ -28000,6 +28001,10 @@
 	        this.setState({ currentVisible: currentVisible });
 	      }).bind(this), this.state.delay / 2);
 	    }).bind(this), this.state.delay);
+	  },
+	
+	  componentWillUnmount: function () {
+	    clearInterval(this.changeImage);
 	  },
 	
 	  render: function () {
@@ -28080,7 +28085,7 @@
 	      this.setState({ currentVisible: [0] });
 	    }).bind(this), 1);
 	
-	    setInterval((function () {
+	    this.imageChange = setInterval((function () {
 	      var currentTop = this.state.currentTop + 1;
 	      if (currentTop >= Object.keys(this.state.images).length) {
 	        currentTop = 0;
@@ -28095,6 +28100,10 @@
 	        this.setState({ currentVisible: currentVisible });
 	      }).bind(this), this.state.delay / 2);
 	    }).bind(this), this.state.delay);
+	  },
+	
+	  componentWillUnmount: function () {
+	    clearInterval(this.imageChange);
 	  },
 	
 	  render: function () {

@@ -23,7 +23,7 @@ var WelcomeBackground2 = React.createClass({
       this.setState({currentVisible: [0]});
     }.bind(this), 1);
 
-    setInterval(function() {
+    this.imageChange = setInterval(function() {
       var currentTop = this.state.currentTop + 1;
       if (currentTop >= Object.keys(this.state.images).length) {
         currentTop = 0;
@@ -38,6 +38,10 @@ var WelcomeBackground2 = React.createClass({
         this.setState({currentVisible: currentVisible});
         }.bind(this), this.state.delay / 2);
     }.bind(this), this.state.delay);
+  },
+
+  componentWillUnmount: function() {
+    clearInterval(this.imageChange);
   },
 
   render: function() {

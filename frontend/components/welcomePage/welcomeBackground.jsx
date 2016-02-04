@@ -25,7 +25,7 @@ var WelcomeBackground = React.createClass({
       $welcomeBody.classList.add('fadeToBlack');
     }.bind(this), 1);
 
-    setInterval(function() {
+    this.changeImage = setInterval(function() {
       var currentTop = this.state.currentTop + 1;
       if (currentTop >= Object.keys(this.state.images).length) {
         currentTop = 0;
@@ -40,6 +40,10 @@ var WelcomeBackground = React.createClass({
         this.setState({currentVisible: currentVisible});
         }.bind(this), this.state.delay / 2);
     }.bind(this), this.state.delay);
+  },
+
+  componentWillUnmount: function() {
+    clearInterval(this.changeImage);
   },
 
   render: function() {

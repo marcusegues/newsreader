@@ -20,7 +20,10 @@ var FeedItem = React.createClass({
   },
 
   daysOld: function() {
-    return Math.floor((Date.now()/1000 - new Date(this.props.feed.updated)/1000)/(24*3600))
+    var lastUpdated = this.props.feed.updated ?
+                      this.props.feed.updated :
+                      this.props.feed.published;
+    return Math.floor((Date.now()/1000 - new Date(lastUpdated)/1000)/(24*3600))
   },
 
   render: function() {
