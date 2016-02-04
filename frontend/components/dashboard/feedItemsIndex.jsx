@@ -5,7 +5,7 @@ var FeedItemsIndex = React.createClass({
 
   render: function() {
     var feeds = this.props.displayedFeeds.map(function(feed, idx) {
-      return <FeedItem key={idx} feed={feed} />;
+      return <FeedItem key={idx} feed={feed} display={false} />;
     });
     return (
       <div>

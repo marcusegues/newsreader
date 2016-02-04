@@ -19746,7 +19746,7 @@
 	
 	  render: function () {
 	    var feeds = this.props.displayedFeeds.map(function (feed, idx) {
-	      return React.createElement(FeedItem, { key: idx, feed: feed });
+	      return React.createElement(FeedItem, { key: idx, feed: feed, display: false });
 	    });
 	    return React.createElement(
 	      'div',
@@ -19764,6 +19764,7 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemStore = __webpack_require__(163);
+	var decodeEntities = __webpack_require__(267);
 	
 	var FeedItem = React.createClass({
 	  displayName: 'FeedItem',
@@ -19772,42 +19773,54 @@
 	    return { display: false };
 	  },
 	
-	  showFeed: function () {
-	    this.setState({ display: true });
+	  componentWillReceiveProps: function () {
+	    this.setState({ display: false });
+	  },
+	
+	  toggleShowFeed: function () {
+	    this.setState({ display: !this.state.display });
+	  },
+	
+	  createMarkup: function (html) {
+	    return { __html: html };
+	  },
+	
+	  daysOld: function () {
+	    return Math.floor((Date.now() / 1000 - new Date(this.props.feed.updated) / 1000) / (24 * 3600));
 	  },
 	
 	  render: function () {
-	    var title = this.props.feed.title;
-	    var vals = $(this.props.feed.content);
-	    vals = Object.keys(vals).map(function (key) {
-	      return vals[key];
-	    });
-	    var content = this.state.display === true ? vals : null;
-	    var summary = this.props.feed.summary;
-	    debugger;
+	    var title = decodeEntities(this.props.feed.title);
+	    var summary = decodeEntities(this.props.feed.summary);
+	    var content = this.state.display === true ? this.createMarkup(this.props.feed.content) : null;
+	    var daysOld = this.daysOld();
+	
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
 	        'div',
-	        { className: 'feedTitle', onClick: this.showFeed },
+	        { className: 'feedTitle', onClick: this.toggleShowFeed },
+	        React.createElement('span', { className: 'fa fa-bookmark-o fa-fw categoryIcon verticalCenter' }),
 	        React.createElement(
 	          'span',
-	          null,
-	          title
+	          { className: 'title' },
+	          title,
+	          '   ',
+	          React.createElement(
+	            'span',
+	            { className: 'summary' },
+	            summary
+	          )
 	        ),
-	        ' ',
 	        React.createElement(
 	          'span',
-	          { className: 'summary' },
-	          summary
+	          { className: 'daysOld' },
+	          daysOld + "d"
 	        )
 	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'displayed-feed' },
-	        content
-	      )
+	      React.createElement('div', { className: 'displayed-feed',
+	        dangerouslySetInnerHTML: content })
 	    );
 	  }
 	});
@@ -26997,7 +27010,9 @@
 	  },
 	
 	  handleReceivedFeeds: function () {
-	    if (this.props.feedSource.id === FeedItemStore.lastReceivedId()) this.setState({ feeds: FeedItemStore.all(this.props.feedSource.id) });
+	    if (this.props.feedSource.id === FeedItemStore.lastReceivedId())
+	      // used for displaying the number of feeds
+	      this.setState({ feeds: FeedItemStore.all(this.props.feedSource.id) });
 	  },
 	
 	  handleClick: function () {
@@ -33062,6 +33077,32 @@
 	
 	exports['default'] = useBasename;
 	module.exports = exports['default'];
+
+/***/ },
+/* 267 */
+/***/ function(module, exports) {
+
+	var decodeEntities = (function () {
+	  // this prevents any overhead from creating the object each time
+	  var element = document.createElement('div');
+	
+	  function decodeHTMLEntities(str) {
+	    if (str && typeof str === 'string') {
+	      // strip script/html tags
+	      str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+	      str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+	      element.innerHTML = str;
+	      str = element.textContent;
+	      element.textContent = '';
+	    }
+	
+	    return str;
+	  }
+	
+	  return decodeHTMLEntities;
+	})();
+	
+	module.exports = decodeEntities;
 
 /***/ }
 /******/ ]);
