@@ -2,9 +2,10 @@ var Store = require('flux/utils').Store;
 var AppDispatcher = require('../dispatcher/dispatcher');
 var FeedSourceStore = new Store(AppDispatcher);
 var FeedSourceConstants = require('../constants/feedSourceConstants');
+var UserConstants = require('../constants/userConstants');
 
 var _feedSources = {};  // keys will be categories, values will be feed sources
-var _feedSourcesById = {};
+var _feedSourcesById = {0: {title: "Today"}};
 
 var populate_feedSources = function(feedSources) {
   FeedSourceStore.getUniqueCategories(feedSources).forEach(function(category, idx_cat) {
@@ -54,7 +55,14 @@ FeedSourceStore.__onDispatch = function(payload) {
       addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
       FeedSourceStore.__emitChange();
       break;
+    case UserConstants.SIGN_OUT_USER:
+      resetStore();
   }
+};
+
+var resetStore = function() {
+  _feedSources = {};
+  _feedSourcesById = {};
 };
 
 FeedSourceStore.all = function() {

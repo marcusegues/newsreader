@@ -21,7 +21,6 @@ var CategoriesIndex = React.createClass({
   },
 
   handleReceivedFeedSources: function() {
-
     this.setState({feedSources: FeedSourceStore.all()});
   },
 

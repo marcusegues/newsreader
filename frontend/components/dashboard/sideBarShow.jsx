@@ -45,6 +45,10 @@ var SideBarShow = React.createClass({
     this.sideBarShowDiv = document.querySelector(".sideBarShow");
   },
 
+  componentWillUnmount: function() {
+    debugger;
+  },
+
   render: function() {
     var sideBarClasses = classNames({
       sideBarShow: true,

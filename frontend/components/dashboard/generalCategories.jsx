@@ -1,7 +1,12 @@
 var React = require('react');
 var classNames = require('classnames');
+var ApiActions = require('../../actions/apiActions');
+var FeedItemConstants = require('../../constants/feedItemConstants');
 
 var GeneralCategories = React.createClass({
+  showTodayFeeds: function() {
+    ApiActions.changeDisplayedFeeds(FeedItemConstants.TODAY_FEEDS_ID);
+  },
 
   render: function() {
     var iconClasses = classNames({
@@ -13,7 +18,7 @@ var GeneralCategories = React.createClass({
 
     return (
       <div id="generalCategories">
-        <div className="categoryItem">
+        <div className="categoryItem" onClick={this.showTodayFeeds}>
           <span className="fa fa-bolt fa-fw categoryIcon verticalCenter"></span>
           <div id={"categoryTitle"}>Today</div>
         </div>

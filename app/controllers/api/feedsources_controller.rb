@@ -22,6 +22,7 @@ class Api::FeedsourcesController < ApplicationController
     feedSource = FeedSource.find(feedSourceId)
     url = feedSource.url
     parsedFeed = Feedjira::Feed.fetch_and_parse url
+    debugger;
     parsedFeed.entries.each do |feedItem|
       # uniqueness of FeedItem is based on it's url
       # the FeedItems in this loop will only be save to the database once
@@ -35,12 +36,20 @@ class Api::FeedsourcesController < ApplicationController
                        content: feedItem.content)
     end
 
+
+    # orderedFeeds = sortFeeds(feedSource.feeds)
     orderedFeeds = feedSource.feeds.sort do |x,y|
       xComp = x.updated || x.published
       yComp = y.updated || y.published
       yComp <=> xComp
     end
     render json: orderedFeeds
+  end
+
+  def todayFeeds
+    render json: sortFeeds(current_user.feeds
+                     .select("feed_items.*")
+                     .where("feed_items.published BETWEEN ? AND ?", DateTime.now - 1.day, DateTime.now))
   end
 
   private

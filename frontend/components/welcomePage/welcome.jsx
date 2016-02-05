@@ -45,8 +45,9 @@ var Welcome = React.createClass({
   },
 
   _handleNewCurrentUser: function() {
-    var currentUser = UserStore.currentUser();
-    if (currentUser !== undefined) {
+    // var currentUser = UserStore.currentUser();
+    var currentUser = window.CURRENT_USER_ID;
+    if (currentUser !== -1) {
       this.props.history.pushState(null, '/dashboard');
     }
   },
@@ -57,6 +58,7 @@ var Welcome = React.createClass({
 
   componentWillMount: function() {
     if (window.CURRENT_USER_ID !== -1) {
+    // if (UserStore.currentUser() !== undefined ) {
       this.props.history.pushState(null, '/dashboard');
     }
     this.userListener = UserStore.addListener(this._handleNewCurrentUser);

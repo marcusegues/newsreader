@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  helper_method :signed_in?, :current_user
+  helper_method :signed_in?, :current_user, :sortFeeds
 
   def require_login
     unless signed_in?
@@ -28,5 +28,16 @@ class ApplicationController < ActionController::Base
 
   def signed_in?
     !!current_user
+  end
+
+  def sortFeeds(feeds)
+    # sort from earliest to latest
+    sortedFeeds =  feeds.sort do |x,y|
+      xComp = x.updated || x.published
+      yComp = y.updated || y.published
+      yComp <=> xComp
+    end
+
+    return sortedFeeds
   end
 end

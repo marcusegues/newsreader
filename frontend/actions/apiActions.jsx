@@ -44,6 +44,13 @@ var ApiActions = {
       actionType: FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE,
       createdFeedSource: createdFeedSource
     });
+  },
+
+  receiveTodayFeeds: function(todayFeeds) {
+    AppDispatcher.dispatch({
+      actionType: FeedItemConstants.RECEIVED_TODAY_FEEDS,
+      todayFeeds: todayFeeds
+    });
   }
 };
 

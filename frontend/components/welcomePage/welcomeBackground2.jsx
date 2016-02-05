@@ -19,11 +19,14 @@ var WelcomeBackground2 = React.createClass({
   },
 
   componentDidMount: function() {
-    setTimeout(function() {
+    this.intervalFunctions = Object.create(null);
+    this.timeOutFunctions = Object.create(null);
+
+    this.timeOutFunctions.fadeToBlack = setTimeout(function() {
       this.setState({currentVisible: [0]});
     }.bind(this), 1);
 
-    this.imageChange = setInterval(function() {
+    this.intervalFunctions.changeImage = setInterval(function() {
       var currentTop = this.state.currentTop + 1;
       if (currentTop >= Object.keys(this.state.images).length) {
         currentTop = 0;
@@ -33,7 +36,7 @@ var WelcomeBackground2 = React.createClass({
       this.setState({currentTop: currentTop, currentVisible: currentVisible});
 
       // Hide last image after a short delay.
-      setTimeout(function() {
+      this.timeOutFunctions.hideImage = setTimeout(function() {
         currentVisible.shift();
         this.setState({currentVisible: currentVisible});
         }.bind(this), this.state.delay / 2);
@@ -41,7 +44,13 @@ var WelcomeBackground2 = React.createClass({
   },
 
   componentWillUnmount: function() {
-    clearInterval(this.imageChange);
+    for(var intervalFunc in this.intervalFunctions) {
+      clearInterval(this.intervalFunctions[intervalFunc]);
+    }
+
+    for(var timeOutFunc in this.timeOutFunctions) {
+      clearTimeout(this.timeOutFunctions[timeOutFunc]);
+    }
   },
 
   render: function() {
