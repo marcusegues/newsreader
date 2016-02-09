@@ -19696,9 +19696,9 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemsIndex = __webpack_require__(161);
-	var ApiUtil = __webpack_require__(187);
-	var UserStore = __webpack_require__(190);
-	var SideBarShow = __webpack_require__(191);
+	var ApiUtil = __webpack_require__(190);
+	var UserStore = __webpack_require__(192);
+	var SideBarShow = __webpack_require__(193);
 	
 	var Dashboard = React.createClass({
 	  displayName: 'Dashboard',
@@ -19717,6 +19717,8 @@
 	    this.userListener = UserStore.addListener(this.handleUserSignOut);
 	    //ApiUtil.fetchCurrentUser();
 	  },
+	
+	  componentDidMount: function () {},
 	
 	  handleUserSignOut: function () {
 	    var currentUser = UserStore.currentUser();
@@ -19752,9 +19754,9 @@
 	  displayName: 'FeedItemsIndex',
 	
 	  render: function () {
-	    var feeds = this.props.displayedFeeds.map(function (feed, idx) {
-	      return React.createElement(FeedItem, { key: idx, feed: feed, displayContent: false });
-	    });
+	    var feeds = this.props.displayedFeeds.map((function (feed, idx) {
+	      return React.createElement(FeedItem, { key: idx, feed: feed, displayContent: false, today: this.props.today });
+	    }).bind(this));
 	    return React.createElement(
 	      'div',
 	      null,
@@ -19771,7 +19773,10 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemStore = __webpack_require__(163);
-	var decodeEntities = __webpack_require__(186);
+	var FeedSourceStore = __webpack_require__(186);
+	var decodeEntities = __webpack_require__(188);
+	var classNames = __webpack_require__(189);
+	var ApiUtil = __webpack_require__(190);
 	
 	var FeedItem = React.createClass({
 	  displayName: 'FeedItem',
@@ -19796,12 +19801,19 @@
 	    var lastUpdated = this.props.feed.updated ? this.props.feed.updated : this.props.feed.published;
 	
 	    var days = (Date.now() / 1000 - new Date(lastUpdated) / 1000) / (24 * 3600);
-	    debugger;
+	
 	    if (days < 1) {
 	      return Math.floor(days * 24) + "h";
 	    } else {
 	      return Math.floor(days) + "d";
 	    }
+	  },
+	
+	  saveForLater: function (e) {
+	    e.stopPropagation();
+	    this.props.feed.saved_for_later = !this.props.feed.saved_for_later;
+	    this.forceUpdate();
+	    //ApiUtil.saveFeedForLater();
 	  },
 	
 	  render: function () {
@@ -19810,18 +19822,46 @@
 	    var content = this.state.displayContent === true ? this.createMarkup(this.props.feed.content) : null;
 	    var daysOld = this.daysOld();
 	
+	    // this should be shown any time we need to display feeds from different feedSources (like when we
+	    // display feeds from today or saved for later)
+	    var showFeedSource = this.props.today ? React.createElement(
+	      'span',
+	      { className: 'feedTitleFeedSource' },
+	      FeedSourceStore.getFeedSourceById(this.props.feed.feed_source_id).title
+	    ) : null;
+	
+	    var titleClasses = classNames({
+	      "title": !this.props.today,
+	      "titleWithFeedSource": this.props.today
+	    });
+	
+	    var feedTitleClasses = classNames({
+	      "feedTitle": true,
+	      "feedTitleHover": !this.props.feed.saved_for_later,
+	      "savedForLater": this.props.feed.saved_for_later
+	    });
+	
+	    var bookMarkIconClasses = classNames({
+	      "fa": true,
+	      "fa-bookmark-o": true,
+	      "fa-fw": true,
+	      "categoryIcon": true,
+	      "verticalCenter": true,
+	      "bookMarkHighlight": this.props.feed.saved_for_later
+	    });
+	
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
 	        'div',
-	        { className: 'feedTitle', onClick: this.toggleShowFeed },
-	        React.createElement('span', { className: 'fa fa-bookmark-o fa-fw categoryIcon verticalCenter' }),
+	        { className: feedTitleClasses, onClick: this.toggleShowFeed },
+	        React.createElement('span', { className: bookMarkIconClasses, onClick: this.saveForLater }),
+	        showFeedSource,
 	        React.createElement(
 	          'span',
-	          { className: 'title' },
+	          { className: titleClasses },
 	          title,
-	          '   ',
 	          React.createElement(
 	            'span',
 	            { className: 'summary' },
@@ -26619,7 +26659,8 @@
 	  RECEIVED_FEEDS: "RECEIVED_FEEDS",
 	  CHANGE_DISPLAYED_FEEDS: "CHANGE_DISPLAYED_FEEDS",
 	  TODAY_FEEDS_ID: 0,
-	  RECEIVED_TODAY_FEEDS: "RECEIVED_TODAY_FEEDS"
+	  RECEIVED_TODAY_FEEDS: "RECEIVED_TODAY_FEEDS",
+	  RECENT_FEED_DAYS: 7
 	};
 	
 	module.exports = FeedItemConstants;
@@ -26638,6 +26679,107 @@
 
 /***/ },
 /* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(164).Store;
+	var AppDispatcher = __webpack_require__(181);
+	var FeedSourceStore = new Store(AppDispatcher);
+	var FeedSourceConstants = __webpack_require__(187);
+	var FeedItemConstants = __webpack_require__(184);
+	var UserConstants = __webpack_require__(185);
+	
+	var _feedSources = {}; // keys will be categories, values will be feed sources
+	var _feedSourcesById = {};
+	var _feedSourcesLoaded = false;
+	
+	var populate_feedSources = function (feedSources) {
+	  FeedSourceStore.getUniqueCategories(feedSources).forEach(function (category, idx_cat) {
+	    _feedSources[category] = [];
+	    feedSources.forEach(function (feedSource, idx_fs) {
+	      if (feedSource.category === category) {
+	        _feedSources[category].push(feedSource);
+	      }
+	    });
+	  });
+	  _feedSourcesById[FeedItemConstants.TODAY_FEEDS_ID] = { title: FeedSourceConstants.RECENT_FEEDS_TITLE };
+	  feedSources.forEach(function (feedSource) {
+	    _feedSourcesById[feedSource.id] = feedSource;
+	  });
+	};
+	
+	FeedSourceStore.getFeedSourceById = function (id) {
+	  return _feedSourcesById[id];
+	}, FeedSourceStore.getUniqueCategories = function (feedSources) {
+	  var unique = [];
+	
+	  feedSources.forEach(function (feedSource, idx) {
+	    if (unique.indexOf(feedSource.category) === -1) {
+	      unique.push(feedSource.category);
+	    }
+	  });
+	
+	  return unique;
+	};
+	
+	var addCreatedFeedSourceTo_feedSources = function (createdFeedSource) {
+	  var category = createdFeedSource.category;
+	  if (_feedSources[category] === undefined) {
+	    _feedSources[category] = [];
+	  }
+	  _feedSources[category].push(createdFeedSource);
+	};
+	
+	FeedSourceStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case FeedSourceConstants.RECEIVED_FEED_SOURCES:
+	      populate_feedSources(payload.feedSources);
+	      _feedSourcesLoaded = true;
+	      FeedSourceStore.__emitChange();
+	      break;
+	    case FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE:
+	      addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
+	      FeedSourceStore.__emitChange();
+	      break;
+	    case UserConstants.USER_SIGNED_IN:
+	      populate_feedSources(payload.currentUser.feedSources);
+	      _feedSourcesLoaded = true;
+	      FeedSourceStore.__emitChange();
+	      break;
+	    case UserConstants.SIGN_OUT_USER:
+	      resetStore();
+	  }
+	};
+	
+	var resetStore = function () {
+	  _feedSources = {};
+	  _feedSourcesById = {};
+	  _feedSourcesLoaded = false;
+	};
+	
+	FeedSourceStore.all = function () {
+	  return _feedSources;
+	};
+	
+	FeedSourceStore.feedSourcesloaded = function () {
+	  return _feedSourcesLoaded;
+	};
+	
+	module.exports = FeedSourceStore;
+
+/***/ },
+/* 187 */
+/***/ function(module, exports) {
+
+	var FeedSourceConstants = {
+	  RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES",
+	  RECEIVED_CREATED_FEED_SOURCE: "RECEIVED_CREATED_FEED_SOURCE",
+	  RECENT_FEEDS_TITLE: "This Week"
+	};
+	
+	module.exports = FeedSourceConstants;
+
+/***/ },
+/* 188 */
 /***/ function(module, exports) {
 
 	var decodeEntities = (function () {
@@ -26663,10 +26805,64 @@
 	module.exports = decodeEntities;
 
 /***/ },
-/* 187 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ApiActions = __webpack_require__(188);
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2016 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+	/* global define */
+	
+	(function () {
+		'use strict';
+	
+		var hasOwn = {}.hasOwnProperty;
+	
+		function classNames () {
+			var classes = [];
+	
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+	
+				var argType = typeof arg;
+	
+				if (argType === 'string' || argType === 'number') {
+					classes.push(arg);
+				} else if (Array.isArray(arg)) {
+					classes.push(classNames.apply(null, arg));
+				} else if (argType === 'object') {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes.push(key);
+						}
+					}
+				}
+			}
+	
+			return classes.join(' ');
+		}
+	
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if (true) {
+			// register as 'classnames', consistent with npm package name
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
+	}());
+
+
+/***/ },
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiActions = __webpack_require__(191);
 	//currentUser returned by ajax requests should probably use Jbuilder
 	var ApiUtil = {
 	  createUser: function (newUser) {
@@ -26687,7 +26883,6 @@
 	      url: 'api/session',
 	      data: { session: user },
 	      success: function (currentUser) {
-	        debugger;
 	        window.CURRENT_USER_ID = currentUser.id;
 	        ApiActions.receiveCurrentUser(currentUser);
 	      }
@@ -26763,11 +26958,11 @@
 	module.exports = ApiUtil;
 
 /***/ },
-/* 188 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(181);
-	var FeedSourceConstants = __webpack_require__(189);
+	var FeedSourceConstants = __webpack_require__(187);
 	var FeedItemConstants = __webpack_require__(184);
 	var UserConstants = __webpack_require__(185);
 	
@@ -26825,18 +27020,7 @@
 	module.exports = ApiActions;
 
 /***/ },
-/* 189 */
-/***/ function(module, exports) {
-
-	var FeedSourceConstants = {
-	  RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES",
-	  RECEIVED_CREATED_FEED_SOURCE: "RECEIVED_CREATED_FEED_SOURCE"
-	};
-	
-	module.exports = FeedSourceConstants;
-
-/***/ },
-/* 190 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(164).Store;
@@ -26865,14 +27049,14 @@
 	module.exports = UserStore;
 
 /***/ },
-/* 191 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var CategoriesIndex = __webpack_require__(192);
+	var CategoriesIndex = __webpack_require__(194);
 	var FeedOptions = __webpack_require__(197);
 	var GeneralCategories = __webpack_require__(204);
-	var classNames = __webpack_require__(196);
+	var classNames = __webpack_require__(189);
 	
 	var SideBarShow = React.createClass({
 	  displayName: 'SideBarShow',
@@ -26915,10 +27099,6 @@
 	    this.sideBarShowDiv = document.querySelector(".sideBarShow");
 	  },
 	
-	  componentWillUnmount: function () {
-	    debugger;
-	  },
-	
 	  render: function () {
 	    var sideBarClasses = classNames({
 	      sideBarShow: true,
@@ -26956,14 +27136,14 @@
 	module.exports = SideBarShow;
 
 /***/ },
-/* 192 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var ApiUtil = __webpack_require__(187);
-	var FeedSourceStore = __webpack_require__(193);
-	var FeedSourceItem = __webpack_require__(194);
-	var CategoryItem = __webpack_require__(195);
+	var ApiUtil = __webpack_require__(190);
+	var FeedSourceStore = __webpack_require__(186);
+	var FeedSourceItem = __webpack_require__(195);
+	var CategoryItem = __webpack_require__(196);
 	
 	var CategoriesIndex = React.createClass({
 	  displayName: 'CategoriesIndex',
@@ -26976,7 +27156,9 @@
 	
 	  componentDidMount: function () {
 	    this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
-	    ApiUtil.fetchUserFeedSources();
+	    if (!FeedSourceStore.feedSourcesloaded()) {
+	      ApiUtil.fetchUserFeedSources();
+	    }
 	  },
 	
 	  componentWillUnmount: function () {
@@ -27011,89 +27193,14 @@
 	module.exports = CategoriesIndex;
 
 /***/ },
-/* 193 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(164).Store;
-	var AppDispatcher = __webpack_require__(181);
-	var FeedSourceStore = new Store(AppDispatcher);
-	var FeedSourceConstants = __webpack_require__(189);
-	var UserConstants = __webpack_require__(185);
-	
-	var _feedSources = {}; // keys will be categories, values will be feed sources
-	var _feedSourcesById = { 0: { title: "Today" } };
-	
-	var populate_feedSources = function (feedSources) {
-	  FeedSourceStore.getUniqueCategories(feedSources).forEach(function (category, idx_cat) {
-	    _feedSources[category] = [];
-	    feedSources.forEach(function (feedSource, idx_fs) {
-	      if (feedSource.category === category) {
-	        _feedSources[category].push(feedSource);
-	      }
-	    });
-	  });
-	  feedSources.forEach(function (feedSource) {
-	    _feedSourcesById[feedSource.id] = feedSource;
-	  });
-	};
-	
-	FeedSourceStore.getFeedSourceById = function (id) {
-	  return _feedSourcesById[id];
-	}, FeedSourceStore.getUniqueCategories = function (feedSources) {
-	  var unique = [];
-	
-	  feedSources.forEach(function (feedSource, idx) {
-	    if (unique.indexOf(feedSource.category) === -1) {
-	      unique.push(feedSource.category);
-	    }
-	  });
-	
-	  return unique;
-	};
-	
-	var addCreatedFeedSourceTo_feedSources = function (createdFeedSource) {
-	  var category = createdFeedSource.category;
-	  if (_feedSources[category] === undefined) {
-	    _feedSources[category] = [];
-	  }
-	  _feedSources[category].push(createdFeedSource);
-	};
-	
-	FeedSourceStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case FeedSourceConstants.RECEIVED_FEED_SOURCES:
-	      populate_feedSources(payload.feedSources);
-	      FeedSourceStore.__emitChange();
-	      break;
-	    case FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE:
-	      addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
-	      FeedSourceStore.__emitChange();
-	      break;
-	    case UserConstants.SIGN_OUT_USER:
-	      resetStore();
-	  }
-	};
-	
-	var resetStore = function () {
-	  _feedSources = {};
-	  _feedSourcesById = {};
-	};
-	
-	FeedSourceStore.all = function () {
-	  return _feedSources;
-	};
-	
-	module.exports = FeedSourceStore;
-
-/***/ },
-/* 194 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
 	var React = __webpack_require__(1);
-	var ApiUtil = __webpack_require__(187);
+	var ApiUtil = __webpack_require__(190);
 	var FeedItemStore = __webpack_require__(163);
-	var ApiActions = __webpack_require__(188);
+	var ApiActions = __webpack_require__(191);
 	
 	var FeedSourceItem = React.createClass({
 	  displayName: 'FeedSourceItem',
@@ -27149,11 +27256,11 @@
 	module.exports = FeedSourceItem;
 
 /***/ },
-/* 195 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var classNames = __webpack_require__(196);
+	var classNames = __webpack_require__(189);
 	
 	var CategoryItem = React.createClass({
 	  displayName: 'CategoryItem',
@@ -27201,66 +27308,12 @@
 	module.exports = CategoryItem;
 
 /***/ },
-/* 196 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2016 Jed Watson.
-	  Licensed under the MIT License (MIT), see
-	  http://jedwatson.github.io/classnames
-	*/
-	/* global define */
-	
-	(function () {
-		'use strict';
-	
-		var hasOwn = {}.hasOwnProperty;
-	
-		function classNames () {
-			var classes = [];
-	
-			for (var i = 0; i < arguments.length; i++) {
-				var arg = arguments[i];
-				if (!arg) continue;
-	
-				var argType = typeof arg;
-	
-				if (argType === 'string' || argType === 'number') {
-					classes.push(arg);
-				} else if (Array.isArray(arg)) {
-					classes.push(classNames.apply(null, arg));
-				} else if (argType === 'object') {
-					for (var key in arg) {
-						if (hasOwn.call(arg, key) && arg[key]) {
-							classes.push(key);
-						}
-					}
-				}
-			}
-	
-			return classes.join(' ');
-		}
-	
-		if (typeof module !== 'undefined' && module.exports) {
-			module.exports = classNames;
-		} else if (true) {
-			// register as 'classnames', consistent with npm package name
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-				return classNames;
-			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		} else {
-			window.classNames = classNames;
-		}
-	}());
-
-
-/***/ },
 /* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var CreateNewFeedSourceModal = __webpack_require__(198);
-	var ApiUtil = __webpack_require__(187);
+	var ApiUtil = __webpack_require__(190);
 	
 	var FeedOptions = React.createClass({
 	  displayName: 'FeedOptions',
@@ -27334,7 +27387,7 @@
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(200);
-	var ApiUtil = __webpack_require__(187);
+	var ApiUtil = __webpack_require__(190);
 	
 	var NewFeedSourceFormModal = React.createClass({
 	  displayName: 'NewFeedSourceFormModal',
@@ -27660,9 +27713,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var classNames = __webpack_require__(196);
-	var ApiActions = __webpack_require__(188);
+	var classNames = __webpack_require__(189);
+	var ApiActions = __webpack_require__(191);
 	var FeedItemConstants = __webpack_require__(184);
+	var FeedSourceConstants = __webpack_require__(187);
 	
 	var GeneralCategories = React.createClass({
 	  displayName: 'GeneralCategories',
@@ -27689,7 +27743,7 @@
 	        React.createElement(
 	          'div',
 	          { id: "categoryTitle" },
-	          'Today'
+	          FeedSourceConstants.RECENT_FEEDS_TITLE
 	        )
 	      ),
 	      React.createElement(
@@ -27723,8 +27777,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserStore = __webpack_require__(190);
-	var ApiUtil = __webpack_require__(187);
+	var UserStore = __webpack_require__(192);
+	var ApiUtil = __webpack_require__(190);
 	
 	var WelcomeMainMessage = __webpack_require__(206);
 	var BottomNav = __webpack_require__(209);
@@ -27732,7 +27786,7 @@
 	var WelcomeBackground2 = __webpack_require__(212);
 	var SignUpForm = __webpack_require__(208);
 	var SignInForm = __webpack_require__(213);
-	var classNames = __webpack_require__(196);
+	var classNames = __webpack_require__(189);
 	
 	var Welcome = React.createClass({
 	  displayName: 'Welcome',
@@ -27789,7 +27843,6 @@
 	  },
 	
 	  componentDidMount: function () {
-	    // debugger;
 	    // this.userListener = UserStore.addListener(this._newCurrentUser);
 	    // ApiUtil.fetchCurrentUser();
 	  },
@@ -27827,7 +27880,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var classNames = __webpack_require__(196);
+	var classNames = __webpack_require__(189);
 	var RightArrow = __webpack_require__(207);
 	var SignUpForm = __webpack_require__(208);
 	
@@ -27894,7 +27947,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var classNames = __webpack_require__(196);
+	var classNames = __webpack_require__(189);
 	
 	var RightArrow = React.createClass({
 	  displayName: 'RightArrow',
@@ -27927,7 +27980,7 @@
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(200);
-	var ApiUtil = __webpack_require__(187);
+	var ApiUtil = __webpack_require__(190);
 	
 	var SignupForm = React.createClass({
 	  displayName: 'SignupForm',
@@ -28065,7 +28118,7 @@
 
 	var React = __webpack_require__(1);
 	var Background = __webpack_require__(211);
-	var classNames = __webpack_require__(196);
+	var classNames = __webpack_require__(189);
 	
 	var WelcomeBackground = React.createClass({
 	  displayName: 'WelcomeBackground',
@@ -28146,7 +28199,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var classNames = __webpack_require__(196);
+	var classNames = __webpack_require__(189);
 	
 	var Background = React.createClass({
 	  displayName: 'Background',
@@ -28175,7 +28228,7 @@
 
 	var React = __webpack_require__(1);
 	var Background = __webpack_require__(211);
-	var classNames = __webpack_require__(196);
+	var classNames = __webpack_require__(189);
 	
 	var WelcomeBackground2 = React.createClass({
 	  displayName: 'WelcomeBackground2',
@@ -28255,7 +28308,7 @@
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(200);
-	var ApiUtil = __webpack_require__(187);
+	var ApiUtil = __webpack_require__(190);
 	
 	var SigninForm = React.createClass({
 	  displayName: 'SigninForm',
@@ -28333,8 +28386,9 @@
 	var FeedItemsIndex = __webpack_require__(161);
 	var ViewFeedsHeader = __webpack_require__(215);
 	var FeedItemStore = __webpack_require__(163);
-	var FeedSourceStore = __webpack_require__(193);
-	var ApiUtil = __webpack_require__(187);
+	var FeedSourceStore = __webpack_require__(186);
+	var FeedItemConstants = __webpack_require__(184);
+	var ApiUtil = __webpack_require__(190);
 	
 	var ViewFeeds = React.createClass({
 	  displayName: 'ViewFeeds',
@@ -28345,8 +28399,9 @@
 	  },
 	
 	  componentDidMount: function () {
-	    debugger;
 	    this.feedListener = FeedItemStore.addListener(this.handleReceivedFeeds);
+	    // If we are refreshing the page, today's feeds will not have been loaded, we must do it manually
+	    // Else, we have just signed in, in which case today's feeds were already received
 	    if (!FeedItemStore.loadedToday()) {
 	      ApiUtil.loadTodayFeeds();
 	    } else {
@@ -28366,13 +28421,18 @@
 	    });
 	  },
 	
+	  displayingToday: function () {
+	    return this.state.displayedFeedSourceId === FeedItemConstants.TODAY_FEEDS_ID;
+	  },
+	
 	  render: function () {
 	    var feedSource = FeedSourceStore.getFeedSourceById(this.state.displayedFeedSourceId);
 	    return React.createElement(
 	      'div',
 	      { className: 'viewFeeds' },
 	      React.createElement(ViewFeedsHeader, { displayedFeedSource: feedSource }),
-	      React.createElement(FeedItemsIndex, { displayedFeeds: this.state.displayedFeeds })
+	      React.createElement(FeedItemsIndex, { displayedFeeds: this.state.displayedFeeds,
+	        today: this.displayingToday() })
 	    );
 	  }
 	});
@@ -28385,7 +28445,7 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemStore = __webpack_require__(163);
-	var classNames = __webpack_require__(196);
+	var classNames = __webpack_require__(189);
 	var LinkedStateMixin = __webpack_require__(200);
 	
 	var ViewFeedsHeader = React.createClass({

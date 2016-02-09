@@ -203,6 +203,10 @@ $feedItemHeight: 2.2em;
   overflow: hidden;
 }
 
+.feedTitleHover:hover {
+  background-color: rgba(230, 230, 230, 0.5);
+}
+
 .feedTitle .categoryIcon {
   font-size: 1em;
   width: 5%;
@@ -219,11 +223,25 @@ $feedItemHeight: 2.2em;
   font-weight: 400;
   font-size: 12px;
   color: rgba(119, 119, 119, 1);
+  padding-left: 1em;
 }
 
 .feedTitle .title {
   width: 92%;
   height: $feedItemHeight;
+}
+
+.feedTitle .titleWithFeedSource {
+  width: 80%;
+  height: $feedItemHeight;
+}
+
+.feedTitle .feedTitleFeedSource {
+  width: 12%;
+  height: $feedItemHeight;
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(119, 119, 119, 1);
 }
 
 .feedTitle .daysOld {
@@ -234,6 +252,24 @@ $feedItemHeight: 2.2em;
   color: rgba(119, 119, 119, 1);
 }
 
+[data-icon]:before {
+  font-family: icons; /* BYO icon font, mapped smartly */
+  content: attr(data-icon);
+  speak: none; /* Not to be trusted, but hey. */
+  font-size: 30px;
+  color: red;
+}
+
+.icon-alone {
+  display: inline-block; /* Chrome 19 was weird with clickability without this */
+}
+
+.screen-reader-text { /* Reusable, toolbox kind of class */
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
 .summary {
   font-size: 12px;
   font-weight: 400;
@@ -242,6 +278,14 @@ $feedItemHeight: 2.2em;
 
 .form-group {
   padding: 5px;
+}
+
+.savedForLater {
+  background-color: rgba(243,250,242, 1);
+}
+
+.bookMarkHighlight:before {
+  color: green;
 }
 
 /* ADD NEW FEEDSOURCE BUTTON */

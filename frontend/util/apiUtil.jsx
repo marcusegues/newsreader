@@ -19,7 +19,6 @@ var ApiUtil = {
       url: 'api/session',
       data: {session: user},
       success: function(currentUser) {
-        debugger;
         window.CURRENT_USER_ID = currentUser.id;
         ApiActions.receiveCurrentUser(currentUser);
       }

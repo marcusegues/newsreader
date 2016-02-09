@@ -2,6 +2,7 @@ var React = require('react');
 var classNames = require('classnames');
 var ApiActions = require('../../actions/apiActions');
 var FeedItemConstants = require('../../constants/feedItemConstants');
+var FeedSourceConstants = require('../../constants/feedSourceConstants');
 
 var GeneralCategories = React.createClass({
   showTodayFeeds: function() {
@@ -20,7 +21,7 @@ var GeneralCategories = React.createClass({
       <div id="generalCategories">
         <div className="categoryItem" onClick={this.showTodayFeeds}>
           <span className="fa fa-bolt fa-fw categoryIcon verticalCenter"></span>
-          <div id={"categoryTitle"}>Today</div>
+          <div id={"categoryTitle"}>{FeedSourceConstants.RECENT_FEEDS_TITLE}</div>
         </div>
         <div className="categoryItem">
           <span className="fa fa-star-o fa-fw categoryIcon verticalCenter"></span>

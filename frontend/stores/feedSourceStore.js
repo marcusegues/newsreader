@@ -2,10 +2,12 @@ var Store = require('flux/utils').Store;
 var AppDispatcher = require('../dispatcher/dispatcher');
 var FeedSourceStore = new Store(AppDispatcher);
 var FeedSourceConstants = require('../constants/feedSourceConstants');
+var FeedItemConstants = require('../constants/feedItemConstants');
 var UserConstants = require('../constants/userConstants');
 
 var _feedSources = {};  // keys will be categories, values will be feed sources
-var _feedSourcesById = {0: {title: "Today"}};
+var _feedSourcesById = {};
+var _feedSourcesLoaded = false;
 
 var populate_feedSources = function(feedSources) {
   FeedSourceStore.getUniqueCategories(feedSources).forEach(function(category, idx_cat) {
@@ -16,6 +18,7 @@ var populate_feedSources = function(feedSources) {
       }
     });
   });
+  _feedSourcesById[FeedItemConstants.TODAY_FEEDS_ID] = {title: FeedSourceConstants.RECENT_FEEDS_TITLE};
   feedSources.forEach(function(feedSource) {
     _feedSourcesById[feedSource.id] = feedSource;
   });
@@ -49,10 +52,16 @@ FeedSourceStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case FeedSourceConstants.RECEIVED_FEED_SOURCES:
       populate_feedSources(payload.feedSources);
+      _feedSourcesLoaded = true;
       FeedSourceStore.__emitChange();
       break;
     case FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE:
       addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
+      FeedSourceStore.__emitChange();
+      break;
+    case UserConstants.USER_SIGNED_IN:
+      populate_feedSources(payload.currentUser.feedSources);
+      _feedSourcesLoaded = true;
       FeedSourceStore.__emitChange();
       break;
     case UserConstants.SIGN_OUT_USER:
@@ -63,10 +72,15 @@ FeedSourceStore.__onDispatch = function(payload) {
 var resetStore = function() {
   _feedSources = {};
   _feedSourcesById = {};
+  _feedSourcesLoaded = false;
 };
 
 FeedSourceStore.all = function() {
   return _feedSources;
+};
+
+FeedSourceStore.feedSourcesloaded = function() {
+  return _feedSourcesLoaded;
 };
 
 

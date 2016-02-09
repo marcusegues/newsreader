@@ -21,6 +21,10 @@ var Dashboard = React.createClass({
     //ApiUtil.fetchCurrentUser();
   },
 
+  componentDidMount: function() {
+
+  },
+
   handleUserSignOut: function() {
     var currentUser = UserStore.currentUser();
     if (currentUser === undefined) {

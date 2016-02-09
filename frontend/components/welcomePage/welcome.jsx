@@ -67,7 +67,6 @@ var Welcome = React.createClass({
   },
 
   componentDidMount: function(){
-    // debugger;
     // this.userListener = UserStore.addListener(this._newCurrentUser);
     // ApiUtil.fetchCurrentUser();
   },

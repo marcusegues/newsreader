@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151224065256) do
+ActiveRecord::Schema.define(version: 20160209141931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,16 +23,17 @@ ActiveRecord::Schema.define(version: 20151224065256) do
   end
 
   create_table "feed_items", force: :cascade do |t|
-    t.string   "title",          null: false
-    t.integer  "feed_source_id", null: false
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.string   "title",                           null: false
+    t.integer  "feed_source_id",                  null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.string   "author"
     t.string   "url"
-    t.date     "published"
-    t.date     "updated"
+    t.datetime "published"
+    t.datetime "updated"
     t.text     "summary"
     t.text     "content"
+    t.boolean  "saved_for_later", default: false
   end
 
   create_table "feed_sources", force: :cascade do |t|

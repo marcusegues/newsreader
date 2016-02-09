@@ -13,7 +13,9 @@ var CategoriesIndex = React.createClass({
 
   componentDidMount: function() {
     this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
-    ApiUtil.fetchUserFeedSources();
+    if (!FeedSourceStore.feedSourcesloaded()) {
+      ApiUtil.fetchUserFeedSources();
+    }
   },
 
   componentWillUnmount: function() {

@@ -1,6 +1,9 @@
 var React = require('react');
 var FeedItemStore = require('../../stores/feedItemStore');
+var FeedSourceStore = require('../../stores/feedSourceStore');
 var decodeEntities = require('./decodeEntities');
+var classNames = require('classnames');
+var ApiUtil = require('../../util/apiUtil');
 
 var FeedItem = React.createClass({
   getInitialState: function() {
@@ -25,12 +28,19 @@ var FeedItem = React.createClass({
                       this.props.feed.published;
 
     var days = (Date.now()/1000 - new Date(lastUpdated)/1000)/(24*3600);
-    debugger;
+
     if (days < 1) {
       return Math.floor(days*24) + "h";
     } else {
       return Math.floor(days) + "d";
     }
+  },
+
+  saveForLater: function(e) {
+    e.stopPropagation();
+    this.props.feed.saved_for_later = !this.props.feed.saved_for_later;
+    this.forceUpdate();
+    //ApiUtil.saveFeedForLater();
   },
 
   render: function() {
@@ -41,11 +51,38 @@ var FeedItem = React.createClass({
                   null;
     var daysOld = this.daysOld();
 
+    // this should be shown any time we need to display feeds from different feedSources (like when we
+    // display feeds from today or saved for later)
+    var showFeedSource = this.props.today ?
+      <span className="feedTitleFeedSource">{FeedSourceStore.getFeedSourceById(this.props.feed.feed_source_id).title}</span> :
+      null;
+
+    var titleClasses = classNames({
+      "title": !this.props.today,
+      "titleWithFeedSource": this.props.today
+    });
+
+    var feedTitleClasses = classNames({
+      "feedTitle": true,
+      "feedTitleHover": !this.props.feed.saved_for_later,
+      "savedForLater": this.props.feed.saved_for_later
+    });
+
+    var bookMarkIconClasses = classNames({
+      "fa": true,
+      "fa-bookmark-o": true,
+      "fa-fw": true,
+      "categoryIcon": true,
+      "verticalCenter": true,
+      "bookMarkHighlight": this.props.feed.saved_for_later
+    });
+
     return (
       <div>
-        <div className="feedTitle" onClick={this.toggleShowFeed}>
-          <span className="fa fa-bookmark-o fa-fw categoryIcon verticalCenter"></span>
-          <span className="title">{title}   <span className="summary">{summary}</span></span>
+        <div className={feedTitleClasses} onClick={this.toggleShowFeed}>
+          <span className={bookMarkIconClasses} onClick={this.saveForLater}></span>
+          {showFeedSource}
+          <span className={titleClasses}>{title}<span className="summary">{summary}</span></span>
           <span className="daysOld">{daysOld}</span>
         </div>
         <div className="displayed-feed"
