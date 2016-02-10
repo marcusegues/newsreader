@@ -18,6 +18,7 @@ class Api::FeedsourcesController < ApplicationController
   end
 
   def feeds
+    debugger;
     feedSourceId = params[:id]
     feedSource = FeedSource.find(feedSourceId)
     url = feedSource.url
@@ -43,7 +44,7 @@ class Api::FeedsourcesController < ApplicationController
       yComp = y.updated || y.published
       yComp <=> xComp
     end
-
+    debugger;
     render json: orderedFeeds
   end
 

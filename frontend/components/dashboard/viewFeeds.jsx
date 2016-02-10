@@ -1,15 +1,18 @@
 var React = require('react');
 var FeedItemsIndex = require('./feedItemsIndex');
 var ViewFeedsHeader = require('./viewFeedsHeader');
+var ViewFeedsNav = require('./viewFeedsNav');
 var FeedItemStore = require('../../stores/feedItemStore');
 var FeedSourceStore = require('../../stores/feedSourceStore');
 var FeedItemConstants = require('../../constants/feedItemConstants');
 var ApiUtil = require('../../util/apiUtil');
+var classNames = require('classnames');
 
 var ViewFeeds = React.createClass({
   getInitialState: function() {
     return {displayedFeeds: [],
-            displayedFeedSourceId: null};
+            displayedFeedSourceId: null,
+            scrollView: false};
   },
 
   componentDidMount: function() {
@@ -38,11 +41,29 @@ var ViewFeeds = React.createClass({
     return this.state.displayedFeedSourceId === FeedItemConstants.TODAY_FEEDS_ID;
   },
 
+  handleScroll: function(e) {
+    var scrollTop = e.target.scrollTop;
+    if (scrollTop > 27 && this.state.scrollView === false) {
+      this.setState({scrollView: true});
+    } else if (scrollTop < 27 && this.state.scrollView === true) {
+      this.setState({scrollView: false});
+    }
+  },
+
+  scrollToTop: function() {
+    this.refs.viewFeeds.scrollTop = 0;
+  },
+
   render: function() {
+
     var feedSource = FeedSourceStore.getFeedSourceById(this.state.displayedFeedSourceId);
+
     return (
-      <div className="viewFeeds">
-        <ViewFeedsHeader displayedFeedSource={feedSource}/>
+      <div className="viewFeeds" ref="viewFeeds" onScroll={this.handleScroll}>
+        <ViewFeedsNav displayedFeedSource={feedSource}
+                      scrollView={this.state.scrollView}
+                      scrollToTop={this.scrollToTop}/>
+        <ViewFeedsHeader displayedFeedSource={feedSource} scrollView={this.state.scrollView}/>
         <FeedItemsIndex displayedFeeds={this.state.displayedFeeds}
                         today={this.displayingToday()}/>
       </div>

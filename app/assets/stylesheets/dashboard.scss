@@ -47,10 +47,11 @@
   font-weight: 300;
   position: relative;
   float: left;
-  transition: width 0.3s ease-in;
   overflow-x: hidden;
   overflow-y: scroll;
   scroll-behavior: smooth;
+
+  transition: width 0.3s ease-in;
 }
 
 .sideBarShowTransition {
@@ -81,11 +82,22 @@
 .viewFeedsHeader {
   display: flex;
   flex-direction: row;
-  margin: 1.5em 0 1.5em 0;
   height: 4em;
   line-height: 4em;
 }
 
+.viewFeedsHeaderContainer {
+  margin: 1.2em 0 1.5em 0;
+}
+
+.viewFeedsHeaderSubTitle {
+  margin-top: -1.2em;
+  color: rgba(180,179,178, 1);
+}
+
+.viewFeedsHeader.scrollView {
+  visibility: hidden;
+}
 
 .viewFeedsHeader * {
   vertical-align: middle;
@@ -99,15 +111,18 @@
 }
 
 #viewFeedsHeaderTitle {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 700;
   vertical-align: middle;
+  flex-shrink: 1;
 }
+
 
 .viewFeedsHeaderNav {
   align-self: flex-end;
   margin-left: auto;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .viewFeedsHeaderNav li {
@@ -119,6 +134,42 @@
   margin: 0;
   height: 100%;
 }
+
+.viewFeedsNav {
+  font-size: 12px;
+  display: flex;
+  flex-direction: row;
+  height: 4em;
+  line-height: 4em;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: calc(100% - 22em);
+  padding: 0 2.5em;
+  border-bottom: 1px solid rgba(239,239,239, 1);
+  background-color: white;
+  visibility: hidden;
+}
+
+.viewFeedsNav.scrollView {
+  visibility: visible;
+}
+
+#viewFeedsNavTitle {
+  font-size: 13px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.viewFeedsNavSubTitle {
+  color: rgba(180,179,178, 1);
+  padding-left: 0.5em;
+}
+
+.viewFeedsNav .viewFeedsHeaderNav {
+  font-size: 10px;
+}
+
 
 /* Pin button */
 #pinButtonRow {
@@ -281,6 +332,10 @@ $feedItemHeight: 2.2em;
   font-size: 12px;
   font-weight: 400;
   color: rgba(119, 119, 119, 1);
+}
+
+.daysOld {
+  padding-right: 0.3em;
 }
 
 [data-icon]:before {
