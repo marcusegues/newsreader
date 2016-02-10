@@ -51,6 +51,13 @@ var ApiActions = {
       actionType: FeedItemConstants.RECEIVED_TODAY_FEEDS,
       todayFeeds: todayFeeds
     });
+  },
+
+  receiveSavedForLaterFeeds: function(savedForLaterFeeds) {
+    AppDispatcher.dispatch({
+      actionType: FeedItemConstants.RECEIVED_SAVED_FOR_LATER_FEEDS,
+      savedForLaterFeeds: savedForLaterFeeds
+    });
   }
 };
 

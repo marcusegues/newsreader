@@ -19813,7 +19813,7 @@
 	    e.stopPropagation();
 	    this.props.feed.saved_for_later = !this.props.feed.saved_for_later;
 	    this.forceUpdate();
-	    //ApiUtil.saveFeedForLater();
+	    ApiUtil.saveFeedForLater(this.props.feed.id);
 	  },
 	
 	  render: function () {
@@ -19845,6 +19845,7 @@
 	      "fa": true,
 	      "fa-bookmark-o": true,
 	      "fa-fw": true,
+	      // "icon-bookmark": true,
 	      "categoryIcon": true,
 	      "verticalCenter": true,
 	      "bookMarkHighlight": this.props.feed.saved_for_later
@@ -19919,6 +19920,11 @@
 	      _lastReceivedId = FeedItemConstants.TODAY_FEEDS_ID;
 	      _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.todayFeeds;
 	      loadedToday = true;
+	      FeedItemStore.__emitChange();
+	      break;
+	    case FeedItemConstants.RECEIVED_SAVED_FOR_LATER_FEEDS:
+	      _lastReceivedId = FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID;
+	      _feeds[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = payload.savedForLaterFeeds;
 	      FeedItemStore.__emitChange();
 	      break;
 	  }
@@ -26658,9 +26664,11 @@
 	var FeedItemConstants = {
 	  RECEIVED_FEEDS: "RECEIVED_FEEDS",
 	  CHANGE_DISPLAYED_FEEDS: "CHANGE_DISPLAYED_FEEDS",
-	  TODAY_FEEDS_ID: 0,
+	  TODAY_FEEDS_ID: "TODAY_FEEDS_ID",
+	  SAVED_FOR_LATER_FEEDS_ID: "SAVED_FOR_LATER_FEEDS_ID",
 	  RECEIVED_TODAY_FEEDS: "RECEIVED_TODAY_FEEDS",
-	  RECENT_FEED_DAYS: 7
+	  RECENT_FEED_DAYS: 7,
+	  RECEIVED_SAVED_FOR_LATER_FEEDS: "RECEIVED_SAVED_FOR_LATER_FEEDS"
 	};
 	
 	module.exports = FeedItemConstants;
@@ -26702,6 +26710,7 @@
 	    });
 	  });
 	  _feedSourcesById[FeedItemConstants.TODAY_FEEDS_ID] = { title: FeedSourceConstants.RECENT_FEEDS_TITLE };
+	  _feedSourcesById[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = { title: FeedSourceConstants.SAVED_FOR_LATER_FEEDS_TITLE };
 	  feedSources.forEach(function (feedSource) {
 	    _feedSourcesById[feedSource.id] = feedSource;
 	  });
@@ -26773,7 +26782,8 @@
 	var FeedSourceConstants = {
 	  RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES",
 	  RECEIVED_CREATED_FEED_SOURCE: "RECEIVED_CREATED_FEED_SOURCE",
-	  RECENT_FEEDS_TITLE: "This Week"
+	  RECENT_FEEDS_TITLE: "This Week",
+	  SAVED_FOR_LATER_FEEDS_TITLE: "Saved"
 	};
 	
 	module.exports = FeedSourceConstants;
@@ -26952,6 +26962,23 @@
 	        ApiActions.receiveTodayFeeds(todayFeeds);
 	      }
 	    });
+	  },
+	
+	  saveFeedForLater: function (feedId) {
+	    $.ajax({
+	      method: 'PATCH',
+	      url: 'api/saveForLater/' + feedId
+	    });
+	  },
+	
+	  fetchSavedForLater: function () {
+	    $.ajax({
+	      method: 'GET',
+	      url: 'api/savedForLater',
+	      success: function (savedForLaterFeeds) {
+	        ApiActions.receiveSavedForLaterFeeds(savedForLaterFeeds);
+	      }
+	    });
 	  }
 	};
 	
@@ -27013,6 +27040,13 @@
 	    AppDispatcher.dispatch({
 	      actionType: FeedItemConstants.RECEIVED_TODAY_FEEDS,
 	      todayFeeds: todayFeeds
+	    });
+	  },
+	
+	  receiveSavedForLaterFeeds: function (savedForLaterFeeds) {
+	    AppDispatcher.dispatch({
+	      actionType: FeedItemConstants.RECEIVED_SAVED_FOR_LATER_FEEDS,
+	      savedForLaterFeeds: savedForLaterFeeds
 	    });
 	  }
 	};
@@ -27714,6 +27748,7 @@
 
 	var React = __webpack_require__(1);
 	var classNames = __webpack_require__(189);
+	var ApiUtil = __webpack_require__(190);
 	var ApiActions = __webpack_require__(191);
 	var FeedItemConstants = __webpack_require__(184);
 	var FeedSourceConstants = __webpack_require__(187);
@@ -27723,6 +27758,10 @@
 	
 	  showTodayFeeds: function () {
 	    ApiActions.changeDisplayedFeeds(FeedItemConstants.TODAY_FEEDS_ID);
+	  },
+	
+	  showSavedForLater: function () {
+	    ApiUtil.fetchSavedForLater();
 	  },
 	
 	  render: function () {
@@ -27758,7 +27797,7 @@
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'categoryItem' },
+	        { className: 'categoryItem', onClick: this.showSavedForLater },
 	        React.createElement('span', { className: 'fa fa-bookmark-o fa-fw categoryIcon verticalCenter' }),
 	        React.createElement(
 	          'div',
@@ -28414,7 +28453,6 @@
 	  },
 	
 	  handleReceivedFeeds: function () {
-	    debugger;
 	    this.setState({
 	      displayedFeeds: FeedItemStore.lastReceivedFeeds(),
 	      displayedFeedSourceId: FeedItemStore.lastReceivedId()

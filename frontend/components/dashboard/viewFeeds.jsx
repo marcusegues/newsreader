@@ -28,7 +28,6 @@ var ViewFeeds = React.createClass({
   },
 
   handleReceivedFeeds: function() {
-    debugger;
     this.setState({
       displayedFeeds: FeedItemStore.lastReceivedFeeds(),
       displayedFeedSourceId: FeedItemStore.lastReceivedId()

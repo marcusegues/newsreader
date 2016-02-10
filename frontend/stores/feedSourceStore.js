@@ -19,6 +19,7 @@ var populate_feedSources = function(feedSources) {
     });
   });
   _feedSourcesById[FeedItemConstants.TODAY_FEEDS_ID] = {title: FeedSourceConstants.RECENT_FEEDS_TITLE};
+  _feedSourcesById[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = {title: FeedSourceConstants.SAVED_FOR_LATER_FEEDS_TITLE};
   feedSources.forEach(function(feedSource) {
     _feedSourcesById[feedSource.id] = feedSource;
   });

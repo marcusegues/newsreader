@@ -53,6 +53,20 @@ class Api::FeedsourcesController < ApplicationController
                      .where("feed_items.published BETWEEN ? AND ?", DateTime.now - 7.day, DateTime.now))
   end
 
+  def saveForLater
+    feedId = params[:id]
+    feed = FeedItem.find(feedId)
+    feed.saved_for_later = !feed.saved_for_later
+    feed.save!
+    render json: {}
+  end
+
+  def savedForLater
+    render json: sortFeeds(current_user.feeds
+                     .select("feed_items.*")
+                     .where("feed_items.saved_for_later = ?", true))
+  end
+
   private
   def feedSources_params
     params.require(:feedSource).permit(:title, :url, :category);

@@ -33,6 +33,11 @@ FeedItemStore.__onDispatch = function(payload) {
       loadedToday = true;
       FeedItemStore.__emitChange();
       break;
+    case FeedItemConstants.RECEIVED_SAVED_FOR_LATER_FEEDS:
+      _lastReceivedId = FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID;
+      _feeds[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = payload.savedForLaterFeeds;
+      FeedItemStore.__emitChange();
+      break;
   }
 };
 

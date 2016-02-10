@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     get '/current_user', to: 'application#current_user'
     get '/feeds/:id', to: 'feedsources#feeds'
     get '/todayFeeds', to: 'feedsources#todayFeeds'
+    patch '/saveForLater/:id', to: 'feedsources#saveForLater'
+    get '/savedForLater', to: 'feedsources#savedForLater'
   end
   resource :session, only: [:new, :create, :destroy]
   resources :users, only: [:new, :create, :show]

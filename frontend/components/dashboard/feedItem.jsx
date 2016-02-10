@@ -40,7 +40,7 @@ var FeedItem = React.createClass({
     e.stopPropagation();
     this.props.feed.saved_for_later = !this.props.feed.saved_for_later;
     this.forceUpdate();
-    //ApiUtil.saveFeedForLater();
+    ApiUtil.saveFeedForLater(this.props.feed.id);
   },
 
   render: function() {
@@ -72,6 +72,7 @@ var FeedItem = React.createClass({
       "fa": true,
       "fa-bookmark-o": true,
       "fa-fw": true,
+      // "icon-bookmark": true,
       "categoryIcon": true,
       "verticalCenter": true,
       "bookMarkHighlight": this.props.feed.saved_for_later

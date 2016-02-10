@@ -88,6 +88,23 @@ var ApiUtil = {
         ApiActions.receiveTodayFeeds(todayFeeds);
       }
     });
+  },
+
+  saveFeedForLater: function(feedId) {
+    $.ajax({
+      method: 'PATCH',
+      url: 'api/saveForLater/' + feedId,
+    });
+  },
+
+  fetchSavedForLater: function() {
+    $.ajax({
+      method: 'GET',
+      url: 'api/savedForLater',
+      success: function(savedForLaterFeeds) {
+        ApiActions.receiveSavedForLaterFeeds(savedForLaterFeeds);
+      }
+    });
   }
 };
 

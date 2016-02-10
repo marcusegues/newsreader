@@ -1,7 +1,8 @@
 var FeedSourceConstants = {
   RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES",
   RECEIVED_CREATED_FEED_SOURCE: "RECEIVED_CREATED_FEED_SOURCE",
-  RECENT_FEEDS_TITLE: "This Week"
+  RECENT_FEEDS_TITLE: "This Week",
+  SAVED_FOR_LATER_FEEDS_TITLE: "Saved"
 };
 
 module.exports = FeedSourceConstants;
