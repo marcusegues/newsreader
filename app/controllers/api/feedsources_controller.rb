@@ -1,4 +1,5 @@
 class Api::FeedsourcesController < ApplicationController
+
   def index
     if current_user.nil?
       render json: "Not logged in.", status: 401
@@ -18,12 +19,10 @@ class Api::FeedsourcesController < ApplicationController
   end
 
   def feeds
-    debugger;
     feedSourceId = params[:id]
     feedSource = FeedSource.find(feedSourceId)
     url = feedSource.url
     parsedFeed = Feedjira::Feed.fetch_and_parse url
-
     parsedFeed.entries.each do |feedItem|
       # uniqueness of FeedItem is based on it's url
       # the FeedItems in this loop will only be save to the database once
@@ -37,21 +36,18 @@ class Api::FeedsourcesController < ApplicationController
                        content: feedItem.content)
     end
 
-
     # orderedFeeds = sortFeeds(feedSource.feeds)
     orderedFeeds = feedSource.feeds.sort do |x,y|
       xComp = x.updated || x.published
       yComp = y.updated || y.published
       yComp <=> xComp
     end
-    debugger;
+
     render json: orderedFeeds
   end
 
-  def todayFeeds
-    render json: sortFeeds(current_user.feeds
-                     .select("feed_items.*")
-                     .where("feed_items.published BETWEEN ? AND ?", DateTime.now - 7.day, DateTime.now))
+  def initialData
+    render :initial_data
   end
 
   def saveForLater
@@ -59,13 +55,21 @@ class Api::FeedsourcesController < ApplicationController
     feed = FeedItem.find(feedId)
     feed.saved_for_later = !feed.saved_for_later
     feed.save!
-    render json: {}
+    render json: {}, status: 200
   end
 
   def savedForLater
     render json: sortFeeds(current_user.feeds
                      .select("feed_items.*")
                      .where("feed_items.saved_for_later = ?", true))
+  end
+
+  def setUnreadToFalse
+    feedId = params[:id]
+    feed = FeedItem.find(feedId)
+    feed.unread = false
+    feed.save!
+    render json: {}, status: 200
   end
 
   private

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160209141931) do
+ActiveRecord::Schema.define(version: 20160211112427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20160209141931) do
     t.text     "summary"
     t.text     "content"
     t.boolean  "saved_for_later", default: false
+    t.boolean  "unread",          default: true
   end
 
   create_table "feed_sources", force: :cascade do |t|

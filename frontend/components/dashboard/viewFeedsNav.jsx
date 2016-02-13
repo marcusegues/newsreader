@@ -14,7 +14,8 @@ var ViewFeedsNav = React.createClass({
 
     var navClasses = classNames({
       "viewFeedsNav": true,
-      "scrollView": this.props.scrollView
+      "scrollView": this.props.scrollView,
+      "expandLeft": this.props.shrinkSideBar
     });
 
     return (

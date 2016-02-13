@@ -42,7 +42,8 @@ var ViewFeedsHeader = React.createClass({
           </ul>
 
         </div>
-        <div className="viewFeedsHeaderSubTitle">60 Articles, 75 Unread</div>
+        <div className="viewFeedsHeaderSubTitle">
+          {FeedItemStore.unreadCount(this.props.displayedFeedSource === undefined ? null : this.props.displayedFeedSource.id)} unread articles</div>
       </div>
     );
   }

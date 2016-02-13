@@ -6,9 +6,9 @@ var ApiUtil = {
       method: 'POST',
       url: 'api/users',
       data: {user: newUser},
-      success: function(currentUser) {
-        window.CURRENT_USER_ID = currentUser.id;
-        ApiActions.receiveCurrentUser(currentUser);
+      success: function(initialData) {
+        window.CURRENT_USER_ID = initialData.id;
+        ApiActions.receiveCurrentUser(initialData);
       }
     });
   },
@@ -18,9 +18,10 @@ var ApiUtil = {
       method: 'POST',
       url: 'api/session',
       data: {session: user},
-      success: function(currentUser) {
-        window.CURRENT_USER_ID = currentUser.id;
-        ApiActions.receiveCurrentUser(currentUser);
+      success: function(initialData) {
+        debugger;
+        window.CURRENT_USER_ID = initialData.id;
+        ApiActions.receiveCurrentUser(initialData);
       }
     });
   },
@@ -80,12 +81,12 @@ var ApiUtil = {
     });
   },
 
-  loadTodayFeeds: function() {
+  loadInitialData: function() {
     $.ajax({
       method: 'GET',
-      url: 'api/todayFeeds',
-      success: function(todayFeeds) {
-        ApiActions.receiveTodayFeeds(todayFeeds);
+      url: 'api/initialData',
+      success: function(initialData) {
+        ApiActions.receiveInitialData(initialData);
       }
     });
   },
@@ -104,6 +105,13 @@ var ApiUtil = {
       success: function(savedForLaterFeeds) {
         ApiActions.receiveSavedForLaterFeeds(savedForLaterFeeds);
       }
+    });
+  },
+
+  setUnreadToFalse: function(feedId) {
+    $.ajax({
+      method: 'PATCH',
+      url: 'api/setUnreadToFalse/' + feedId,
     });
   }
 };

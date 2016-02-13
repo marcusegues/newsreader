@@ -6,7 +6,7 @@ var FeedItemConstants = require('../constants/feedItemConstants');
 var UserConstants = require('../constants/userConstants');
 
 var _feedSources = {};  // keys will be categories, values will be feed sources
-var _feedSourcesById = {};
+var _feedSourcesById = {}; //feedsourceid => feedsource, there are special keys for todayFeeds and savedForLaterFeeds
 var _feedSourcesLoaded = false;
 
 var populate_feedSources = function(feedSources) {
@@ -61,7 +61,7 @@ FeedSourceStore.__onDispatch = function(payload) {
       FeedSourceStore.__emitChange();
       break;
     case UserConstants.USER_SIGNED_IN:
-      populate_feedSources(payload.currentUser.feedSources);
+      populate_feedSources(payload.initialData.feedSources);
       _feedSourcesLoaded = true;
       FeedSourceStore.__emitChange();
       break;

@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  helper_method :signed_in?, :current_user, :sortFeeds
+  helper_method :signed_in?, :current_user, :sortFeeds, :allFeedSourcesUnreadCount, :countUnread, :todayFeeds
 
   def require_login
     unless signed_in?
@@ -39,5 +39,24 @@ class ApplicationController < ActionController::Base
     end
 
     return sortedFeeds
+  end
+
+  def allFeedSourcesUnreadCount
+    unreadCountHash = {}
+    current_user.feed_sources.includes(:feeds).each do |feedSource|
+      unreadCountHash[feedSource.id] = feedSource.feeds.to_a.count {|feed| feed.unread == true}
+    end
+
+    render json: unreadCountHash
+  end
+
+  def todayFeeds
+    sortFeeds(current_user.feeds
+                    .select("feed_items.*")
+                    .where("feed_items.published BETWEEN ? AND ?", DateTime.now - 7.day, DateTime.now))
+  end
+
+  def countUnread(feeds)
+    feeds.to_a.count {|feed| feed.unread == true}
   end
 end

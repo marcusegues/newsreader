@@ -4,17 +4,29 @@ var FeedSourceStore = require('../../stores/feedSourceStore');
 var decodeEntities = require('./decodeEntities');
 var classNames = require('classnames');
 var ApiUtil = require('../../util/apiUtil');
+var ApiActions = require('../../actions/apiActions');
 
 var FeedItem = React.createClass({
   getInitialState: function() {
     return {displayContent: false};
   },
 
-  componentWillReceiveProps: function() {
-    this.setState({displayContent: false});
+  componentWillReceiveProps: function(nextProps) {
+    if (nextProps.feed !== this.props.feed) {
+      this.setState({displayContent: false});
+    }
+  },
+
+  setUnreadToFalse: function() {
+    if (this.props.feed.unread === true) {
+      ApiActions.decrementUnread(this.props.feed.feed_source_id);
+      ApiUtil.setUnreadToFalse(this.props.feed.id);
+      this.props.feed.unread = false;
+    }
   },
 
   toggleShowFeed: function() {
+    this.setUnreadToFalse();
     this.setState({displayContent: !this.state.displayContent});
   },
 
@@ -53,7 +65,7 @@ var FeedItem = React.createClass({
 
     // this should be shown any time we need to display feeds from different feedSources (like when we
     // display feeds from today or saved for later)
-    debugger;
+
     var showFeedSource = this.props.today ?
       <span className="feedTitleFeedSource">{FeedSourceStore.getFeedSourceById(this.props.feed.feed_source_id).title}</span> :
       null;
@@ -62,9 +74,10 @@ var FeedItem = React.createClass({
       "title": !this.props.today,
       "titleWithFeedSource": this.props.today
     });
-
+    debugger;
     var feedTitleClasses = classNames({
       "feedTitle": true,
+      "unread": this.props.feed.unread,
       "feedTitleHover": !this.props.feed.saved_for_later,
       "savedForLater": this.props.feed.saved_for_later
     });

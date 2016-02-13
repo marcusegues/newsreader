@@ -19,9 +19,7 @@ var ViewFeeds = React.createClass({
     this.feedListener = FeedItemStore.addListener(this.handleReceivedFeeds);
     // If we are refreshing the page, today's feeds will not have been loaded, we must do it manually
     // Else, we have just signed in, in which case today's feeds were already received
-    if (!FeedItemStore.loadedToday()) {
-      ApiUtil.loadTodayFeeds();
-    } else {
+    if (FeedItemStore.loadedInitialData()) {
       this.handleReceivedFeeds();
     }
   },
@@ -62,7 +60,8 @@ var ViewFeeds = React.createClass({
       <div className="viewFeeds" ref="viewFeeds" onScroll={this.handleScroll}>
         <ViewFeedsNav displayedFeedSource={feedSource}
                       scrollView={this.state.scrollView}
-                      scrollToTop={this.scrollToTop}/>
+                      scrollToTop={this.scrollToTop}
+                      shrinkSideBar ={this.props.shrinkSideBar}/>
         <ViewFeedsHeader displayedFeedSource={feedSource} scrollView={this.state.scrollView}/>
         <FeedItemsIndex displayedFeeds={this.state.displayedFeeds}
                         today={this.displayingToday()}/>

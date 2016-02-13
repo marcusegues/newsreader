@@ -6,7 +6,6 @@ class Api::SessionsController < ApplicationController
       render json: ["couldn't find user"], status: 404
     else
       sign_in!(@user)
-      #render json: user
       render :signed_in
     end
   end

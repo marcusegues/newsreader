@@ -19696,12 +19696,54 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemsIndex = __webpack_require__(161);
+	var FeedItemStore = __webpack_require__(163);
 	var ApiUtil = __webpack_require__(190);
 	var UserStore = __webpack_require__(192);
 	var SideBarShow = __webpack_require__(193);
 	
 	var Dashboard = React.createClass({
 	  displayName: 'Dashboard',
+	
+	  getInitialState: function () {
+	    return {
+	      sideBarPinned: true,
+	      shrinkSideBar: false
+	    };
+	  },
+	
+	  clickedPinButton: function () {
+	    var newState = {
+	      sideBarPinned: !this.state.sideBarPinned
+	    };
+	
+	    if (this.state.sideBarPinned) {
+	      newState.shrinkSideBar = !this.state.shrinkSideBar;
+	      this.sideBarShowDiv.addEventListener('mouseover', this.expandSideBar);
+	    } else {
+	      this.sideBarShowDiv.removeEventListener('mouseout', this.shrinkSideBar);
+	    }
+	    this.setState(newState);
+	  },
+	
+	  shrinkSideBar: function () {
+	    // this.sideBarShowDiv.classList.add("sideBarShowTransition");
+	    this.setState({ shrinkSideBar: !this.state.shrinkSideBar });
+	    this.sideBarShowDiv.addEventListener('mouseover', this.expandSideBar);
+	  },
+	
+	  expandSideBar: function () {
+	    // this.sideBarShowDiv.classList.remove("sideBarShowTransition");
+	    this.setState({ shrinkSideBar: !this.state.shrinkSideBar });
+	    this.sideBarShowDiv.removeEventListener('mouseover', this.expandSideBar);
+	    this.sideBarShowDiv.addEventListener('mouseout', this.shrinkSideBar);
+	  },
+	
+	  componentDidMount: function () {
+	    this.sideBarShowDiv = this.refs.SideBar.refs.sideBarShow; //document.querySelector(".sideBarShow");
+	    if (!FeedItemStore.loadedInitialData()) {
+	      ApiUtil.loadInitialData();
+	    }
+	  },
 	
 	  componentWillMount: function () {
 	    if (window.CURRENT_USER_ID === -1) {
@@ -19718,8 +19760,6 @@
 	    //ApiUtil.fetchCurrentUser();
 	  },
 	
-	  componentDidMount: function () {},
-	
 	  handleUserSignOut: function () {
 	    var currentUser = UserStore.currentUser();
 	    if (currentUser === undefined) {
@@ -19732,11 +19772,18 @@
 	  },
 	
 	  render: function () {
+	
+	    var childrenWithProps = React.Children.map(this.props.children, (function (child) {
+	      return React.cloneElement(child, { shrinkSideBar: this.state.shrinkSideBar });
+	    }).bind(this));
+	
 	    return React.createElement(
 	      'div',
 	      { className: 'loggedInPage' },
-	      React.createElement(SideBarShow, null),
-	      this.props.children
+	      React.createElement(SideBarShow, { ref: 'SideBar', clickedPinButton: this.clickedPinButton,
+	        sideBarPinned: this.state.sideBarPinned,
+	        shrinkSideBar: this.state.shrinkSideBar }),
+	      childrenWithProps
 	    );
 	  }
 	});
@@ -19777,6 +19824,7 @@
 	var decodeEntities = __webpack_require__(188);
 	var classNames = __webpack_require__(189);
 	var ApiUtil = __webpack_require__(190);
+	var ApiActions = __webpack_require__(191);
 	
 	var FeedItem = React.createClass({
 	  displayName: 'FeedItem',
@@ -19785,11 +19833,22 @@
 	    return { displayContent: false };
 	  },
 	
-	  componentWillReceiveProps: function () {
-	    this.setState({ displayContent: false });
+	  componentWillReceiveProps: function (nextProps) {
+	    if (nextProps.feed !== this.props.feed) {
+	      this.setState({ displayContent: false });
+	    }
+	  },
+	
+	  setUnreadToFalse: function () {
+	    if (this.props.feed.unread === true) {
+	      ApiActions.decrementUnread(this.props.feed.feed_source_id);
+	      ApiUtil.setUnreadToFalse(this.props.feed.id);
+	      this.props.feed.unread = false;
+	    }
 	  },
 	
 	  toggleShowFeed: function () {
+	    this.setUnreadToFalse();
 	    this.setState({ displayContent: !this.state.displayContent });
 	  },
 	
@@ -19824,7 +19883,7 @@
 	
 	    // this should be shown any time we need to display feeds from different feedSources (like when we
 	    // display feeds from today or saved for later)
-	    debugger;
+	
 	    var showFeedSource = this.props.today ? React.createElement(
 	      'span',
 	      { className: 'feedTitleFeedSource' },
@@ -19835,9 +19894,10 @@
 	      "title": !this.props.today,
 	      "titleWithFeedSource": this.props.today
 	    });
-	
+	    debugger;
 	    var feedTitleClasses = classNames({
 	      "feedTitle": true,
+	      "unread": this.props.feed.unread,
 	      "feedTitleHover": !this.props.feed.saved_for_later,
 	      "savedForLater": this.props.feed.saved_for_later
 	    });
@@ -19898,7 +19958,17 @@
 	// Id 0 corresponds to Today's feeds
 	var _feeds = {};
 	var _lastReceivedId = undefined;
-	var loadedToday = false;
+	var _unreadCount = {};
+	var loadedInitialData = false;
+	
+	var handleInitialData = function (payload) {
+	  _lastReceivedId = FeedItemConstants.TODAY_FEEDS_ID;
+	  _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.initialData.todayFeeds;
+	  _unreadCount = JSON.parse(payload.initialData.unreadCount);
+	  debugger;
+	  _unreadCount[FeedItemConstants.TODAY_FEEDS_ID] = payload.initialData.todayFeedsUnreadCount;
+	  loadedInitialData = true;
+	};
 	
 	FeedItemStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
@@ -19912,15 +19982,11 @@
 	      FeedItemStore.__emitChange();
 	      break;
 	    case UserConstants.USER_SIGNED_IN:
-	      _lastReceivedId = FeedItemConstants.TODAY_FEEDS_ID;
-	      _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.currentUser.todayFeeds;
-	      loadedToday = true;
+	      handleInitialData(payload);
 	      FeedItemStore.__emitChange();
 	      break;
-	    case FeedItemConstants.RECEIVED_TODAY_FEEDS:
-	      _lastReceivedId = FeedItemConstants.TODAY_FEEDS_ID;
-	      _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.todayFeeds;
-	      loadedToday = true;
+	    case FeedItemConstants.RECEIVED_INITIAL_DATA:
+	      handleInitialData(payload);
 	      FeedItemStore.__emitChange();
 	      break;
 	    case FeedItemConstants.RECEIVED_SAVED_FOR_LATER_FEEDS:
@@ -19928,11 +19994,25 @@
 	      _feeds[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = payload.savedForLaterFeeds;
 	      FeedItemStore.__emitChange();
 	      break;
+	    case FeedItemConstants.INCREMENT_UNREAD:
+	      _unreadCount[payload.feedSourceId] += 1;
+	      FeedItemStore.__emitChange();
+	      break;
+	    case FeedItemConstants.DECREMENT_UNREAD:
+	      _unreadCount[payload.feedSourceId] -= 1;
+	      FeedItemStore.__emitChange();
+	      break;
 	  }
 	};
 	
-	FeedItemStore.loadedToday = function () {
-	  return loadedToday;
+	FeedItemStore.incrementUnread = function (feedSourceId) {
+	  _unreadCount[feedSourceId] += 1;
+	}, FeedItemStore.decrementUnread = function (feedSourceId) {
+	  _unreadCount[feedSourceId] -= 1;
+	}, FeedItemStore.unreadCount = function (feedSourceId) {
+	  return _unreadCount[feedSourceId];
+	}, FeedItemStore.loadedInitialData = function () {
+	  return loadedInitialData;
 	};
 	
 	FeedItemStore.all = function (feedSourceId) {
@@ -26667,9 +26747,11 @@
 	  CHANGE_DISPLAYED_FEEDS: "CHANGE_DISPLAYED_FEEDS",
 	  TODAY_FEEDS_ID: "TODAY_FEEDS_ID",
 	  SAVED_FOR_LATER_FEEDS_ID: "SAVED_FOR_LATER_FEEDS_ID",
-	  RECEIVED_TODAY_FEEDS: "RECEIVED_TODAY_FEEDS",
+	  RECEIVED_INITIAL_DATA: "RECEIVED_INITIAL_DATA",
 	  RECENT_FEED_DAYS: 7,
-	  RECEIVED_SAVED_FOR_LATER_FEEDS: "RECEIVED_SAVED_FOR_LATER_FEEDS"
+	  RECEIVED_SAVED_FOR_LATER_FEEDS: "RECEIVED_SAVED_FOR_LATER_FEEDS",
+	  INCREMENT_UNREAD: "INCREMENT_UNREAD",
+	  DECREMENT_UNREAD: "DECREMENT_UNREAD"
 	};
 	
 	module.exports = FeedItemConstants;
@@ -26698,7 +26780,7 @@
 	var UserConstants = __webpack_require__(185);
 	
 	var _feedSources = {}; // keys will be categories, values will be feed sources
-	var _feedSourcesById = {};
+	var _feedSourcesById = {}; //feedsourceid => feedsource, there are special keys for todayFeeds and savedForLaterFeeds
 	var _feedSourcesLoaded = false;
 	
 	var populate_feedSources = function (feedSources) {
@@ -26751,7 +26833,7 @@
 	      FeedSourceStore.__emitChange();
 	      break;
 	    case UserConstants.USER_SIGNED_IN:
-	      populate_feedSources(payload.currentUser.feedSources);
+	      populate_feedSources(payload.initialData.feedSources);
 	      _feedSourcesLoaded = true;
 	      FeedSourceStore.__emitChange();
 	      break;
@@ -26881,9 +26963,9 @@
 	      method: 'POST',
 	      url: 'api/users',
 	      data: { user: newUser },
-	      success: function (currentUser) {
-	        window.CURRENT_USER_ID = currentUser.id;
-	        ApiActions.receiveCurrentUser(currentUser);
+	      success: function (initialData) {
+	        window.CURRENT_USER_ID = initialData.id;
+	        ApiActions.receiveCurrentUser(initialData);
 	      }
 	    });
 	  },
@@ -26893,9 +26975,10 @@
 	      method: 'POST',
 	      url: 'api/session',
 	      data: { session: user },
-	      success: function (currentUser) {
-	        window.CURRENT_USER_ID = currentUser.id;
-	        ApiActions.receiveCurrentUser(currentUser);
+	      success: function (initialData) {
+	        debugger;
+	        window.CURRENT_USER_ID = initialData.id;
+	        ApiActions.receiveCurrentUser(initialData);
 	      }
 	    });
 	  },
@@ -26955,12 +27038,12 @@
 	    });
 	  },
 	
-	  loadTodayFeeds: function () {
+	  loadInitialData: function () {
 	    $.ajax({
 	      method: 'GET',
-	      url: 'api/todayFeeds',
-	      success: function (todayFeeds) {
-	        ApiActions.receiveTodayFeeds(todayFeeds);
+	      url: 'api/initialData',
+	      success: function (initialData) {
+	        ApiActions.receiveInitialData(initialData);
 	      }
 	    });
 	  },
@@ -26980,6 +27063,13 @@
 	        ApiActions.receiveSavedForLaterFeeds(savedForLaterFeeds);
 	      }
 	    });
+	  },
+	
+	  setUnreadToFalse: function (feedId) {
+	    $.ajax({
+	      method: 'PATCH',
+	      url: 'api/setUnreadToFalse/' + feedId
+	    });
 	  }
 	};
 	
@@ -26995,10 +27085,10 @@
 	var UserConstants = __webpack_require__(185);
 	
 	var ApiActions = {
-	  receiveCurrentUser: function (currentUser) {
+	  receiveCurrentUser: function (initialData) {
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.USER_SIGNED_IN,
-	      currentUser: currentUser
+	      initialData: initialData
 	    });
 	  },
 	
@@ -27037,10 +27127,10 @@
 	    });
 	  },
 	
-	  receiveTodayFeeds: function (todayFeeds) {
+	  receiveInitialData: function (initialData) {
 	    AppDispatcher.dispatch({
-	      actionType: FeedItemConstants.RECEIVED_TODAY_FEEDS,
-	      todayFeeds: todayFeeds
+	      actionType: FeedItemConstants.RECEIVED_INITIAL_DATA,
+	      initialData: initialData
 	    });
 	  },
 	
@@ -27048,6 +27138,20 @@
 	    AppDispatcher.dispatch({
 	      actionType: FeedItemConstants.RECEIVED_SAVED_FOR_LATER_FEEDS,
 	      savedForLaterFeeds: savedForLaterFeeds
+	    });
+	  },
+	
+	  incrementUnread: function (feedSourceId) {
+	    AppDispatcher.dispatch({
+	      actionType: FeedItemConstants.INCREMENT_UNREAD,
+	      feedSourceId: feedSourceId
+	    });
+	  },
+	
+	  decrementUnread: function (feedSourceId) {
+	    AppDispatcher.dispatch({
+	      actionType: FeedItemConstants.DECREMENT_UNREAD,
+	      feedSourceId: feedSourceId
 	    });
 	  }
 	};
@@ -27096,58 +27200,20 @@
 	var SideBarShow = React.createClass({
 	  displayName: 'SideBarShow',
 	
-	  getInitialState: function () {
-	    return {
-	      pinned: true,
-	      shrinkSideBar: false
-	    };
-	  },
-	
-	  clickedPinButton: function () {
-	    var newState = {
-	      pinned: !this.state.pinned
-	    };
-	
-	    if (this.state.pinned) {
-	      newState.shrinkSideBar = !this.state.shrinkSideBar;
-	      this.sideBarShowDiv.addEventListener('mouseover', this.expandSideBar);
-	    } else {
-	      this.sideBarShowDiv.removeEventListener('mouseout', this.shrinkSideBar);
-	    }
-	    this.setState(newState);
-	  },
-	
-	  shrinkSideBar: function () {
-	    // this.sideBarShowDiv.classList.add("sideBarShowTransition");
-	    this.setState({ shrinkSideBar: !this.state.shrinkSideBar });
-	    this.sideBarShowDiv.addEventListener('mouseover', this.expandSideBar);
-	  },
-	
-	  expandSideBar: function () {
-	    // this.sideBarShowDiv.classList.remove("sideBarShowTransition");
-	    this.setState({ shrinkSideBar: !this.state.shrinkSideBar });
-	    this.sideBarShowDiv.removeEventListener('mouseover', this.expandSideBar);
-	    this.sideBarShowDiv.addEventListener('mouseout', this.shrinkSideBar);
-	  },
-	
-	  componentDidMount: function () {
-	    this.sideBarShowDiv = document.querySelector(".sideBarShow");
-	  },
-	
 	  render: function () {
 	    var sideBarClasses = classNames({
 	      sideBarShow: true,
-	      sideBarShowTransition: this.state.shrinkSideBar
+	      sideBarShowTransition: this.props.shrinkSideBar
 	    });
 	
 	    var sideBarContentClasses = classNames({
 	      sideBarContent: true,
-	      sideBarContentTransition: this.state.shrinkSideBar
+	      sideBarContentTransition: this.props.shrinkSideBar
 	    });
 	
 	    return React.createElement(
 	      'div',
-	      { className: sideBarClasses },
+	      { className: sideBarClasses, ref: 'sideBarShow' },
 	      React.createElement(
 	        'div',
 	        { className: sideBarContentClasses },
@@ -27156,8 +27222,9 @@
 	          { id: 'pinButtonRow' },
 	          React.createElement(
 	            'div',
-	            { onClick: this.clickedPinButton, id: 'pinButton' },
-	            this.state.pinned ? "Unpin" : "Pin"
+	            { onClick: this.props.clickedPinButton,
+	              id: 'pinButton' },
+	            this.props.sideBarPinned ? "Unpin" : "Pin"
 	          )
 	        ),
 	        React.createElement(GeneralCategories, null),
@@ -27241,17 +27308,26 @@
 	  displayName: 'FeedSourceItem',
 	
 	  getInitialState: function () {
-	    return { clicked: false, feeds: [] };
+	    return { clicked: false, unreadCount: 0 };
 	  },
 	
 	  componentWillMount: function () {
 	    FeedItemStore.addListener(this.handleReceivedFeeds);
 	  },
 	
+	  componentDidMount: function () {
+	    if (FeedItemStore.loadedInitialData) {
+	      this.handleReceivedFeeds();
+	    }
+	  },
+	
 	  handleReceivedFeeds: function () {
-	    if (this.props.feedSource.id === FeedItemStore.lastReceivedId())
-	      // used for displaying the number of feeds
-	      this.setState({ feeds: FeedItemStore.all(this.props.feedSource.id) });
+	    this.setState({ unreadCount: FeedItemStore.unreadCount(this.props.feedSource.id) });
+	    //   if (this.props.feedSource.id === FeedItemStore.lastReceivedId())
+	    //     // used for displaying the number of feeds
+	    //     // this.setState({feeds: FeedItemStore.all(this.props.feedSource.id)});
+	    //     this.setState({unreadCount: FeedItemStore.unreadCount(this.props.feedSource.id)});
+	    // },
 	  },
 	
 	  handleClick: function () {
@@ -27282,7 +27358,7 @@
 	      React.createElement(
 	        'span',
 	        { className: 'feedSourceItemCount' },
-	        this.state.feeds.length
+	        this.state.unreadCount
 	      )
 	    );
 	  }
@@ -28445,9 +28521,7 @@
 	    this.feedListener = FeedItemStore.addListener(this.handleReceivedFeeds);
 	    // If we are refreshing the page, today's feeds will not have been loaded, we must do it manually
 	    // Else, we have just signed in, in which case today's feeds were already received
-	    if (!FeedItemStore.loadedToday()) {
-	      ApiUtil.loadTodayFeeds();
-	    } else {
+	    if (FeedItemStore.loadedInitialData()) {
 	      this.handleReceivedFeeds();
 	    }
 	  },
@@ -28489,7 +28563,8 @@
 	      { className: 'viewFeeds', ref: 'viewFeeds', onScroll: this.handleScroll },
 	      React.createElement(ViewFeedsNav, { displayedFeedSource: feedSource,
 	        scrollView: this.state.scrollView,
-	        scrollToTop: this.scrollToTop }),
+	        scrollToTop: this.scrollToTop,
+	        shrinkSideBar: this.props.shrinkSideBar }),
 	      React.createElement(ViewFeedsHeader, { displayedFeedSource: feedSource, scrollView: this.state.scrollView }),
 	      React.createElement(FeedItemsIndex, { displayedFeeds: this.state.displayedFeeds,
 	        today: this.displayingToday() })
@@ -28558,7 +28633,8 @@
 	      React.createElement(
 	        'div',
 	        { className: 'viewFeedsHeaderSubTitle' },
-	        '60 Articles, 75 Unread'
+	        FeedItemStore.unreadCount(this.props.displayedFeedSource === undefined ? null : this.props.displayedFeedSource.id),
+	        ' unread articles'
 	      )
 	    );
 	  }
@@ -28587,7 +28663,8 @@
 	
 	    var navClasses = classNames({
 	      "viewFeedsNav": true,
-	      "scrollView": this.props.scrollView
+	      "scrollView": this.props.scrollView,
+	      "expandLeft": this.props.shrinkSideBar
 	    });
 	
 	    return React.createElement(

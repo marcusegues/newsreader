@@ -4,10 +4,10 @@ var FeedItemConstants = require('../constants/feedItemConstants');
 var UserConstants = require('../constants/userConstants');
 
 var ApiActions = {
-  receiveCurrentUser: function(currentUser){
+  receiveCurrentUser: function(initialData){
     AppDispatcher.dispatch({
       actionType: UserConstants.USER_SIGNED_IN,
-      currentUser: currentUser
+      initialData: initialData
     });
   },
 
@@ -46,10 +46,10 @@ var ApiActions = {
     });
   },
 
-  receiveTodayFeeds: function(todayFeeds) {
+  receiveInitialData: function(initialData) {
     AppDispatcher.dispatch({
-      actionType: FeedItemConstants.RECEIVED_TODAY_FEEDS,
-      todayFeeds: todayFeeds
+      actionType: FeedItemConstants.RECEIVED_INITIAL_DATA,
+      initialData: initialData
     });
   },
 
@@ -57,6 +57,20 @@ var ApiActions = {
     AppDispatcher.dispatch({
       actionType: FeedItemConstants.RECEIVED_SAVED_FOR_LATER_FEEDS,
       savedForLaterFeeds: savedForLaterFeeds
+    });
+  },
+
+  incrementUnread: function(feedSourceId) {
+    AppDispatcher.dispatch({
+      actionType: FeedItemConstants.INCREMENT_UNREAD,
+      feedSourceId: feedSourceId
+    });
+  },
+
+  decrementUnread: function(feedSourceId) {
+    AppDispatcher.dispatch({
+      actionType: FeedItemConstants.DECREMENT_UNREAD,
+      feedSourceId: feedSourceId
     });
   }
 };
