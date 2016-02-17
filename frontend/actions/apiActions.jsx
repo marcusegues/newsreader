@@ -5,6 +5,7 @@ var UserConstants = require('../constants/userConstants');
 
 var ApiActions = {
   receiveCurrentUser: function(initialData){
+    debugger;
     AppDispatcher.dispatch({
       actionType: UserConstants.USER_SIGNED_IN,
       initialData: initialData

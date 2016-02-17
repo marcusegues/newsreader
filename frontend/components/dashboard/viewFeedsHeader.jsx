@@ -1,5 +1,6 @@
 var React = require('react');
 var FeedItemStore = require('../../stores/feedItemStore');
+var FeedSourceStore = require('../../stores/feedSourceStore');
 var classNames = require('classnames');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
 
@@ -9,6 +10,14 @@ var ViewFeedsHeader = React.createClass({
   getInitialState: function() {
     return {search: ""};
   },
+
+  // componentDidMount: function() {
+  //   this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
+  // },
+  //
+  // componentWillUnmount: function() {
+  //   this.feedStoreListener.remove();
+  // },
 
   render: function() {
     var iconClasses = classNames({
@@ -43,7 +52,11 @@ var ViewFeedsHeader = React.createClass({
 
         </div>
         <div className="viewFeedsHeaderSubTitle">
-          {FeedItemStore.unreadCount(this.props.displayedFeedSource === undefined ? null : this.props.displayedFeedSource.id)} unread articles</div>
+          {FeedItemStore.unreadCount(this.props.displayedFeedSource === undefined ?
+                                     null :
+                                     this.props.displayedFeedSource.id)}
+          {" unread articles"}
+        </div>
       </div>
     );
   }

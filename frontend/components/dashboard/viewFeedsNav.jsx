@@ -24,7 +24,14 @@ var ViewFeedsNav = React.createClass({
                                        null :
                                        this.props.displayedFeedSource.title}
         </div>
-        <div className="viewFeedsNavSubTitle">60 Articles, 75 Unread</div>
+
+        <div className="viewFeedsNavSubTitle">
+          {FeedItemStore.unreadCount(this.props.displayedFeedSource === undefined ?
+                                     null :
+                                     this.props.displayedFeedSource.id)}
+          {" unread articles"}
+        </div>
+        
         <ul className="viewFeedsHeaderNav">
           <li className="fa fa-check categoryIcon verticalCenter"></li>
           <li className="fa fa-refresh categoryIcon verticalCenter"></li>

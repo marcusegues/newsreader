@@ -1,8 +1,10 @@
 todayFeedsAR = todayFeeds
 
+json.extract! @user, :id
+
 json.todayFeeds todayFeedsAR
 
-json.feedSources current_user.feed_sources
+json.feedSources @user.feed_sources
 
 json.unreadCount allFeedSourcesUnreadCount
 

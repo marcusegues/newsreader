@@ -8,6 +8,7 @@ var currentUser = undefined;
 UserStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case UserConstants.USER_SIGNED_IN:
+    debugger;
       currentUser = payload.currentUser;
       UserStore.__emitChange();
       break;

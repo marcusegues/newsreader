@@ -18,8 +18,8 @@ var populate_feedSources = function(feedSources) {
       }
     });
   });
-  _feedSourcesById[FeedItemConstants.TODAY_FEEDS_ID] = {title: FeedSourceConstants.RECENT_FEEDS_TITLE};
-  _feedSourcesById[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = {title: FeedSourceConstants.SAVED_FOR_LATER_FEEDS_TITLE};
+  _feedSourcesById[FeedItemConstants.TODAY_FEEDS_ID] = {title: FeedSourceConstants.RECENT_FEEDS_TITLE, id: FeedItemConstants.TODAY_FEEDS_ID};
+  _feedSourcesById[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = {title: FeedSourceConstants.SAVED_FOR_LATER_FEEDS_TITLE, id: FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID};
   feedSources.forEach(function(feedSource) {
     _feedSourcesById[feedSource.id] = feedSource;
   });
@@ -60,7 +60,13 @@ FeedSourceStore.__onDispatch = function(payload) {
       addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
       FeedSourceStore.__emitChange();
       break;
+    // case FeedItemConstants.RECEIVED_INITIAL_DATA:
+    //   populate_feedSources(payload.initialData.feedSources);
+    //   _feedSourcesLoaded = true;
+    //   FeedSourceStore.__emitChange();
+    //   break;
     case UserConstants.USER_SIGNED_IN:
+      debugger;
       populate_feedSources(payload.initialData.feedSources);
       _feedSourcesLoaded = true;
       FeedSourceStore.__emitChange();
@@ -80,7 +86,7 @@ FeedSourceStore.all = function() {
   return _feedSources;
 };
 
-FeedSourceStore.feedSourcesloaded = function() {
+FeedSourceStore.feedSourcesLoaded = function() {
   return _feedSourcesLoaded;
 };
 

@@ -66,7 +66,7 @@ var FeedItem = React.createClass({
     // this should be shown any time we need to display feeds from different feedSources (like when we
     // display feeds from today or saved for later)
 
-    var showFeedSource = this.props.today ?
+    var showFeedSource = (this.props.today && FeedSourceStore.feedSourcesLoaded()) ?
       <span className="feedTitleFeedSource">{FeedSourceStore.getFeedSourceById(this.props.feed.feed_source_id).title}</span> :
       null;
 
@@ -74,7 +74,7 @@ var FeedItem = React.createClass({
       "title": !this.props.today,
       "titleWithFeedSource": this.props.today
     });
-    debugger;
+
     var feedTitleClasses = classNames({
       "feedTitle": true,
       "unread": this.props.feed.unread,

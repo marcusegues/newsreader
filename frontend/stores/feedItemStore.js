@@ -15,7 +15,6 @@ var handleInitialData = function(payload) {
   _lastReceivedId = FeedItemConstants.TODAY_FEEDS_ID;
   _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.initialData.todayFeeds;
   _unreadCount = JSON.parse(payload.initialData.unreadCount);
-  debugger;
   _unreadCount[FeedItemConstants.TODAY_FEEDS_ID] = payload.initialData.todayFeedsUnreadCount;
   loadedInitialData = true;
 };
@@ -32,6 +31,7 @@ FeedItemStore.__onDispatch = function(payload) {
       FeedItemStore.__emitChange();
       break;
     case UserConstants.USER_SIGNED_IN:
+    debugger;
       handleInitialData(payload);
       FeedItemStore.__emitChange();
       break;

@@ -53,15 +53,7 @@ var Dashboard = React.createClass({
     if (window.CURRENT_USER_ID === -1) {
       this.props.history.pushState(null, '/');
     }
-    // if (UserStore.currentUser() === undefined) {
-    //   ApiUtil.fetchCurrentUser();
-    //   if (UserStore.currentUser() === undefined) {
-    //     window.CURRENT_USER_ID = -1;
-    //     this.props.history.pushState(null, '/');
-    //   }
-    // }
     this.userListener = UserStore.addListener(this.handleUserSignOut);
-    //ApiUtil.fetchCurrentUser();
   },
 
   handleUserSignOut: function() {

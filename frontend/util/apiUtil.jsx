@@ -7,6 +7,7 @@ var ApiUtil = {
       url: 'api/users',
       data: {user: newUser},
       success: function(initialData) {
+        debugger;
         window.CURRENT_USER_ID = initialData.id;
         ApiActions.receiveCurrentUser(initialData);
       }

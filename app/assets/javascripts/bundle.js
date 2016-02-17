@@ -19749,15 +19749,7 @@
 	    if (window.CURRENT_USER_ID === -1) {
 	      this.props.history.pushState(null, '/');
 	    }
-	    // if (UserStore.currentUser() === undefined) {
-	    //   ApiUtil.fetchCurrentUser();
-	    //   if (UserStore.currentUser() === undefined) {
-	    //     window.CURRENT_USER_ID = -1;
-	    //     this.props.history.pushState(null, '/');
-	    //   }
-	    // }
 	    this.userListener = UserStore.addListener(this.handleUserSignOut);
-	    //ApiUtil.fetchCurrentUser();
 	  },
 	
 	  handleUserSignOut: function () {
@@ -19884,7 +19876,7 @@
 	    // this should be shown any time we need to display feeds from different feedSources (like when we
 	    // display feeds from today or saved for later)
 	
-	    var showFeedSource = this.props.today ? React.createElement(
+	    var showFeedSource = this.props.today && FeedSourceStore.feedSourcesLoaded() ? React.createElement(
 	      'span',
 	      { className: 'feedTitleFeedSource' },
 	      FeedSourceStore.getFeedSourceById(this.props.feed.feed_source_id).title
@@ -19894,7 +19886,7 @@
 	      "title": !this.props.today,
 	      "titleWithFeedSource": this.props.today
 	    });
-	    debugger;
+	
 	    var feedTitleClasses = classNames({
 	      "feedTitle": true,
 	      "unread": this.props.feed.unread,
@@ -19965,7 +19957,6 @@
 	  _lastReceivedId = FeedItemConstants.TODAY_FEEDS_ID;
 	  _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.initialData.todayFeeds;
 	  _unreadCount = JSON.parse(payload.initialData.unreadCount);
-	  debugger;
 	  _unreadCount[FeedItemConstants.TODAY_FEEDS_ID] = payload.initialData.todayFeedsUnreadCount;
 	  loadedInitialData = true;
 	};
@@ -19982,6 +19973,7 @@
 	      FeedItemStore.__emitChange();
 	      break;
 	    case UserConstants.USER_SIGNED_IN:
+	      debugger;
 	      handleInitialData(payload);
 	      FeedItemStore.__emitChange();
 	      break;
@@ -26792,8 +26784,8 @@
 	      }
 	    });
 	  });
-	  _feedSourcesById[FeedItemConstants.TODAY_FEEDS_ID] = { title: FeedSourceConstants.RECENT_FEEDS_TITLE };
-	  _feedSourcesById[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = { title: FeedSourceConstants.SAVED_FOR_LATER_FEEDS_TITLE };
+	  _feedSourcesById[FeedItemConstants.TODAY_FEEDS_ID] = { title: FeedSourceConstants.RECENT_FEEDS_TITLE, id: FeedItemConstants.TODAY_FEEDS_ID };
+	  _feedSourcesById[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = { title: FeedSourceConstants.SAVED_FOR_LATER_FEEDS_TITLE, id: FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID };
 	  feedSources.forEach(function (feedSource) {
 	    _feedSourcesById[feedSource.id] = feedSource;
 	  });
@@ -26832,7 +26824,13 @@
 	      addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
 	      FeedSourceStore.__emitChange();
 	      break;
+	    // case FeedItemConstants.RECEIVED_INITIAL_DATA:
+	    //   populate_feedSources(payload.initialData.feedSources);
+	    //   _feedSourcesLoaded = true;
+	    //   FeedSourceStore.__emitChange();
+	    //   break;
 	    case UserConstants.USER_SIGNED_IN:
+	      debugger;
 	      populate_feedSources(payload.initialData.feedSources);
 	      _feedSourcesLoaded = true;
 	      FeedSourceStore.__emitChange();
@@ -26852,7 +26850,7 @@
 	  return _feedSources;
 	};
 	
-	FeedSourceStore.feedSourcesloaded = function () {
+	FeedSourceStore.feedSourcesLoaded = function () {
 	  return _feedSourcesLoaded;
 	};
 	
@@ -26964,6 +26962,7 @@
 	      url: 'api/users',
 	      data: { user: newUser },
 	      success: function (initialData) {
+	        debugger;
 	        window.CURRENT_USER_ID = initialData.id;
 	        ApiActions.receiveCurrentUser(initialData);
 	      }
@@ -27086,6 +27085,7 @@
 	
 	var ApiActions = {
 	  receiveCurrentUser: function (initialData) {
+	    debugger;
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.USER_SIGNED_IN,
 	      initialData: initialData
@@ -27172,6 +27172,7 @@
 	UserStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case UserConstants.USER_SIGNED_IN:
+	      debugger;
 	      currentUser = payload.currentUser;
 	      UserStore.__emitChange();
 	      break;
@@ -27258,7 +27259,7 @@
 	
 	  componentDidMount: function () {
 	    this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
-	    if (!FeedSourceStore.feedSourcesloaded()) {
+	    if (!FeedSourceStore.feedSourcesLoaded()) {
 	      ApiUtil.fetchUserFeedSources();
 	    }
 	  },
@@ -28519,15 +28520,18 @@
 	
 	  componentDidMount: function () {
 	    this.feedListener = FeedItemStore.addListener(this.handleReceivedFeeds);
+	    // this.feedSourceListener = FeedSourceStore.addListener(this.handleReceivedFeeds);
 	    // If we are refreshing the page, today's feeds will not have been loaded, we must do it manually
 	    // Else, we have just signed in, in which case today's feeds were already received
 	    if (FeedItemStore.loadedInitialData()) {
+	      debugger;
 	      this.handleReceivedFeeds();
 	    }
 	  },
 	
 	  componentWillUnmount: function () {
 	    this.feedListener.remove();
+	    // this.feedSourceListener.remove();
 	  },
 	
 	  handleReceivedFeeds: function () {
@@ -28555,7 +28559,6 @@
 	  },
 	
 	  render: function () {
-	
 	    var feedSource = FeedSourceStore.getFeedSourceById(this.state.displayedFeedSourceId);
 	
 	    return React.createElement(
@@ -28580,6 +28583,7 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemStore = __webpack_require__(163);
+	var FeedSourceStore = __webpack_require__(186);
 	var classNames = __webpack_require__(189);
 	var LinkedStateMixin = __webpack_require__(200);
 	
@@ -28591,6 +28595,14 @@
 	  getInitialState: function () {
 	    return { search: "" };
 	  },
+	
+	  // componentDidMount: function() {
+	  //   this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
+	  // },
+	  //
+	  // componentWillUnmount: function() {
+	  //   this.feedStoreListener.remove();
+	  // },
 	
 	  render: function () {
 	    var iconClasses = classNames({
@@ -28634,7 +28646,7 @@
 	        'div',
 	        { className: 'viewFeedsHeaderSubTitle' },
 	        FeedItemStore.unreadCount(this.props.displayedFeedSource === undefined ? null : this.props.displayedFeedSource.id),
-	        ' unread articles'
+	        " unread articles"
 	      )
 	    );
 	  }
@@ -28678,7 +28690,8 @@
 	      React.createElement(
 	        'div',
 	        { className: 'viewFeedsNavSubTitle' },
-	        '60 Articles, 75 Unread'
+	        FeedItemStore.unreadCount(this.props.displayedFeedSource === undefined ? null : this.props.displayedFeedSource.id),
+	        " unread articles"
 	      ),
 	      React.createElement(
 	        'ul',

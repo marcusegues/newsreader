@@ -17,15 +17,18 @@ var ViewFeeds = React.createClass({
 
   componentDidMount: function() {
     this.feedListener = FeedItemStore.addListener(this.handleReceivedFeeds);
+    // this.feedSourceListener = FeedSourceStore.addListener(this.handleReceivedFeeds);
     // If we are refreshing the page, today's feeds will not have been loaded, we must do it manually
     // Else, we have just signed in, in which case today's feeds were already received
     if (FeedItemStore.loadedInitialData()) {
+      debugger;
       this.handleReceivedFeeds();
     }
   },
 
   componentWillUnmount: function () {
     this.feedListener.remove();
+    // this.feedSourceListener.remove();
   },
 
   handleReceivedFeeds: function() {
@@ -53,7 +56,6 @@ var ViewFeeds = React.createClass({
   },
 
   render: function() {
-
     var feedSource = FeedSourceStore.getFeedSourceById(this.state.displayedFeedSourceId);
 
     return (
