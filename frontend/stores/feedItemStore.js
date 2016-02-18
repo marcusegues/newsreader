@@ -1,8 +1,10 @@
 var Store = require('flux/utils').Store;
 var AppDispatcher = require('../dispatcher/dispatcher');
 var FeedItemStore = new Store(AppDispatcher);
+var FeedSourceConstants = require('../constants/feedSourceConstants');
 var FeedItemConstants = require('../constants/feedItemConstants');
 var UserConstants = require('../constants/userConstants');
+var usefulFunctions = require('../util/usefulFunctions');
 
 // feedSourceId => array of feeds
 // Id 0 corresponds to Today's feeds
@@ -22,8 +24,10 @@ var handleInitialData = function(payload) {
 FeedItemStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case FeedItemConstants.RECEIVED_FEEDS:
-      _feeds[payload.feedSourceId] = payload.feeds;
       _lastReceivedId = payload.feedSourceId;
+      _feeds[payload.feedSourceId] = payload.feedsData.feeds;
+      usefulFunctions.updateObject(_unreadCount, JSON.parse(payload.feedsData.unreadCount));
+      debugger;
       FeedItemStore.__emitChange();
       break;
     case FeedItemConstants.CHANGE_DISPLAYED_FEEDS:

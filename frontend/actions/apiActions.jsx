@@ -3,6 +3,7 @@ var FeedSourceConstants = require('../constants/feedSourceConstants');
 var FeedItemConstants = require('../constants/feedItemConstants');
 var UserConstants = require('../constants/userConstants');
 
+
 var ApiActions = {
   receiveCurrentUser: function(initialData){
     debugger;
@@ -19,10 +20,10 @@ var ApiActions = {
     });
   },
 
-  receiveFeeds: function(feeds, feedSourceId) {
+  receiveFeeds: function(feedsData, feedSourceId) {
     AppDispatcher.dispatch({
       actionType: FeedItemConstants.RECEIVED_FEEDS,
-      feeds: feeds,
+      feedsData: feedsData,
       feedSourceId: feedSourceId
     });
   },

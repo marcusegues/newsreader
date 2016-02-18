@@ -19812,8 +19812,8 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemStore = __webpack_require__(163);
-	var FeedSourceStore = __webpack_require__(186);
-	var decodeEntities = __webpack_require__(188);
+	var FeedSourceStore = __webpack_require__(187);
+	var usefulFunctions = __webpack_require__(188);
 	var classNames = __webpack_require__(189);
 	var ApiUtil = __webpack_require__(190);
 	var ApiActions = __webpack_require__(191);
@@ -19868,8 +19868,8 @@
 	  },
 	
 	  render: function () {
-	    var title = decodeEntities(this.props.feed.title);
-	    var summary = decodeEntities(this.props.feed.summary);
+	    var title = usefulFunctions.decodeEntities(this.props.feed.title);
+	    var summary = usefulFunctions.decodeEntities(this.props.feed.summary);
 	    var content = this.state.displayContent === true ? this.createMarkup(this.props.feed.content) : null;
 	    var daysOld = this.daysOld();
 	
@@ -19943,8 +19943,10 @@
 	var Store = __webpack_require__(164).Store;
 	var AppDispatcher = __webpack_require__(181);
 	var FeedItemStore = new Store(AppDispatcher);
-	var FeedItemConstants = __webpack_require__(184);
-	var UserConstants = __webpack_require__(185);
+	var FeedSourceConstants = __webpack_require__(184);
+	var FeedItemConstants = __webpack_require__(185);
+	var UserConstants = __webpack_require__(186);
+	var usefulFunctions = __webpack_require__(188);
 	
 	// feedSourceId => array of feeds
 	// Id 0 corresponds to Today's feeds
@@ -19964,8 +19966,10 @@
 	FeedItemStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case FeedItemConstants.RECEIVED_FEEDS:
-	      _feeds[payload.feedSourceId] = payload.feeds;
 	      _lastReceivedId = payload.feedSourceId;
+	      _feeds[payload.feedSourceId] = payload.feedsData.feeds;
+	      usefulFunctions.updateObject(_unreadCount, JSON.parse(payload.feedsData.unreadCount));
+	      debugger;
 	      FeedItemStore.__emitChange();
 	      break;
 	    case FeedItemConstants.CHANGE_DISPLAYED_FEEDS:
@@ -26734,6 +26738,19 @@
 /* 184 */
 /***/ function(module, exports) {
 
+	var FeedSourceConstants = {
+	  RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES",
+	  RECEIVED_CREATED_FEED_SOURCE: "RECEIVED_CREATED_FEED_SOURCE",
+	  RECENT_FEEDS_TITLE: "This Week",
+	  SAVED_FOR_LATER_FEEDS_TITLE: "Saved"
+	};
+	
+	module.exports = FeedSourceConstants;
+
+/***/ },
+/* 185 */
+/***/ function(module, exports) {
+
 	var FeedItemConstants = {
 	  RECEIVED_FEEDS: "RECEIVED_FEEDS",
 	  CHANGE_DISPLAYED_FEEDS: "CHANGE_DISPLAYED_FEEDS",
@@ -26750,7 +26767,7 @@
 
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports) {
 
 	var UserConstants = {
@@ -26761,15 +26778,15 @@
 	module.exports = UserConstants;
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(164).Store;
 	var AppDispatcher = __webpack_require__(181);
 	var FeedSourceStore = new Store(AppDispatcher);
-	var FeedSourceConstants = __webpack_require__(187);
-	var FeedItemConstants = __webpack_require__(184);
-	var UserConstants = __webpack_require__(185);
+	var FeedSourceConstants = __webpack_require__(184);
+	var FeedItemConstants = __webpack_require__(185);
+	var UserConstants = __webpack_require__(186);
 	
 	var _feedSources = {}; // keys will be categories, values will be feed sources
 	var _feedSourcesById = {}; //feedsourceid => feedsource, there are special keys for todayFeeds and savedForLaterFeeds
@@ -26857,19 +26874,6 @@
 	module.exports = FeedSourceStore;
 
 /***/ },
-/* 187 */
-/***/ function(module, exports) {
-
-	var FeedSourceConstants = {
-	  RECEIVED_FEED_SOURCES: "RECEIVED_FEED_SOURCES",
-	  RECEIVED_CREATED_FEED_SOURCE: "RECEIVED_CREATED_FEED_SOURCE",
-	  RECENT_FEEDS_TITLE: "This Week",
-	  SAVED_FOR_LATER_FEEDS_TITLE: "Saved"
-	};
-	
-	module.exports = FeedSourceConstants;
-
-/***/ },
 /* 188 */
 /***/ function(module, exports) {
 
@@ -26893,7 +26897,21 @@
 	  return decodeHTMLEntities;
 	})();
 	
-	module.exports = decodeEntities;
+	function updateObject(obj) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    for (var prop in arguments[i]) {
+	      var val = arguments[i][prop];
+	      if (typeof val == "object") // this also applies to arrays or null!
+	        updateObject(obj[prop], val);else obj[prop] = val;
+	    }
+	  }
+	  return obj;
+	}
+	
+	module.exports = {
+	  decodeEntities: decodeEntities,
+	  updateObject: updateObject
+	};
 
 /***/ },
 /* 189 */
@@ -26975,7 +26993,6 @@
 	      url: 'api/session',
 	      data: { session: user },
 	      success: function (initialData) {
-	        debugger;
 	        window.CURRENT_USER_ID = initialData.id;
 	        ApiActions.receiveCurrentUser(initialData);
 	      }
@@ -27020,8 +27037,8 @@
 	    $.ajax({
 	      method: 'GET',
 	      url: 'api/feeds/' + feedSourceId,
-	      success: function (feeds) {
-	        ApiActions.receiveFeeds(feeds, feedSourceId);
+	      success: function (feedsData) {
+	        ApiActions.receiveFeeds(feedsData, feedSourceId);
 	      }
 	    });
 	  },
@@ -27079,9 +27096,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(181);
-	var FeedSourceConstants = __webpack_require__(187);
-	var FeedItemConstants = __webpack_require__(184);
-	var UserConstants = __webpack_require__(185);
+	var FeedSourceConstants = __webpack_require__(184);
+	var FeedItemConstants = __webpack_require__(185);
+	var UserConstants = __webpack_require__(186);
 	
 	var ApiActions = {
 	  receiveCurrentUser: function (initialData) {
@@ -27099,10 +27116,10 @@
 	    });
 	  },
 	
-	  receiveFeeds: function (feeds, feedSourceId) {
+	  receiveFeeds: function (feedsData, feedSourceId) {
 	    AppDispatcher.dispatch({
 	      actionType: FeedItemConstants.RECEIVED_FEEDS,
-	      feeds: feeds,
+	      feedsData: feedsData,
 	      feedSourceId: feedSourceId
 	    });
 	  },
@@ -27165,7 +27182,7 @@
 	var Store = __webpack_require__(164).Store;
 	var AppDispatcher = __webpack_require__(181);
 	var UserStore = new Store(AppDispatcher);
-	var UserConstants = __webpack_require__(185);
+	var UserConstants = __webpack_require__(186);
 	
 	var currentUser = undefined;
 	
@@ -27244,7 +27261,7 @@
 
 	var React = __webpack_require__(1);
 	var ApiUtil = __webpack_require__(190);
-	var FeedSourceStore = __webpack_require__(186);
+	var FeedSourceStore = __webpack_require__(187);
 	var FeedSourceItem = __webpack_require__(195);
 	var CategoryItem = __webpack_require__(196);
 	
@@ -27324,11 +27341,6 @@
 	
 	  handleReceivedFeeds: function () {
 	    this.setState({ unreadCount: FeedItemStore.unreadCount(this.props.feedSource.id) });
-	    //   if (this.props.feedSource.id === FeedItemStore.lastReceivedId())
-	    //     // used for displaying the number of feeds
-	    //     // this.setState({feeds: FeedItemStore.all(this.props.feedSource.id)});
-	    //     this.setState({unreadCount: FeedItemStore.unreadCount(this.props.feedSource.id)});
-	    // },
 	  },
 	
 	  handleClick: function () {
@@ -27828,8 +27840,8 @@
 	var classNames = __webpack_require__(189);
 	var ApiUtil = __webpack_require__(190);
 	var ApiActions = __webpack_require__(191);
-	var FeedItemConstants = __webpack_require__(184);
-	var FeedSourceConstants = __webpack_require__(187);
+	var FeedItemConstants = __webpack_require__(185);
+	var FeedSourceConstants = __webpack_require__(184);
 	
 	var GeneralCategories = React.createClass({
 	  displayName: 'GeneralCategories',
@@ -28504,8 +28516,8 @@
 	var ViewFeedsHeader = __webpack_require__(215);
 	var ViewFeedsNav = __webpack_require__(216);
 	var FeedItemStore = __webpack_require__(163);
-	var FeedSourceStore = __webpack_require__(186);
-	var FeedItemConstants = __webpack_require__(184);
+	var FeedSourceStore = __webpack_require__(187);
+	var FeedItemConstants = __webpack_require__(185);
 	var ApiUtil = __webpack_require__(190);
 	var classNames = __webpack_require__(189);
 	
@@ -28583,7 +28595,7 @@
 
 	var React = __webpack_require__(1);
 	var FeedItemStore = __webpack_require__(163);
-	var FeedSourceStore = __webpack_require__(186);
+	var FeedSourceStore = __webpack_require__(187);
 	var classNames = __webpack_require__(189);
 	var LinkedStateMixin = __webpack_require__(200);
 	

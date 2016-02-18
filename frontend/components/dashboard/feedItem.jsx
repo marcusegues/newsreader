@@ -1,7 +1,7 @@
 var React = require('react');
 var FeedItemStore = require('../../stores/feedItemStore');
 var FeedSourceStore = require('../../stores/feedSourceStore');
-var decodeEntities = require('./decodeEntities');
+var usefulFunctions = require('../../util/usefulFunctions');
 var classNames = require('classnames');
 var ApiUtil = require('../../util/apiUtil');
 var ApiActions = require('../../actions/apiActions');
@@ -56,8 +56,8 @@ var FeedItem = React.createClass({
   },
 
   render: function() {
-    var title = decodeEntities(this.props.feed.title);
-    var summary = decodeEntities(this.props.feed.summary);
+    var title = usefulFunctions.decodeEntities(this.props.feed.title);
+    var summary = usefulFunctions.decodeEntities(this.props.feed.summary);
     var content = this.state.displayContent === true ?
                   this.createMarkup(this.props.feed.content) :
                   null;

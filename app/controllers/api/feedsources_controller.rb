@@ -26,24 +26,28 @@ class Api::FeedsourcesController < ApplicationController
     parsedFeed.entries.each do |feedItem|
       # uniqueness of FeedItem is based on it's url
       # the FeedItems in this loop will only be save to the database once
+
       FeedItem.create(title: feedItem.title,
                        feed_source_id: feedSourceId,
                        author: feedItem.author,
                        url: feedItem.url,
                        published: feedItem.published,
-                       updated: feedItem.updated,
+                       updated: (feedItem.updated || feedItem.published),
                        summary: feedItem.summary,
                        content: feedItem.content)
     end
 
     # orderedFeeds = sortFeeds(feedSource.feeds)
-    orderedFeeds = feedSource.feeds.sort do |x,y|
-      xComp = x.updated || x.published
-      yComp = y.updated || y.published
-      yComp <=> xComp
-    end
+    # orderedFeeds = feedSource.feeds.sort do |x,y|
+    #   xComp = x.updated || x.published
+    #   yComp = y.updated || y.published
+    #   yComp <=> xComp
+    # end
 
-    render json: orderedFeeds
+    @orderedFeeds = feedSource.feeds.order('published DESC').reorder("updated DESC")
+
+    # render json: orderedFeeds
+    render :feeds_data
   end
 
   def initialData

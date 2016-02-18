@@ -20,7 +20,6 @@ var ApiUtil = {
       url: 'api/session',
       data: {session: user},
       success: function(initialData) {
-        debugger;
         window.CURRENT_USER_ID = initialData.id;
         ApiActions.receiveCurrentUser(initialData);
       }
@@ -65,8 +64,8 @@ var ApiUtil = {
     $.ajax({
       method: 'GET',
       url:  'api/feeds/' + feedSourceId,
-      success: function(feeds) {
-        ApiActions.receiveFeeds(feeds, feedSourceId);
+      success: function(feedsData) {
+        ApiActions.receiveFeeds(feedsData, feedSourceId);
       }
     });
   },

@@ -21,11 +21,6 @@ var FeedSourceItem = React.createClass({
 
   handleReceivedFeeds: function() {
     this.setState({unreadCount: FeedItemStore.unreadCount(this.props.feedSource.id)});
-  //   if (this.props.feedSource.id === FeedItemStore.lastReceivedId())
-  //     // used for displaying the number of feeds
-  //     // this.setState({feeds: FeedItemStore.all(this.props.feedSource.id)});
-  //     this.setState({unreadCount: FeedItemStore.unreadCount(this.props.feedSource.id)});
-  // },
   },
 
   handleClick: function() {
