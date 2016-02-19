@@ -51,9 +51,14 @@ class ApplicationController < ActionController::Base
   end
 
   def todayFeeds
-    sortFeeds(current_user.feeds
-                    .select("feed_items.*")
-                    .where("feed_items.published BETWEEN ? AND ?", DateTime.now - 7.day, DateTime.now))
+    # sortFeeds(current_user.feeds
+    #                 .select("feed_items.*")
+    #                 .where("feed_items.published BETWEEN ? AND ?", DateTime.now - 7.day, DateTime.now))
+    current_user.feeds
+                .select("feed_items.*")
+                .where("feed_items.published BETWEEN ? AND ?", DateTime.now - 7.day, DateTime.now)
+                .order('published DESC')
+                .reorder("updated DESC")
   end
 
   def countUnread(feeds)

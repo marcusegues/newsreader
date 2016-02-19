@@ -74,6 +74,18 @@ var ApiActions = {
       actionType: FeedItemConstants.DECREMENT_UNREAD,
       feedSourceId: feedSourceId
     });
+  },
+
+  setFetchingFeedItemsToTrue: function() {
+    AppDispatcher.dispatch({
+      actionType: FeedItemConstants.SET_FETCHING_FEED_ITEMS_FLAG_TRUE,
+    });
+  },
+
+  switchFeedSource: function() {
+    AppDispatcher.dispatch({
+      actionType: FeedItemConstants.SWITCH_FEED_SOURCE,
+    });
   }
 };
 

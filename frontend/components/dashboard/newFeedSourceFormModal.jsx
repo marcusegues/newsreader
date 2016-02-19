@@ -12,7 +12,7 @@ var NewFeedSourceFormModal = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
     var newFeedSource = Object.assign({}, this.state);
-    ApiUtil.createFeedSource(newFeedSource);
+    //ApiUtil.createFeedSource(newFeedSource);
   },
 
   render: function() {

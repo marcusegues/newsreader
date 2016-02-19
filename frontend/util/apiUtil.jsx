@@ -60,10 +60,11 @@ var ApiUtil = {
     });
   },
 
-  fetchFeedItems: function(feedSourceId) {
+  fetchFeedItems: function(feedSourceId, page) {
     $.ajax({
       method: 'GET',
       url:  'api/feeds/' + feedSourceId,
+      data: {page: page},
       success: function(feedsData) {
         ApiActions.receiveFeeds(feedsData, feedSourceId);
       }

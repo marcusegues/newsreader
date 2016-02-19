@@ -247,6 +247,20 @@
   display: inline-block;
 }
 
+#loadingIcon * {
+  vertical-align: middle;
+  display: inline-block;
+  color: $viewFeedSourcesDarkGrey;
+}
+
+#loadingDiv {
+  font-size: 1.2em;
+}
+
+#loadingIconText {
+  padding: 0 0 0 0.3em;
+}
+
 #generalCategories {
   margin-bottom: 1em;
 }

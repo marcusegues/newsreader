@@ -7,6 +7,7 @@ var UserConstants = require('../constants/userConstants');
 
 var _feedSources = {};  // keys will be categories, values will be feed sources
 var _feedSourcesById = {}; //feedsourceid => feedsource, there are special keys for todayFeeds and savedForLaterFeeds
+var _feedSourcesNextPageById = {};
 var _feedSourcesLoaded = false;
 
 var populate_feedSources = function(feedSources) {
@@ -22,11 +23,16 @@ var populate_feedSources = function(feedSources) {
   _feedSourcesById[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = {title: FeedSourceConstants.SAVED_FOR_LATER_FEEDS_TITLE, id: FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID};
   feedSources.forEach(function(feedSource) {
     _feedSourcesById[feedSource.id] = feedSource;
+    _feedSourcesNextPageById[feedSource.id] = 1;
   });
 };
 
 FeedSourceStore.getFeedSourceById = function(id) {
   return _feedSourcesById[id];
+},
+
+FeedSourceStore.getFeedSourceNextPageById = function(id) {
+  return _feedSourcesNextPageById[id];
 },
 
 FeedSourceStore.getUniqueCategories = function(feedSources) {
@@ -55,6 +61,10 @@ FeedSourceStore.__onDispatch = function(payload) {
       populate_feedSources(payload.feedSources);
       _feedSourcesLoaded = true;
       FeedSourceStore.__emitChange();
+      break;
+    case FeedItemConstants.RECEIVED_FEEDS:
+      _feedSourcesNextPageById[payload.feedSourceId] += 1;
+      debugger;
       break;
     case FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE:
       addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);

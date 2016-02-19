@@ -20,6 +20,7 @@ class Api::FeedsourcesController < ApplicationController
 
   def feeds
     feedSourceId = params[:id]
+    page = params[:page]
     feedSource = FeedSource.find(feedSourceId)
     url = feedSource.url
     parsedFeed = Feedjira::Feed.fetch_and_parse url
@@ -44,7 +45,7 @@ class Api::FeedsourcesController < ApplicationController
     #   yComp <=> xComp
     # end
 
-    @orderedFeeds = feedSource.feeds.order('published DESC').reorder("updated DESC")
+    @orderedFeeds = feedSource.feeds.order('published DESC').reorder("updated DESC").page(params[:page]).per(25)
 
     # render json: orderedFeeds
     render :feeds_data

@@ -8,8 +8,12 @@ var FeedItemsIndex = React.createClass({
       return <FeedItem key={idx} feed={feed} displayContent={false} today={this.props.today}/>;
     }.bind(this));
     return (
-      <div>
-        {feeds}
+      <div id="loadingDiv">
+        {this.props.fetchingFeedItems ?
+         <div id="loadingIcon"><i className="fa fa-spinner fa-pulse fa-2x"></i>
+         <span id="loadingIconText">{"Loading..."}</span></div> :
+         null}
+        {this.props.switchingFeedSources ? null : feeds}
       </div>
     );
   }

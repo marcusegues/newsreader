@@ -6,9 +6,10 @@ gem 'rails', '4.2.4'
 gem 'annotate'
 gem 'bcrypt'
 gem 'feedjira'
-gem 'bootstrap-sass'
+# gem 'bootstrap-sass'
 gem 'newrelic_rpm'
 gem 'kaminari'
+gem 'omniauth-facebook'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Use postgresql as the database for Active Record

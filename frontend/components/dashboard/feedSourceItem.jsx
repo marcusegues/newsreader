@@ -2,6 +2,7 @@
 var React = require('react');
 var ApiUtil = require('../../util/apiUtil');
 var FeedItemStore = require('../../stores/feedItemStore');
+var FeedSourceStore = require('../../stores/feedSourceStore');
 var ApiActions = require('../../actions/apiActions');
 
 var FeedSourceItem = React.createClass({
@@ -25,7 +26,9 @@ var FeedSourceItem = React.createClass({
 
   handleClick: function() {
     if (this.state.clicked === false) {
-      ApiUtil.fetchFeedItems(this.props.feedSource.id);
+      ApiActions.switchFeedSource();
+      ApiUtil.fetchFeedItems(this.props.feedSource.id,
+                             FeedSourceStore.getFeedSourceNextPageById(this.props.feedSource.id));
       this.setState({clicked: true});
     } else {
       ApiActions.changeDisplayedFeeds(this.props.feedSource.id);
