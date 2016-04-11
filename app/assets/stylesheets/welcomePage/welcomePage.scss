@@ -859,6 +859,25 @@ input[type="button"],
     z-index: 3;
   }
 
+  .fb-login-button-mine {
+    width: 100%;
+    background-color: $facebookDarkBlue;
+    padding: 0.5em;
+  }
+
+  .signup-form {
+    width: 20em;
+    position: relative;
+    top: 25%;
+    transform: translateY(-50%);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1em;
+    background: white;
+    z-index: 9;
+    border-radius: 2px;
+  }
+
   .signup-form p {
     color: black;
     margin: 0 0 1em 0;
@@ -871,18 +890,6 @@ input[type="button"],
     font-size: 0.75em;
   }
 
-	.signup-form {
-    width: 20em;
-    position: relative;
-    top: 25%;
-    transform: translateY(-50%);
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 1em;
-    background: white;
-    z-index: 9;
-    border-radius: 2px;
-  }
 
   .signup-form input[type="submit"] {
     position: relative;

@@ -6,7 +6,6 @@ var UserConstants = require('../constants/userConstants');
 
 var ApiActions = {
   receiveCurrentUser: function(initialData){
-    debugger;
     AppDispatcher.dispatch({
       actionType: UserConstants.USER_SIGNED_IN,
       initialData: initialData
@@ -86,7 +85,46 @@ var ApiActions = {
     AppDispatcher.dispatch({
       actionType: FeedItemConstants.SWITCH_FEED_SOURCE,
     });
+  },
+
+  // loginToFacebook: function() {
+  //   FB.login(checkLoginState);
+  // },
+
+  // checkLoginState: function(response) {
+  //   redirect_to '/auth/:provider/callback';
+  // },
+
+  redirectToAuth: function() {
+
   }
+
+  // checkLoginState: function() {
+  //   FB.getLoginStatus(function(response) {
+  //     this.statusChangeCallback(response);
+  //   }.bind(this));
+  // },
+  //
+  // // This is called with the results from from FB.getLoginStatus().
+  // statusChangeCallback: function(response) {
+  //   console.log('statusChangeCallback');
+  //   console.log(response);
+  //   // The response object is returned with a status field that lets the
+  //   // app know the current login status of the person.
+  //   // Full docs on the response object can be found in the documentation
+  //   // for FB.getLoginStatus().
+  //   if (response.status === 'connected') {
+  //     // Logged into your app and Facebook.
+  //     this.testAPI();
+  //   } else if (response.status === 'not_authorized') {
+  //     // The person is logged into Facebook, but not your app.
+  //     alert('Please log ' + 'into this app.');
+  //   } else {
+  //     // The person is not logged into Facebook, so we're not sure if
+  //     // they are logged into this app or not.
+  //     alert('Please log ' + 'into Facebook.');
+  //   }
+  // },
 };
 
 module.exports = ApiActions;
