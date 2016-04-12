@@ -19986,6 +19986,7 @@
 	      }
 	      _feeds[_lastReceivedId] = _feeds[_lastReceivedId].concat(payload.feedsData.feeds);
 	      usefulFunctions.updateObject(_unreadCount, JSON.parse(payload.feedsData.unreadCount));
+	      _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.feedsData.todayFeeds;
 	      _fetchingFeedItems = false;
 	      _switchingFeedSources = false;
 	      FeedItemStore.__emitChange();
@@ -27127,7 +27128,9 @@
 	      method: 'PATCH',
 	      url: 'api/setUnreadToFalse/' + feedId
 	    });
-	  }
+	  },
+	
+	  signInToFacebook: function () {}
 	};
 	
 	module.exports = ApiUtil;
@@ -27224,44 +27227,57 @@
 	    });
 	  },
 	
-	  // loginToFacebook: function() {
-	  //   FB.login(checkLoginState);
-	  // },
+	  signInToFacebook: function () {
 	
-	  // checkLoginState: function(response) {
-	  //   redirect_to '/auth/:provider/callback';
-	  // },
+	    FB.login(this.checkLoginState);
+	  },
 	
-	  redirectToAuth: function () {}
+	  checkLoginState: function (response) {
+	    if (response.status === 'connected') {
+	      console.log("already connected to both");
+	      debugger;
+	      console.log(response.authResponse.accessToken);
+	      console.log(response);
+	      FB.api('/me', function (response) {
+	        console.log(JSON.stringify(response));
+	      });
+	    } else if (response.status === 'not_authorized') {
+	      console.log('damn');
+	      console.log(response.authResponse.accessToken);
+	    } else {
+	      // The person is not logged into Facebook, so we're not sure if
+	      // they are logged into this app or not.
+	    }
+	  }
 	
-	  // checkLoginState: function() {
-	  //   FB.getLoginStatus(function(response) {
-	  //     this.statusChangeCallback(response);
-	  //   }.bind(this));
-	  // },
-	  //
-	  // // This is called with the results from from FB.getLoginStatus().
-	  // statusChangeCallback: function(response) {
-	  //   console.log('statusChangeCallback');
-	  //   console.log(response);
-	  //   // The response object is returned with a status field that lets the
-	  //   // app know the current login status of the person.
-	  //   // Full docs on the response object can be found in the documentation
-	  //   // for FB.getLoginStatus().
-	  //   if (response.status === 'connected') {
-	  //     // Logged into your app and Facebook.
-	  //     this.testAPI();
-	  //   } else if (response.status === 'not_authorized') {
-	  //     // The person is logged into Facebook, but not your app.
-	  //     alert('Please log ' + 'into this app.');
-	  //   } else {
-	  //     // The person is not logged into Facebook, so we're not sure if
-	  //     // they are logged into this app or not.
-	  //     alert('Please log ' + 'into Facebook.');
-	  //   }
-	  // },
 	};
 	
+	// checkLoginState: function() {
+	//   FB.getLoginStatus(function(response) {
+	//     this.statusChangeCallback(response);
+	//   }.bind(this));
+	// },
+	//
+	// // This is called with the results from from FB.getLoginStatus().
+	// statusChangeCallback: function(response) {
+	//   console.log('statusChangeCallback');
+	//   console.log(response);
+	//   // The response object is returned with a status field that lets the
+	//   // app know the current login status of the person.
+	//   // Full docs on the response object can be found in the documentation
+	//   // for FB.getLoginStatus().
+	//   if (response.status === 'connected') {
+	//     // Logged into your app and Facebook.
+	//     this.testAPI();
+	//   } else if (response.status === 'not_authorized') {
+	//     // The person is logged into Facebook, but not your app.
+	//     alert('Please log ' + 'into this app.');
+	//   } else {
+	//     // The person is not logged into Facebook, so we're not sure if
+	//     // they are logged into this app or not.
+	//     alert('Please log ' + 'into Facebook.');
+	//   }
+	// },
 	module.exports = ApiActions;
 
 /***/ },
@@ -28555,7 +28571,7 @@
 	  },
 	
 	  signInToFacebook: function () {
-	    ApiUtil.signInToFacebook();
+	    ApiActions.signInToFacebook();
 	  },
 	
 	  componentDidMount: function () {
@@ -28580,7 +28596,7 @@
 	      fjs.parentNode.insertBefore(js, fjs);
 	    })(document, 'script', 'facebook-jssdk');
 	  },
-	
+	  // <div className="fb-login-button-mine" onClick={this.signInToFacebook}>{"Sign in with Facebook"}</div>
 	  render: function () {
 	    return this.props.visible === false ? null : React.createElement(
 	      'div',
@@ -28589,14 +28605,25 @@
 	        'form',
 	        { className: 'signup-form', onSubmit: this.handleSubmit },
 	        React.createElement(
-	          'div',
-	          { className: 'fb-login-button-mine', onClick: this.loginToFacebook },
-	          "Sign in with Facebook"
+	          'a',
+	          { className: 'fb-login-button', href: '/auth/facebook' },
+	          React.createElement('span', { className: 'fa fa-facebook fb-login-content-icon' }),
+	          React.createElement(
+	            'span',
+	            { className: 'fb-login-content-message' },
+	            "Sign in with Facebook"
+	          )
 	        ),
 	        React.createElement(
-	          'p',
-	          null,
-	          'Sign In'
+	          'div',
+	          { className: 'lineorline' },
+	          React.createElement('span', { className: 'halfSeparator' }),
+	          React.createElement(
+	            'span',
+	            { id: 'or' },
+	            'or'
+	          ),
+	          React.createElement('span', { className: 'halfSeparator' })
 	        ),
 	        React.createElement(
 	          'div',

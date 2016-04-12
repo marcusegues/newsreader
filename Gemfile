@@ -9,7 +9,7 @@ gem 'feedjira'
 # gem 'bootstrap-sass'
 gem 'newrelic_rpm'
 gem 'kaminari'
-# gem 'omniauth-facebook'
+gem 'omniauth-facebook'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Use postgresql as the database for Active Record

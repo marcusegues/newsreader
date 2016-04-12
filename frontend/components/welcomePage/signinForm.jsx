@@ -25,7 +25,7 @@ var SigninForm = React.createClass({
   },
 
   signInToFacebook: function() {
-    ApiUtil.signInToFacebook();
+    ApiActions.signInToFacebook();
   },
 
   componentDidMount: function() {
@@ -47,14 +47,19 @@ var SigninForm = React.createClass({
        fjs.parentNode.insertBefore(js, fjs);
      }(document, 'script', 'facebook-jssdk'));
   },
-
+  // <div className="fb-login-button-mine" onClick={this.signInToFacebook}>{"Sign in with Facebook"}</div>
   render: function() {
     return (
       this.props.visible === false ? null :
       <div className="userSignForm">
         <form className="signup-form" onSubmit={this.handleSubmit}>
-          <div className="fb-login-button-mine" onClick={this.loginToFacebook}>{"Sign in with Facebook"}</div>
-          <p>Sign In</p>
+          <a className="fb-login-button" href="/auth/facebook">
+            <span className="fa fa-facebook fb-login-content-icon"></span>
+            <span className="fb-login-content-message">{"Sign in with Facebook"}</span>
+          </a>
+          <div className="lineorline">
+            <span className="halfSeparator"></span><span id="or">or</span><span className="halfSeparator"></span>
+          </div>
           <div className="inputIcon">
             <span className="fa fa-user"></span>
             <input type="text" name="username" id="username" placeholder="Username" valueLink={this.linkState('username')} />

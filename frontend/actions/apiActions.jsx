@@ -87,17 +87,28 @@ var ApiActions = {
     });
   },
 
-  // loginToFacebook: function() {
-  //   FB.login(checkLoginState);
-  // },
+  signInToFacebook: function() {
 
-  // checkLoginState: function(response) {
-  //   redirect_to '/auth/:provider/callback';
-  // },
+    FB.login(this.checkLoginState);
+  },
 
-  redirectToAuth: function() {
-
-  }
+  checkLoginState: function(response) {
+    if (response.status === 'connected') {
+      console.log("already connected to both");
+      debugger;
+      console.log(response.authResponse.accessToken);
+      console.log(response);
+      FB.api('/me', function(response) {
+      console.log(JSON.stringify(response));
+});
+    } else if (response.status === 'not_authorized') {
+      console.log('damn');
+      console.log(response.authResponse.accessToken);
+    } else {
+      // The person is not logged into Facebook, so we're not sure if
+      // they are logged into this app or not.
+    }
+  },
 
   // checkLoginState: function() {
   //   FB.getLoginStatus(function(response) {

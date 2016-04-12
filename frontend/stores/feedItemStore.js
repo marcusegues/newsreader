@@ -35,6 +35,7 @@ FeedItemStore.__onDispatch = function(payload) {
       _feeds[_lastReceivedId] =
           _feeds[_lastReceivedId].concat(payload.feedsData.feeds);
       usefulFunctions.updateObject(_unreadCount, JSON.parse(payload.feedsData.unreadCount));
+      _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.feedsData.todayFeeds;
       _fetchingFeedItems = false;
       _switchingFeedSources = false;
       FeedItemStore.__emitChange();

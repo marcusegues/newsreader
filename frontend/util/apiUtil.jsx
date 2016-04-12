@@ -114,6 +114,10 @@ var ApiUtil = {
       method: 'PATCH',
       url: 'api/setUnreadToFalse/' + feedId,
     });
+  },
+
+  signInToFacebook: function() {
+    
   }
 };
 
