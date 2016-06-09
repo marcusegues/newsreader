@@ -10,8 +10,8 @@ json.unreadCount allFeedSourcesUnreadCount
 
 json.todayFeedsUnreadCount countUnread(todayFeedsAR)
 
-json.userAvatar @user.avatar_url
+json.avatar_url @user.avatar_url
 
-json.loginMethod login_method
+json.login_method logged_in_method
 
 json.username @user.username

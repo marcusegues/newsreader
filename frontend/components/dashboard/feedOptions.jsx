@@ -36,16 +36,18 @@ var FeedOptions = React.createClass({
 
   render: function() {
     var currentUser = this.state.currentUser;
-    debugger;
+
     return (
       <div id="feedOptions">
         <div id="feedOptionsContents">
           <img id="feedOptionsAvatar" src={currentUser ? currentUser.avatar_url : ''}></img>
           <div id="feedOptionsText">
             <div>{currentUser === undefined ? '' : currentUser.username}</div>
-            <div>{currentUser === undefined ? '' : "via " + currentUser.loginMethod}</div>
+            <div>{currentUser === undefined ?
+              '' :
+              "via " + currentUser.login_method + " / "}
+                <span id="feedOptionsLogout" onClick={this.handleSignOut}>Logout</span></div>
           </div>
-          <div id="feedOptionsSignOutButton" onClick={this.handleSignOut}></div>
         </div>
       </div>
     );

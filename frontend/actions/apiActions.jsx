@@ -76,15 +76,17 @@ var ApiActions = {
     });
   },
 
-  setFetchingFeedItemsToTrue: function() {
+  setFetchingFeedItemsToTrue: function(options) {
     AppDispatcher.dispatch({
       actionType: FeedItemConstants.SET_FETCHING_FEED_ITEMS_FLAG_TRUE,
+      onScroll: options.onScroll
     });
   },
 
-  switchFeedSource: function() {
+  switchFeedSource: function(switching_to_id) {
     AppDispatcher.dispatch({
       actionType: FeedItemConstants.SWITCH_FEED_SOURCE,
+      switching_to_id: switching_to_id
     });
   },
 

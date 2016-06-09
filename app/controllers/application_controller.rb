@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   helper_method :signed_in?, :current_user, :sortFeeds,
-    :allFeedSourcesUnreadCount, :countUnread, :todayFeeds, :login_method
+    :allFeedSourcesUnreadCount, :countUnread, :todayFeeds, :logged_in_method
 
   def require_login
     unless signed_in?
@@ -41,8 +41,13 @@ class ApplicationController < ActionController::Base
     @login_method
   end
 
+  def logged_in_method
+    session[:login_method]
+  end
+
   def reset_login_method
     @login_method = nil
+    session[:login_method] = nil
   end
 
   def sortFeeds(feeds)

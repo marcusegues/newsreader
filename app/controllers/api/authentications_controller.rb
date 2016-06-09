@@ -6,8 +6,8 @@ class Api::AuthenticationsController < ApplicationController
     # normal sign in process
     if authentication
       @user = User.find(authentication.user_id)
-      sign_in!(@user)
       self.login_method = authentication.provider
+      sign_in!(@user)
       render :signed_in
     # user is already signed in and is adding an authentication from a new provider
     elsif current_user
@@ -29,8 +29,8 @@ class Api::AuthenticationsController < ApplicationController
         @user.avatar_url = omniauth['info']['image']
       end
       if @user.save
-        sign_in!(@user)
         self.login_method = authentication['provider']
+        sign_in!(@user)
         render :signed_in
       else
         render json: ["Unable to sign up."]

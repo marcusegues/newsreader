@@ -16,10 +16,6 @@ class SessionsController < ApplicationController
     redirect_to new_session_url
   end
 
-  def test
-    debugger;
-  end
-
   private
   def session_params
     params.require(:session).permit(:username, :password)

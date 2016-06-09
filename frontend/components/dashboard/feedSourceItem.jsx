@@ -26,7 +26,7 @@ var FeedSourceItem = React.createClass({
 
   handleClick: function() {
     if (this.state.clicked === false) {
-      ApiActions.switchFeedSource();
+      ApiActions.switchFeedSource(this.props.feedSource.id);
       ApiUtil.fetchFeedItems(this.props.feedSource.id,
                              FeedSourceStore.getFeedSourceNextPageById(this.props.feedSource.id));
       this.setState({clicked: true});

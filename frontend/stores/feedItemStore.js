@@ -13,7 +13,9 @@ var _lastReceivedId = undefined;
 var _unreadCount = {};
 var loadedInitialData = false;
 var _fetchingFeedItems = true;
+var _fetchingFeedItemsOnScroll = false;
 var _switchingFeedSources = true;
+var _switching_to_feedsource_id;
 
 var handleInitialData = function(payload) {
   _lastReceivedId = FeedItemConstants.TODAY_FEEDS_ID;
@@ -28,6 +30,7 @@ var handleInitialData = function(payload) {
 FeedItemStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case FeedItemConstants.RECEIVED_FEEDS:
+      _switching_to_feedsource_id = undefined;
       _lastReceivedId = payload.feedSourceId;
       if (!_feeds.hasOwnProperty(_lastReceivedId)) {
         _feeds[_lastReceivedId] = [];
@@ -37,6 +40,7 @@ FeedItemStore.__onDispatch = function(payload) {
       usefulFunctions.updateObject(_unreadCount, JSON.parse(payload.feedsData.unreadCount));
       _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.feedsData.todayFeeds;
       _fetchingFeedItems = false;
+      _fetchingFeedItemsOnScroll = false;
       _switchingFeedSources = false;
       FeedItemStore.__emitChange();
       break;
@@ -67,11 +71,13 @@ FeedItemStore.__onDispatch = function(payload) {
       break;
     case FeedItemConstants.SET_FETCHING_FEED_ITEMS_FLAG_TRUE:
       _fetchingFeedItems = true;
+      _fetchingFeedItemsOnScroll = payload.onScroll;
       FeedItemStore.__emitChange();
       break;
     case FeedItemConstants.SWITCH_FEED_SOURCE:
       _fetchingFeedItems = true;
       _switchingFeedSources = true;
+      _switching_to_feedsource_id = payload.switching_to_id;
       FeedItemStore.__emitChange();
       break;
   }
@@ -81,8 +87,16 @@ FeedItemStore.fetchingFeedItems = function() {
   return _fetchingFeedItems;
 },
 
+FeedItemStore.fetchingFeedItemsOnScroll = function() {
+  return _fetchingFeedItemsOnScroll;
+},
+
 FeedItemStore.switchingFeedSources = function() {
   return _switchingFeedSources;
+},
+
+FeedItemStore.switchingToFeedSourceId = function() {
+  return _switching_to_feedsource_id;
 },
 
 FeedItemStore.incrementUnread = function(feedSourceId) {

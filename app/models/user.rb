@@ -25,6 +25,8 @@ class User < ActiveRecord::Base
     foreign_key: :user_id,
     primary_key: :id
 
+  DEFAULT_AVATAR_URL = "http://res.cloudinary.com/dolgs87zk/image/upload/v1465478807/SFLogo_jscwfx.jpg"
+
   def self.find_by_credentials(username, password)
     user = User.find_by(username: username)
     return nil unless user && user.valid_password?(password)

@@ -19796,10 +19796,11 @@
 	    var feeds = this.props.displayedFeeds.map((function (feed, idx) {
 	      return React.createElement(FeedItem, { key: idx, feed: feed, displayContent: false, today: this.props.today });
 	    }).bind(this));
+	
 	    return React.createElement(
 	      'div',
 	      { id: 'loadingDiv' },
-	      this.props.fetchingFeedItems ? React.createElement(
+	      this.props.fetchingFeedItems && !this.props.fetchingFeedItemsOnScroll ? React.createElement(
 	        'div',
 	        { id: 'loadingIcon' },
 	        React.createElement('i', { className: 'fa fa-spinner fa-pulse fa-2x' }),
@@ -19809,7 +19810,21 @@
 	          "Loading..."
 	        )
 	      ) : null,
-	      this.props.switchingFeedSources ? null : feeds
+	      this.props.switchingFeedSources ? null : feeds,
+	      React.createElement(
+	        'div',
+	        { id: 'endOfScroll' },
+	        this.props.fetchingFeedItems && this.props.fetchingFeedItemsOnScroll ? React.createElement(
+	          'div',
+	          { id: 'loadingIcon' },
+	          React.createElement('i', { className: 'fa fa-spinner fa-pulse fa-2x' }),
+	          React.createElement(
+	            'span',
+	            { id: 'loadingIconText' },
+	            "Loading..."
+	          )
+	        ) : null
+	      )
 	    );
 	  }
 	});
@@ -19965,7 +19980,9 @@
 	var _unreadCount = {};
 	var loadedInitialData = false;
 	var _fetchingFeedItems = true;
+	var _fetchingFeedItemsOnScroll = false;
 	var _switchingFeedSources = true;
+	var _switching_to_feedsource_id;
 	
 	var handleInitialData = function (payload) {
 	  _lastReceivedId = FeedItemConstants.TODAY_FEEDS_ID;
@@ -19980,6 +19997,7 @@
 	FeedItemStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case FeedItemConstants.RECEIVED_FEEDS:
+	      _switching_to_feedsource_id = undefined;
 	      _lastReceivedId = payload.feedSourceId;
 	      if (!_feeds.hasOwnProperty(_lastReceivedId)) {
 	        _feeds[_lastReceivedId] = [];
@@ -19988,6 +20006,7 @@
 	      usefulFunctions.updateObject(_unreadCount, JSON.parse(payload.feedsData.unreadCount));
 	      _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.feedsData.todayFeeds;
 	      _fetchingFeedItems = false;
+	      _fetchingFeedItemsOnScroll = false;
 	      _switchingFeedSources = false;
 	      FeedItemStore.__emitChange();
 	      break;
@@ -20018,11 +20037,13 @@
 	      break;
 	    case FeedItemConstants.SET_FETCHING_FEED_ITEMS_FLAG_TRUE:
 	      _fetchingFeedItems = true;
+	      _fetchingFeedItemsOnScroll = payload.onScroll;
 	      FeedItemStore.__emitChange();
 	      break;
 	    case FeedItemConstants.SWITCH_FEED_SOURCE:
 	      _fetchingFeedItems = true;
 	      _switchingFeedSources = true;
+	      _switching_to_feedsource_id = payload.switching_to_id;
 	      FeedItemStore.__emitChange();
 	      break;
 	  }
@@ -20030,8 +20051,12 @@
 	
 	FeedItemStore.fetchingFeedItems = function () {
 	  return _fetchingFeedItems;
+	}, FeedItemStore.fetchingFeedItemsOnScroll = function () {
+	  return _fetchingFeedItemsOnScroll;
 	}, FeedItemStore.switchingFeedSources = function () {
 	  return _switchingFeedSources;
+	}, FeedItemStore.switchingToFeedSourceId = function () {
+	  return _switching_to_feedsource_id;
 	}, FeedItemStore.incrementUnread = function (feedSourceId) {
 	  _unreadCount[feedSourceId] += 1;
 	}, FeedItemStore.decrementUnread = function (feedSourceId) {
@@ -26946,6 +26971,10 @@
 	  return _feedSources;
 	};
 	
+	FeedSourceStore.allFeedSources = function () {
+	  return _feedSourcesById;
+	};
+	
 	FeedSourceStore.feedSourcesLoaded = function () {
 	  return _feedSourcesLoaded;
 	};
@@ -27011,7 +27040,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var ApiActions = __webpack_require__(191);
-	//currentUser returned by ajax requests should probably use Jbuilder
+	var FeedSourceStore = __webpack_require__(188);
 	
 	var ApiUtil = {
 	  createUser: function (newUser) {
@@ -27088,6 +27117,18 @@
 	      success: function (feedSources) {
 	        ApiActions.receiveFeedSources(feedSources);
 	      }
+	    });
+	  },
+	
+	  updateAllFeedItems: function () {
+	    Object.keys(FeedSourceStore.allFeedSources()).forEach(function (feedSourceId, id) {
+	      $.ajax({
+	        method: 'GET',
+	        url: 'api/feeds/' + feedSourceId,
+	        success: function (feedsData) {
+	          ApiActions.receiveFeeds(feedsData, feedSourceId);
+	        }
+	      });
 	    });
 	  },
 	
@@ -27231,15 +27272,17 @@
 	    });
 	  },
 	
-	  setFetchingFeedItemsToTrue: function () {
+	  setFetchingFeedItemsToTrue: function (options) {
 	    AppDispatcher.dispatch({
-	      actionType: FeedItemConstants.SET_FETCHING_FEED_ITEMS_FLAG_TRUE
+	      actionType: FeedItemConstants.SET_FETCHING_FEED_ITEMS_FLAG_TRUE,
+	      onScroll: options.onScroll
 	    });
 	  },
 	
-	  switchFeedSource: function () {
+	  switchFeedSource: function (switching_to_id) {
 	    AppDispatcher.dispatch({
-	      actionType: FeedItemConstants.SWITCH_FEED_SOURCE
+	      actionType: FeedItemConstants.SWITCH_FEED_SOURCE,
+	      switching_to_id: switching_to_id
 	    });
 	  },
 	
@@ -27302,24 +27345,24 @@
 	
 	var currentUser = undefined;
 	
+	var getCurrentUserFromInitialData = function (initialData) {
+	  currentUser = {
+	    id: initialData.id,
+	    avatar_url: initialData.avatar_url,
+	    login_method: initialData.login_method,
+	    username: initialData.username
+	  };
+	  return currentUser;
+	};
+	
 	UserStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case UserConstants.USER_SIGNED_IN:
-	      currentUser = {
-	        id: payload.initialData.id,
-	        avatar_url: payload.initialData.userAvatar,
-	        login_method: payload.initialData.loginMethod,
-	        username: payload.initialData.username
-	      };
+	      currentUser = getCurrentUserFromInitialData(payload.initialData);
 	      UserStore.__emitChange();
 	      break;
 	    case FeedItemConstants.RECEIVED_INITIAL_DATA:
-	      currentUser = {
-	        id: payload.initialData.id,
-	        avatar_url: payload.initialData.userAvatar,
-	        login_method: payload.initialData.loginMethod,
-	        username: payload.initialData.username
-	      };
+	      currentUser = getCurrentUserFromInitialData(payload.initialData);
 	      UserStore.__emitChange();
 	      break;
 	    case UserConstants.SIGN_OUT_USER:
@@ -27476,7 +27519,7 @@
 	
 	  handleClick: function () {
 	    if (this.state.clicked === false) {
-	      ApiActions.switchFeedSource();
+	      ApiActions.switchFeedSource(this.props.feedSource.id);
 	      ApiUtil.fetchFeedItems(this.props.feedSource.id, FeedSourceStore.getFeedSourceNextPageById(this.props.feedSource.id));
 	      this.setState({ clicked: true });
 	    } else {
@@ -27607,7 +27650,7 @@
 	
 	  render: function () {
 	    var currentUser = this.state.currentUser;
-	    debugger;
+	
 	    return React.createElement(
 	      'div',
 	      { id: 'feedOptions' },
@@ -27626,10 +27669,14 @@
 	          React.createElement(
 	            'div',
 	            null,
-	            currentUser === undefined ? '' : "via " + currentUser.loginMethod
+	            currentUser === undefined ? '' : "via " + currentUser.login_method + " / ",
+	            React.createElement(
+	              'span',
+	              { id: 'feedOptionsLogout', onClick: this.handleSignOut },
+	              'Logout'
+	            )
 	          )
-	        ),
-	        React.createElement('div', { id: 'feedOptionsSignOutButton', onClick: this.handleSignOut })
+	        )
 	      )
 	    );
 	  }
@@ -28745,8 +28792,10 @@
 	  getInitialState: function () {
 	    return { displayedFeeds: [],
 	      displayedFeedSourceId: null,
+	      switchingToFeedSourceId: FeedItemStore.switchingToFeedSourceId(),
 	      scrollView: false,
 	      fetchingFeedItems: FeedItemStore.fetchingFeedItems(),
+	      fetchingFeedItemsOnScroll: false,
 	      switchingFeedSources: FeedItemStore.switchingFeedSources()
 	    };
 	  },
@@ -28768,9 +28817,11 @@
 	
 	  handleReceivedFeeds: function () {
 	    this.setState({
+	      switchingToFeedSourceId: FeedItemStore.switchingToFeedSourceId(),
 	      displayedFeeds: FeedItemStore.lastReceivedFeeds(),
 	      displayedFeedSourceId: FeedItemStore.lastReceivedId(),
 	      fetchingFeedItems: FeedItemStore.fetchingFeedItems(),
+	      fetchingFeedItemsOnScroll: FeedItemStore.fetchingFeedItemsOnScroll(),
 	      switchingFeedSources: FeedItemStore.switchingFeedSources()
 	    });
 	  },
@@ -28788,10 +28839,11 @@
 	      this.setState({ scrollView: false });
 	    }
 	    //infinite scroll
-	    var scrolledToEnd = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+	    var scrolledToEnd = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 20;
+	
 	    if (scrolledToEnd && !this.state.fetchingFeedItems && this.state.displayedFeedSourceId != FeedItemConstants.TODAY_FEEDS_ID) {
 	      ApiUtil.fetchFeedItems(this.state.displayedFeedSourceId, FeedSourceStore.getFeedSourceNextPageById(this.state.displayedFeedSourceId));
-	      ApiActions.setFetchingFeedItemsToTrue();
+	      ApiActions.setFetchingFeedItemsToTrue({ onScroll: true });
 	    }
 	  },
 	
@@ -28804,7 +28856,9 @@
 	  },
 	
 	  render: function () {
-	    var feedSource = FeedSourceStore.getFeedSourceById(this.state.displayedFeedSourceId);
+	    var displayed = this.state.switchingToFeedSourceId ? this.state.switchingToFeedSourceId : this.state.displayedFeedSourceId;
+	
+	    var feedSource = FeedSourceStore.getFeedSourceById(displayed);
 	
 	    return React.createElement(
 	      'div',
@@ -28817,6 +28871,7 @@
 	      React.createElement(FeedItemsIndex, { displayedFeeds: this.state.displayedFeeds,
 	        today: this.displayingToday(),
 	        fetchingFeedItems: this.state.fetchingFeedItems,
+	        fetchingFeedItemsOnScroll: this.state.fetchingFeedItemsOnScroll,
 	        switchingFeedSources: this.state.switchingFeedSources })
 	    );
 	  }

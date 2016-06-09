@@ -18,6 +18,10 @@ class Api::FeedsourcesController < ApplicationController
 
   end
 
+  def check_feed_updates
+
+  end
+
   def feeds
     feedSourceId = params[:id]
     page = params[:page]

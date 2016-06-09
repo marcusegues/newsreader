@@ -1,5 +1,5 @@
 var ApiActions = require('../actions/apiActions.jsx');
-//currentUser returned by ajax requests should probably use Jbuilder
+var FeedSourceStore = require('./../stores/feedSourceStore');
 
 var ApiUtil = {
   createUser: function(newUser) {
@@ -76,6 +76,18 @@ var ApiUtil = {
       success: function(feedSources) {
         ApiActions.receiveFeedSources(feedSources);
       }
+    });
+  },
+
+  updateAllFeedItems: function() {
+    Object.keys(FeedSourceStore.allFeedSources()).forEach(function(feedSourceId, id) {
+      $.ajax({
+        method: 'GET',
+        url:  'api/feeds/' + feedSourceId,
+        success: function(feedsData) {
+          ApiActions.receiveFeeds(feedsData, feedSourceId);
+        }
+      });
     });
   },
 

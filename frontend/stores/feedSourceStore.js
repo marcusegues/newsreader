@@ -94,6 +94,10 @@ FeedSourceStore.all = function() {
   return _feedSources;
 };
 
+FeedSourceStore.allFeedSources = function() {
+  return _feedSourcesById;
+};
+
 FeedSourceStore.feedSourcesLoaded = function() {
   return _feedSourcesLoaded;
 };

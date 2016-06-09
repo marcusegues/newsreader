@@ -13,8 +13,10 @@ var ViewFeeds = React.createClass({
   getInitialState: function() {
     return {displayedFeeds: [],
             displayedFeedSourceId: null,
+            switchingToFeedSourceId: FeedItemStore.switchingToFeedSourceId(),
             scrollView: false,
             fetchingFeedItems: FeedItemStore.fetchingFeedItems(),
+            fetchingFeedItemsOnScroll: false,
             switchingFeedSources: FeedItemStore.switchingFeedSources()
           };
   },
@@ -36,9 +38,11 @@ var ViewFeeds = React.createClass({
 
   handleReceivedFeeds: function() {
     this.setState({
+      switchingToFeedSourceId: FeedItemStore.switchingToFeedSourceId(),
       displayedFeeds: FeedItemStore.lastReceivedFeeds(),
       displayedFeedSourceId: FeedItemStore.lastReceivedId(),
       fetchingFeedItems: FeedItemStore.fetchingFeedItems(),
+      fetchingFeedItemsOnScroll: FeedItemStore.fetchingFeedItemsOnScroll(),
       switchingFeedSources: FeedItemStore.switchingFeedSources()
     });
   },
@@ -56,13 +60,14 @@ var ViewFeeds = React.createClass({
       this.setState({scrollView: false});
     }
     //infinite scroll
-    var scrolledToEnd = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    var scrolledToEnd = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 20;
+
     if (scrolledToEnd
         && !this.state.fetchingFeedItems
         && this.state.displayedFeedSourceId != FeedItemConstants.TODAY_FEEDS_ID) {
       ApiUtil.fetchFeedItems(this.state.displayedFeedSourceId,
                              FeedSourceStore.getFeedSourceNextPageById(this.state.displayedFeedSourceId));
-      ApiActions.setFetchingFeedItemsToTrue();
+      ApiActions.setFetchingFeedItemsToTrue({onScroll: true});
     }
   },
 
@@ -75,7 +80,11 @@ var ViewFeeds = React.createClass({
   },
 
   render: function() {
-    var feedSource = FeedSourceStore.getFeedSourceById(this.state.displayedFeedSourceId);
+    var displayed = this.state.switchingToFeedSourceId ?
+                    this.state.switchingToFeedSourceId :
+                    this.state.displayedFeedSourceId;
+
+    var feedSource = FeedSourceStore.getFeedSourceById(displayed);
 
     return (
       <div className="viewFeeds" ref="viewFeeds" onScroll={this.handleScroll}>
@@ -87,6 +96,7 @@ var ViewFeeds = React.createClass({
         <FeedItemsIndex displayedFeeds={this.state.displayedFeeds}
                         today={this.displayingToday()}
                         fetchingFeedItems={this.state.fetchingFeedItems}
+                        fetchingFeedItemsOnScroll={this.state.fetchingFeedItemsOnScroll}
                         switchingFeedSources={this.state.switchingFeedSources}/>
 
       </div>
