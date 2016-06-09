@@ -447,6 +447,14 @@ header p {
   }
 
   /* bottomNav */
+
+  #welcomeAvatar {
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+    border: 0.1em solid;
+    margin: 0 0.5em 0 0;
+  }
   #bottomNav {
   -moz-transform: translateY(0);
   -webkit-transform: translateY(0);
@@ -494,6 +502,10 @@ header p {
     #bottomNav h1 a {
       border: 0;
       color: inherit;
+    }
+
+    #bottomNav h1 * {
+      vertical-align: middle;
     }
 
       #bottomNav h1 a:hover {
