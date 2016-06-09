@@ -22,8 +22,6 @@ class Api::AuthenticationsController < ApplicationController
     # completely new user trying to sign up with a provider
     else
       @user = User.new
-      console.log(@user)
-      debugger;
       authentication = @user.authentications.build(provider: omniauth['provider'], uid: omniauth['uid'])
       if authentication.provider == "facebook"
         @user.facebook_username = omniauth['info']['name']
