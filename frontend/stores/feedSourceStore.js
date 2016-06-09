@@ -64,7 +64,6 @@ FeedSourceStore.__onDispatch = function(payload) {
       break;
     case FeedItemConstants.RECEIVED_FEEDS:
       _feedSourcesNextPageById[payload.feedSourceId] += 1;
-      debugger;
       break;
     case FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE:
       addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
@@ -76,7 +75,6 @@ FeedSourceStore.__onDispatch = function(payload) {
     //   FeedSourceStore.__emitChange();
     //   break;
     case UserConstants.USER_SIGNED_IN:
-      debugger;
       populate_feedSources(payload.initialData.feedSources);
       _feedSourcesLoaded = true;
       FeedSourceStore.__emitChange();

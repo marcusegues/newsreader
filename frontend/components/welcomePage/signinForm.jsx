@@ -10,28 +10,10 @@ var SigninForm = React.createClass({
     return {username: "", password: ""};
   },
 
-  handleSubmit: function(e) {
-    e.preventDefault();
-    var newUser = Object.assign({}, this.state);
-    ApiUtil.signinUser(newUser);
-  },
-
-  closeSignIn: function() {
-    this.props.closeModal(false);
-  },
-
-  switchToSignUp: function() {
-    this.props.closeModal(true);
-  },
-
-  signInToFacebook: function() {
-    ApiActions.signInToFacebook();
-  },
-
   componentDidMount: function() {
     window.fbAsyncInit = function() {
       FB.init({
-        appId      : '1708956192723376',
+        appId      : '1691421964447573',
         cookie     : true,  // enable cookies to allow the server to access
                           // the session
         xfbml      : true,  // parse social plugins on this page
@@ -47,16 +29,35 @@ var SigninForm = React.createClass({
        fjs.parentNode.insertBefore(js, fjs);
      }(document, 'script', 'facebook-jssdk'));
   },
+
+  handleSubmit: function(e) {
+    e.preventDefault();
+    var newUser = Object.assign({}, this.state);
+    ApiUtil.signinUser(newUser);
+  },
+
+  closeSignIn: function() {
+    this.props.closeModal(false);
+  },
+
+  switchToSignUp: function() {
+    this.props.closeModal(true);
+  },
+
+  signInToFacebook: function() {
+    ApiUtil.signInToFacebook();
+  },
+
   // <div className="fb-login-button-mine" onClick={this.signInToFacebook}>{"Sign in with Facebook"}</div>
   render: function() {
     return (
       this.props.visible === false ? null :
       <div className="userSignForm">
         <form className="signup-form" onSubmit={this.handleSubmit}>
-          <a className="fb-login-button" href="/auth/facebook">
+          <div className="fb-login-button" onClick={this.signInToFacebook}>
             <span className="fa fa-facebook fb-login-content-icon"></span>
             <span className="fb-login-content-message">{"Sign in with Facebook"}</span>
-          </a>
+          </div>
           <div className="lineorline">
             <span className="halfSeparator"></span><span id="or">or</span><span className="halfSeparator"></span>
           </div>

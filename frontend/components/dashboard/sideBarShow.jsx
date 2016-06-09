@@ -27,6 +27,7 @@ var SideBarShow = React.createClass({
           </div>
           <GeneralCategories />
           <CategoriesIndex />
+          <div id="feedOptionsScrollPlaceholder"></div>
           <FeedOptions />
         </div>
       </div>

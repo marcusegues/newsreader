@@ -26916,7 +26916,6 @@
 	      break;
 	    case FeedItemConstants.RECEIVED_FEEDS:
 	      _feedSourcesNextPageById[payload.feedSourceId] += 1;
-	      debugger;
 	      break;
 	    case FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE:
 	      addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
@@ -26928,7 +26927,6 @@
 	    //   FeedSourceStore.__emitChange();
 	    //   break;
 	    case UserConstants.USER_SIGNED_IN:
-	      debugger;
 	      populate_feedSources(payload.initialData.feedSources);
 	      _feedSourcesLoaded = true;
 	      FeedSourceStore.__emitChange();
@@ -27014,6 +27012,7 @@
 
 	var ApiActions = __webpack_require__(191);
 	//currentUser returned by ajax requests should probably use Jbuilder
+	
 	var ApiUtil = {
 	  createUser: function (newUser) {
 	    $.ajax({
@@ -27021,7 +27020,6 @@
 	      url: 'api/users',
 	      data: { user: newUser },
 	      success: function (initialData) {
-	        debugger;
 	        window.CURRENT_USER_ID = initialData.id;
 	        ApiActions.receiveCurrentUser(initialData);
 	      }
@@ -27049,6 +27047,25 @@
 	        ApiActions.signOutUser();
 	      }
 	    });
+	    FB.logout();
+	  },
+	
+	  signInToFacebook: function () {
+	    FB.login(this.signInOmniAuth);
+	  },
+	
+	  signInOmniAuth: function (response) {
+	    if (response.status === "connected" || response.status === "unauthorized") {
+	      $.ajax({
+	        method: 'GET',
+	        url: '/auth/facebook/callback',
+	        // data: {signed_request: response.authResponse.signedRequest},
+	        success: function (initialData) {
+	          window.CURRENT_USER_ID = initialData.id;
+	          ApiActions.receiveCurrentUser(initialData);
+	        }
+	      });
+	    }
 	  },
 	
 	  fetchCurrentUser: function () {
@@ -27128,9 +27145,7 @@
 	      method: 'PATCH',
 	      url: 'api/setUnreadToFalse/' + feedId
 	    });
-	  },
-	
-	  signInToFacebook: function () {}
+	  }
 	};
 	
 	module.exports = ApiUtil;
@@ -27143,6 +27158,7 @@
 	var FeedSourceConstants = __webpack_require__(184);
 	var FeedItemConstants = __webpack_require__(185);
 	var UserConstants = __webpack_require__(186);
+	var ApiUtil = __webpack_require__(190);
 	
 	var ApiActions = {
 	  receiveCurrentUser: function (initialData) {
@@ -27227,15 +27243,9 @@
 	    });
 	  },
 	
-	  signInToFacebook: function () {
-	
-	    FB.login(this.checkLoginState);
-	  },
-	
 	  checkLoginState: function (response) {
 	    if (response.status === 'connected') {
 	      console.log("already connected to both");
-	      debugger;
 	      console.log(response.authResponse.accessToken);
 	      console.log(response);
 	      FB.api('/me', function (response) {
@@ -27288,14 +27298,28 @@
 	var AppDispatcher = __webpack_require__(181);
 	var UserStore = new Store(AppDispatcher);
 	var UserConstants = __webpack_require__(186);
+	var FeedItemConstants = __webpack_require__(185);
 	
 	var currentUser = undefined;
 	
 	UserStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case UserConstants.USER_SIGNED_IN:
-	      debugger;
-	      currentUser = payload.currentUser;
+	      currentUser = {
+	        id: payload.initialData.id,
+	        avatar_url: payload.initialData.userAvatar,
+	        login_method: payload.initialData.loginMethod,
+	        username: payload.initialData.username
+	      };
+	      UserStore.__emitChange();
+	      break;
+	    case FeedItemConstants.RECEIVED_INITIAL_DATA:
+	      currentUser = {
+	        id: payload.initialData.id,
+	        avatar_url: payload.initialData.userAvatar,
+	        login_method: payload.initialData.loginMethod,
+	        username: payload.initialData.username
+	      };
 	      UserStore.__emitChange();
 	      break;
 	    case UserConstants.SIGN_OUT_USER:
@@ -27352,6 +27376,7 @@
 	        ),
 	        React.createElement(GeneralCategories, null),
 	        React.createElement(CategoriesIndex, null),
+	        React.createElement('div', { id: 'feedOptionsScrollPlaceholder' }),
 	        React.createElement(FeedOptions, null)
 	      )
 	    );
@@ -27545,12 +27570,26 @@
 	var React = __webpack_require__(1);
 	var CreateNewFeedSourceModal = __webpack_require__(198);
 	var ApiUtil = __webpack_require__(190);
+	var UserStore = __webpack_require__(192);
 	
 	var FeedOptions = React.createClass({
 	  displayName: 'FeedOptions',
 	
 	  getInitialState: function () {
-	    return { modalOpen: false };
+	    return { modalOpen: false,
+	      currentUser: UserStore.currentUser() };
+	  },
+	
+	  componentDidMount: function () {
+	    this.userStoreListener = UserStore.addListener(this.handleSignedInUser);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.userStoreListener.remove();
+	  },
+	
+	  handleSignedInUser: function () {
+	    this.setState({ currentUser: UserStore.currentUser() });
 	  },
 	
 	  createNewFeedSource: function (e) {
@@ -27567,26 +27606,31 @@
 	  },
 	
 	  render: function () {
+	    var currentUser = this.state.currentUser;
+	    debugger;
 	    return React.createElement(
 	      'div',
-	      null,
+	      { id: 'feedOptions' },
 	      React.createElement(
 	        'div',
-	        { className: 'submit' },
+	        { id: 'feedOptionsContents' },
+	        React.createElement('img', { id: 'feedOptionsAvatar', src: currentUser ? currentUser.avatar_url : '' }),
 	        React.createElement(
-	          'button',
-	          { onClick: this.createNewFeedSource },
-	          'Add New Content'
+	          'div',
+	          { id: 'feedOptionsText' },
+	          React.createElement(
+	            'div',
+	            null,
+	            currentUser === undefined ? '' : currentUser.username
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            currentUser === undefined ? '' : "via " + currentUser.loginMethod
+	          )
 	        ),
-	        React.createElement(
-	          'button',
-	          { onClick: this.handleSignOut },
-	          'Sign Out'
-	        )
-	      ),
-	      React.createElement(CreateNewFeedSourceModal, {
-	        modalOpen: this.state.modalOpen,
-	        closeModal: this.closeModal })
+	        React.createElement('div', { id: 'feedOptionsSignOutButton', onClick: this.handleSignOut })
+	      )
 	    );
 	  }
 	});
@@ -28241,6 +28285,11 @@
 	    this.props.closeModal(true);
 	  },
 	
+	  signInToFacebook: function () {
+	    console.log("here");
+	    ApiUtil.signInToFacebook();
+	  },
+	
 	  render: function () {
 	    return this.props.visible === false ? null : React.createElement(
 	      'div',
@@ -28249,9 +28298,25 @@
 	        'form',
 	        { className: 'signup-form', onSubmit: this.handleSubmit },
 	        React.createElement(
-	          'p',
-	          null,
-	          'Create New User'
+	          'div',
+	          { className: 'fb-login-button', onClick: this.signInToFacebook },
+	          React.createElement('span', { className: 'fa fa-facebook fb-login-content-icon' }),
+	          React.createElement(
+	            'span',
+	            { className: 'fb-login-content-message' },
+	            "Sign up with Facebook"
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'lineorline' },
+	          React.createElement('span', { className: 'halfSeparator' }),
+	          React.createElement(
+	            'span',
+	            { id: 'or' },
+	            'or'
+	          ),
+	          React.createElement('span', { className: 'halfSeparator' })
 	        ),
 	        React.createElement(
 	          'div',
@@ -28313,7 +28378,7 @@
 	            null,
 	            "SF"
 	          ),
-	          " Ramona Ambuehl, hottie"
+	          " Swiss Feeds re"
 	        )
 	      ),
 	      React.createElement(
@@ -28556,28 +28621,10 @@
 	    return { username: "", password: "" };
 	  },
 	
-	  handleSubmit: function (e) {
-	    e.preventDefault();
-	    var newUser = Object.assign({}, this.state);
-	    ApiUtil.signinUser(newUser);
-	  },
-	
-	  closeSignIn: function () {
-	    this.props.closeModal(false);
-	  },
-	
-	  switchToSignUp: function () {
-	    this.props.closeModal(true);
-	  },
-	
-	  signInToFacebook: function () {
-	    ApiActions.signInToFacebook();
-	  },
-	
 	  componentDidMount: function () {
 	    window.fbAsyncInit = function () {
 	      FB.init({
-	        appId: '1708956192723376',
+	        appId: '1691421964447573',
 	        cookie: true, // enable cookies to allow the server to access
 	        // the session
 	        xfbml: true, // parse social plugins on this page
@@ -28596,6 +28643,25 @@
 	      fjs.parentNode.insertBefore(js, fjs);
 	    })(document, 'script', 'facebook-jssdk');
 	  },
+	
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	    var newUser = Object.assign({}, this.state);
+	    ApiUtil.signinUser(newUser);
+	  },
+	
+	  closeSignIn: function () {
+	    this.props.closeModal(false);
+	  },
+	
+	  switchToSignUp: function () {
+	    this.props.closeModal(true);
+	  },
+	
+	  signInToFacebook: function () {
+	    ApiUtil.signInToFacebook();
+	  },
+	
 	  // <div className="fb-login-button-mine" onClick={this.signInToFacebook}>{"Sign in with Facebook"}</div>
 	  render: function () {
 	    return this.props.visible === false ? null : React.createElement(
@@ -28605,8 +28671,8 @@
 	        'form',
 	        { className: 'signup-form', onSubmit: this.handleSubmit },
 	        React.createElement(
-	          'a',
-	          { className: 'fb-login-button', href: '/auth/facebook' },
+	          'div',
+	          { className: 'fb-login-button', onClick: this.signInToFacebook },
 	          React.createElement('span', { className: 'fa fa-facebook fb-login-content-icon' }),
 	          React.createElement(
 	            'span',

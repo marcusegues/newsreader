@@ -1,10 +1,24 @@
 var React = require('react');
 var CreateNewFeedSourceModal = require('./createNewFeedSourceModal');
 var ApiUtil = require('../../util/apiUtil');
+var UserStore = require('./../../stores/userStore');
 
 var FeedOptions = React.createClass({
   getInitialState: function () {
-    return {modalOpen: false};
+    return {modalOpen: false,
+            currentUser: UserStore.currentUser()};
+  },
+
+  componentDidMount: function() {
+    this.userStoreListener = UserStore.addListener(this.handleSignedInUser);
+  },
+
+  componentWillUnmount: function() {
+    this.userStoreListener.remove();
+  },
+
+  handleSignedInUser: function() {
+    this.setState({currentUser: UserStore.currentUser()});
   },
 
   createNewFeedSource: function(e) {
@@ -20,17 +34,19 @@ var FeedOptions = React.createClass({
     ApiUtil.signOutUser();
   },
 
-
   render: function() {
+    var currentUser = this.state.currentUser;
+    debugger;
     return (
-      <div>
-        <div className="submit">
-          <button onClick={this.createNewFeedSource}>Add New Content</button>
-          <button onClick={this.handleSignOut}>Sign Out</button>
+      <div id="feedOptions">
+        <div id="feedOptionsContents">
+          <img id="feedOptionsAvatar" src={currentUser ? currentUser.avatar_url : ''}></img>
+          <div id="feedOptionsText">
+            <div>{currentUser === undefined ? '' : currentUser.username}</div>
+            <div>{currentUser === undefined ? '' : "via " + currentUser.loginMethod}</div>
+          </div>
+          <div id="feedOptionsSignOutButton" onClick={this.handleSignOut}></div>
         </div>
-        <CreateNewFeedSourceModal
-          modalOpen={this.state.modalOpen}
-          closeModal={this.closeModal}/>
       </div>
     );
   }

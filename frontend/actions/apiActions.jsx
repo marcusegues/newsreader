@@ -2,6 +2,7 @@ var AppDispatcher = require('../dispatcher/dispatcher');
 var FeedSourceConstants = require('../constants/feedSourceConstants');
 var FeedItemConstants = require('../constants/feedItemConstants');
 var UserConstants = require('../constants/userConstants');
+var ApiUtil = require('../util/apiUtil');
 
 
 var ApiActions = {
@@ -87,15 +88,9 @@ var ApiActions = {
     });
   },
 
-  signInToFacebook: function() {
-
-    FB.login(this.checkLoginState);
-  },
-
   checkLoginState: function(response) {
     if (response.status === 'connected') {
       console.log("already connected to both");
-      debugger;
       console.log(response.authResponse.accessToken);
       console.log(response);
       FB.api('/me', function(response) {

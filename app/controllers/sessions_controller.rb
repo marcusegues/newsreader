@@ -1,8 +1,5 @@
 class SessionsController < ApplicationController
 
-  def new
-  end
-
   def create
     @user = User.find_by_credentials(session_params[:username], session_params[:password])
     if @user.nil?
@@ -17,6 +14,10 @@ class SessionsController < ApplicationController
   def destroy
     sign_out!
     redirect_to new_session_url
+  end
+
+  def test
+    debugger;
   end
 
   private

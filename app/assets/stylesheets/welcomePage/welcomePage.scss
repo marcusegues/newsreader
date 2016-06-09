@@ -79,12 +79,14 @@
 		-webkit-transition: opacity 2s ease-in-out;
 		-ms-transition: opacity 2s ease-in-out;
 		transition: opacity 2s ease-in-out;
+
 		height: 100%;
     position: fixed;
     top: 0;
     bottom: 0;
 		opacity: 0.5;
 		z-index: 1;
+    overflow: hidden;
 	}
 
   #bg.bg1 {
@@ -103,12 +105,10 @@
 		transition: left 1s cubic-bezier(.08,.76,.46,.92);
     left: 100%;
     right: 0;
-    overflow:hidden;
   }
 
   #bg.bg1.arrowClicked {
     right: 100%;
-    overflow: hidden;
   }
 
 
@@ -373,7 +373,6 @@ header p {
 }
 
 /* Header */
-
   #header {
     position: relative;
     z-index: 8;
@@ -391,6 +390,7 @@ header p {
       transition-delay: 0.5s;
   	}
     p {
+      /* this has precedence in defining transition for signup button on welcome */
   		font-size: 1.35em;
   		line-height: 1.65em;
       -moz-transition: -moz-opacity 2s ease;
@@ -407,6 +407,7 @@ header p {
     }
   }
 
+/* WelcomeMainMessage should start with opacity zero and transition */
   body.loading {
     #header > h1, p {
       opacity: 0;
@@ -434,7 +435,7 @@ header p {
 
 	}
 
-  /* Header Transitions */
+  /* Header Transitions when RightArrow is clicked*/
   #header.arrowClicked {
     .button {
       transform: rotate(180deg);

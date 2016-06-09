@@ -78,6 +78,7 @@ var Dashboard = React.createClass({
         <SideBarShow ref="SideBar" clickedPinButton={this.clickedPinButton}
                                    sideBarPinned={this.state.sideBarPinned}
                                    shrinkSideBar={this.state.shrinkSideBar}/>
+
         {childrenWithProps}
       </div>
     );

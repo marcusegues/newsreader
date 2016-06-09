@@ -6,6 +6,7 @@ class Api::SessionsController < ApplicationController
       render json: ["couldn't find user"], status: 404
     else
       sign_in!(@user)
+      self.login_method = "swissfeeds"
       render :signed_in
     end
   end

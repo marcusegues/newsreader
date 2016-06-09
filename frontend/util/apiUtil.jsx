@@ -1,5 +1,6 @@
 var ApiActions = require('../actions/apiActions.jsx');
 //currentUser returned by ajax requests should probably use Jbuilder
+
 var ApiUtil = {
   createUser: function(newUser) {
     $.ajax({
@@ -7,7 +8,6 @@ var ApiUtil = {
       url: 'api/users',
       data: {user: newUser},
       success: function(initialData) {
-        debugger;
         window.CURRENT_USER_ID = initialData.id;
         ApiActions.receiveCurrentUser(initialData);
       }
@@ -35,6 +35,25 @@ var ApiUtil = {
         ApiActions.signOutUser();
       }
     });
+    FB.logout();
+  },
+
+  signInToFacebook: function() {
+    FB.login(this.signInOmniAuth);
+  },
+
+  signInOmniAuth: function(response) {
+    if ((response.status === "connected") || (response.status === "unauthorized")) {
+      $.ajax({
+        method: 'GET',
+        url: '/auth/facebook/callback',
+        // data: {signed_request: response.authResponse.signedRequest},
+        success: function(initialData) {
+          window.CURRENT_USER_ID = initialData.id;
+          ApiActions.receiveCurrentUser(initialData);
+        }
+      });
+    }
   },
 
   fetchCurrentUser: function() {
@@ -114,10 +133,6 @@ var ApiUtil = {
       method: 'PATCH',
       url: 'api/setUnreadToFalse/' + feedId,
     });
-  },
-
-  signInToFacebook: function() {
-    
   }
 };
 
