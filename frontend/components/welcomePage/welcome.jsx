@@ -5,7 +5,7 @@ var ApiUtil = require('../../util/apiUtil');
 var WelcomeMainMessage = require('./welcomeMainMessage');
 var BottomNav = require('./bottomNav');
 var WelcomeBackground = require('./welcomeBackground');
-var Wbg2 = require('./wbg2');
+var SecondWelcomeBackground = require('./secondWelcomeBackground');
 var SignUpForm = require('./signupForm');
 var SignInForm = require('./signinForm');
 var classNames = require('classnames');
@@ -89,7 +89,7 @@ var Welcome = React.createClass({
                             toggleSignUpModalVisible={this.toggleSignUpModalVisible} />
         <BottomNav toggleSignInModalVisible={this.toggleSignInModalVisible}/>
         <WelcomeBackground arrowClicked={this.state.arrowClicked} />
-        <Wbg2 arrowClicked={this.state.arrowClicked}/>
+        <SecondWelcomeBackground arrowClicked={this.state.arrowClicked}/>
         <SignUpForm visible={this.state.signUpModalVisible} closeModal={this.toggleSignUpModalVisible} />
         <SignInForm visible={this.state.signInModalVisible} closeModal={this.toggleSignInModalVisible} />
       </div>
