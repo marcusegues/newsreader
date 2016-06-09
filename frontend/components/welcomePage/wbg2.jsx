@@ -2,7 +2,7 @@ var React = require('react');
 var Background = require('./background');
 var classNames = require('classnames');
 
-var WelcomeBackground2 = React.createClass({
+var Wbg2 = React.createClass({
   getInitialState: function() {
     return (
         {
@@ -74,4 +74,4 @@ var WelcomeBackground2 = React.createClass({
   }
 });
 
-module.exports = WelcomeBackground2;
+module.exports = Wbg2;
