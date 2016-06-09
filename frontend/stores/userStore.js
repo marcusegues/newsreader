@@ -7,6 +7,7 @@ var FeedItemConstants = require('../constants/feedItemConstants');
 var currentUser = undefined;
 
 var getCurrentUserFromInitialData = function(initialData) {
+  debugger;
   currentUser= {
     id: initialData.id,
     avatar_url: initialData.avatar_url,

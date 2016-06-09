@@ -36,13 +36,19 @@ var FeedOptions = React.createClass({
 
   render: function() {
     var currentUser = this.state.currentUser;
+    var currentUser_username =
+      currentUser === undefined ?
+      '' :
+      (currentUser.login_method === "facebook" ?
+       currentUser.facebook_username :
+       currentUser.username);
 
     return (
       <div id="feedOptions">
         <div id="feedOptionsContents">
           <img id="feedOptionsAvatar" src={currentUser ? currentUser.avatar_url : ''}></img>
           <div id="feedOptionsText">
-            <div>{currentUser === undefined ? '' : currentUser.username}</div>
+            <div>{currentUser_username}</div>
             <div>{currentUser === undefined ?
               '' :
               "via " + currentUser.login_method + " / "}

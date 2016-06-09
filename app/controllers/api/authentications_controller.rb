@@ -24,8 +24,9 @@ class Api::AuthenticationsController < ApplicationController
       @user = User.new
       authentication = @user.authentications.build(provider: omniauth['provider'], uid: omniauth['uid'])
       if authentication.provider == "facebook"
-        @user.username = omniauth['info']['name']
-        @user.password = omniauth['credentials']['token']
+        @user.facebook_username = omniauth['info']['name']
+        @user.username = SecureRandom.urlsafe_base64(16)
+        @user.password = SecureRandom.urlsafe_base64(16)
         @user.avatar_url = omniauth['info']['image']
       end
       if @user.save

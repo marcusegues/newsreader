@@ -32,7 +32,7 @@ var ApiUtil = {
     if (UserStore.current_user().login_method === "facebook") {
       FB.logout();
     }
-    
+
     $.ajax({
       method: 'DELETE',
       url: 'api/session',

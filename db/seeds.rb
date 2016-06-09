@@ -11,7 +11,6 @@ User.create!(username: "mariana", password: "password")
 User.create!(username: "maria", password: "password")
 User.create!(username: "carlos", password: "password")
 User.create!(username: "ramona", password: "password")
-User.create!(username: "marcus", password: "password123")
 
 
 FeedSource.create!(title: "Econbrowser", url: "http://econbrowser.com/atom.xml", category: "Economics")
