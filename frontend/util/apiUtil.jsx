@@ -2,7 +2,6 @@ var ApiActions = require('../actions/apiActions.jsx');
 var FeedSourceStore = require('./../stores/feedSourceStore');
 var UserStore = require('./../stores/userStore');
 
-
 var ApiUtil = {
   createUser: function(newUser) {
     $.ajax({
@@ -29,7 +28,7 @@ var ApiUtil = {
   },
 
   signOutUser: function() {
-    if (UserStore.current_user().login_method === "facebook") {
+    if (UserStore.currentUser().login_method === "facebook") {
       FB.logout();
     }
 

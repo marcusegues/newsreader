@@ -1,7 +1,6 @@
 class SessionsController < ApplicationController
 
   def create
-    debugger;
     @user = User.find_by_credentials(session_params[:username], session_params[:password])
     if @user.nil?
       flash.now[:errors] = ["User with that username/password not found."]

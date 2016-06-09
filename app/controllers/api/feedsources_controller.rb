@@ -18,8 +18,9 @@ class Api::FeedsourcesController < ApplicationController
 
   end
 
-  def check_feed_updates
-
+  def update_feeds
+    @user = params[:id]
+    
   end
 
   def feeds
