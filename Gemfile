@@ -7,7 +7,6 @@ gem 'annotate'
 gem 'bcrypt'
 gem 'feedjira'
 # gem 'bootstrap-sass'
-gem 'newrelic_rpm'
 gem 'kaminari'
 gem 'omniauth-facebook'
 # Use jquery as the JavaScript library
