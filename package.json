@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/malans/newsreader.git"
+    "url": "git+https://github.com/marcusegues/newsreader.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/malans/newsreader/issues"
+    "url": "https://github.com/marcusegues/newsreader/issues"
   },
-  "homepage": "https://github.com/malans/newsreader#readme",
+  "homepage": "https://github.com/marcusegues/newsreader#readme",
   "dependencies": {
     "babel-core": "^6.3.17",
     "babel-loader": "^6.2.0",
