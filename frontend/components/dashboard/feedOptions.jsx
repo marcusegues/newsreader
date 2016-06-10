@@ -54,6 +54,7 @@ var FeedOptions = React.createClass({
               "via " + currentUser.login_method + " / "}
                 <span id="feedOptionsLogout" onClick={this.handleSignOut}>Logout</span></div>
           </div>
+            <a className="clickButton addFeeds" onClick={this.addFeed} >Add Feeds</a>
         </div>
       </div>
     );

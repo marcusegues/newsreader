@@ -92,6 +92,16 @@
 #feedOptionsContents {
   padding: 0.5em;
   height: 4em;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.addFeeds {
+  margin: 0 0 0 2em;
+  border-radius: 3px !important;
+  padding: 0 0.5em !important;
 }
 
 #feedOptionsLogout {

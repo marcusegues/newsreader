@@ -11,7 +11,11 @@ var FeedSourceItem = React.createClass({
   },
 
   componentWillMount: function() {
-    FeedItemStore.addListener(this.handleReceivedFeeds);
+    this.feedItemStoreListener = FeedItemStore.addListener(this.handleReceivedFeeds);
+  },
+
+  componentWillUnmount: function() {
+  this.feedItemStoreListener.remove();
   },
 
   componentDidMount: function() {
