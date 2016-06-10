@@ -46,7 +46,9 @@ var ViewFeedsHeader = React.createClass({
             <li className="fa fa-cog categoryIcon verticalCenter"></li>
             <div className="inputIcon">
               <span className="fa fa-search verticalCenter"></span>
-              <input type="text" name="search" id="search" placeholder="Search" valueLink={this.linkState('search')} />
+              <div id="search">
+                <input type="text" name="search" placeholder="Search" valueLink={this.linkState('search')} />
+              </div>
             </div>
           </ul>
 

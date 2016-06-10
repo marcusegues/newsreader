@@ -163,15 +163,15 @@
 }
 
 .viewFeedsHeader * {
-  vertical-align: middle;
   display: inline-block;
 }
 
-.viewFeedsHeaderNav input[type="text"] {
-  margin: 0;
-  height: 2.5em;
-  font-size: 12px;
-}
+// .viewFeedsHeader .inputIcon {
+//   position: relative;
+//   width: 15em;
+//   height:2.5em
+// }
+
 
 #viewFeedsHeaderTitle {
   font-size: 26px;
@@ -180,21 +180,44 @@
   flex-shrink: 1;
 }
 
+.viewFeedsHeaderNav input[type="text"] {
+  margin: 0;
+  height: 2.5em;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+#search {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
 .viewFeedsHeaderNav {
   margin-left: auto;
   display: inline-block;
   flex-shrink: 0;
+  line-height: 4em
 }
 
 .viewFeedsHeaderNav li {
+  width: 1em;
   margin: 0 1em 0 0;
+  position:relative;
+}
+
+.viewFeedsHeaderNav li:before {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .viewFeedsHeaderNav * {
   padding: 0;
   margin: 0;
   height: 100%;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .viewFeedsNav {
@@ -293,7 +316,6 @@
 .feedSourceItem {
   color: $viewFeedSourcesLightGrey;
 }
-
 
 .verticalCenter {
   display: inline-flex;
