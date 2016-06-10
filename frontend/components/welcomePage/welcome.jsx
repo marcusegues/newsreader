@@ -85,9 +85,9 @@ var Welcome = React.createClass({
     return (
       <div id="welcomeBody">
         <WelcomeMainMessage arrowClicked={this.state.arrowClicked}
-                            toggleArrowClicked={this.toggleArrowClicked}
-                            toggleSignUpModalVisible={this.toggleSignUpModalVisible} />
-        <BottomNav toggleSignInModalVisible={this.toggleSignInModalVisible}/>
+                            toggleArrowClicked={this.toggleArrowClicked}/>
+        <BottomNav toggleSignInModalVisible={this.toggleSignInModalVisible}
+                   toggleSignUpModalVisible={this.toggleSignUpModalVisible}/>
         <WelcomeBackground arrowClicked={this.state.arrowClicked} />
         <SecondWelcomeBackground arrowClicked={this.state.arrowClicked}/>
         <SignUpForm visible={this.state.signUpModalVisible} closeModal={this.toggleSignUpModalVisible} />

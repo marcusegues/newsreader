@@ -2,11 +2,11 @@ var React = require('react');
 var classNames = require('classnames');
 var RightArrow = require('./rightArrow');
 var SignUpForm = require('./signupForm');
+var ApiUtil = require('../../util/apiUtil');
 
 var WelcomeMainMessage = React.createClass({
-
-  openSignUpForm: function() {
-    this.props.toggleSignUpModalVisible(false);
+  signInDemo: function() {
+    ApiUtil.signInGuest();
   },
 
   render: function() {
@@ -26,7 +26,7 @@ var WelcomeMainMessage = React.createClass({
 
         <div className={divClasses}>
           <p className="subMessage" >
-            <a className="clickButton" onClick={this.openSignUpForm}>Sign up</a>
+            <a className="clickButton" onClick={this.signInDemo}>Demo</a>
           </p>
           <RightArrow arrowClicked={this.props.arrowClicked}
                       toggleArrowClicked={this.props.toggleArrowClicked} />

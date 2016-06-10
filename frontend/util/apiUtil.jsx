@@ -15,7 +15,7 @@ var ApiUtil = {
     });
   },
 
-  signinUser: function(user) {
+  signInUser: function(user) {
     $.ajax({
       method: 'POST',
       url: 'api/session',
@@ -25,6 +25,10 @@ var ApiUtil = {
         ApiActions.receiveCurrentUser(initialData);
       }
     });
+  },
+
+  signInGuest: function() {
+    this.signInUser({username: "Guest User", password: "password"});
   },
 
   signOutUser: function() {

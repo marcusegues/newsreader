@@ -6,7 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-User.create!(username: "marcus", password: "password")
+User.create!(username: "Guest User", password: "password")
 User.create!(username: "mariana", password: "password")
 User.create!(username: "maria", password: "password")
 User.create!(username: "carlos", password: "password")
@@ -18,7 +18,7 @@ FeedSource.create!(title: "Calculated Risk", url: "http://feeds.feedburner.com/C
 FeedSource.create!(title: "Abnormal Returns", url: "http://feeds2.feedburner.com/abnormalreturns", category: "Economics")
 FeedSource.create!(title: "Thomas Friedman NYT", url: "http://www.nytimes.com/svc/collections/v1/publish/www.nytimes.com/column/thomas-l-friedman/rss.xml", category: "News")
 FeedSource.create!(title: "Google Analytics", url: "http://feeds.feedburner.com/blogspot/tRaA", category: "Analytics")
-FeedSource.create!(title: "Keith Hennessey", url: "http://feeds2.feedburner.com/KeithHennessey", category: "Politics")
+FeedSource.create!(title: "Washington Post", url: "http://feeds.washingtonpost.com/rss/politics", category: "Politics")
 FeedSource.create!(title: "longandvariable", url: "https://longandvariable.wordpress.com/feed/", category: "Economics")
 FeedSource.create!(title: "Interfluidity", url: "http://www.interfluidity.com/feed/rdf", category: "Economics")
 FeedSource.create!(title: "Mashable", url: "http://feeds.mashable.com/Mashable?format=xml", category: "Tech")

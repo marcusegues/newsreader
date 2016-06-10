@@ -5,6 +5,10 @@ var BottomNav = React.createClass({
     this.props.toggleSignInModalVisible(false);
   },
 
+  openSignUpForm: function() {
+    this.props.toggleSignUpModalVisible(false);
+  },
+
   render: function() {
     return (
       <header id="bottomNav">
@@ -18,6 +22,7 @@ var BottomNav = React.createClass({
         <nav>
           <ul>
               <li><a href="#">About</a></li>
+              <li><a onClick={this.openSignUpForm}>Sign Up</a></li>
               <li><a onClick={this.openSignInForm}>Sign In</a></li>
           </ul>
         </nav>
