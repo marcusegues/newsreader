@@ -76,11 +76,11 @@ FeedSourceStore.__onDispatch = function(payload) {
       addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
       FeedSourceStore.__emitChange();
       break;
-    // case FeedItemConstants.RECEIVED_INITIAL_DATA:
-    //   populate_feedSources(payload.initialData.feedSources);
-    //   _feedSourcesLoaded = true;
-    //   FeedSourceStore.__emitChange();
-    //   break;
+    case FeedItemConstants.RECEIVED_INITIAL_DATA:
+      populate_feedSources(payload.initialData.feedSources);
+      _feedSourcesLoaded = true;
+      FeedSourceStore.__emitChange();
+      break;
     case UserConstants.USER_SIGNED_IN:
       populate_feedSources(payload.initialData.feedSources);
       _feedSourcesLoaded = true;

@@ -42,6 +42,7 @@ var update_feeds = function(payload) {
 FeedItemStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case FeedItemConstants.RECEIVED_FEEDS_UPDATE:
+      debugger;
       update_feeds(payload);
       FeedItemStore.__emitChange();
       break;
@@ -125,10 +126,23 @@ FeedItemStore.loadedInitialData = function() {
   return loadedInitialData;
 };
 
+FeedItemStore.initial_feeds = function() {
+  return loadedInitialData;
+};
+
+FeedItemStore.areFeedSourceItemsLoaded = function(feedSourceId) {
+  if (_feeds[feedSourceId] === undefined) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 FeedItemStore.all = function(feedSourceId) {
   if (feedSourceId === FeedItemConstants.TODAY_FEEDS_ID) {
     return this.todayFeeds();
   }
+
   var feedsArray = [];
   var feedsObject = _feeds[feedSourceId];
   Object.keys(feedsObject).sort().forEach(function(key, idx) {

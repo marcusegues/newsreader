@@ -7,7 +7,7 @@ var ApiActions = require('../../actions/apiActions');
 
 var FeedSourceItem = React.createClass({
   getInitialState: function() {
-    return {clicked: false, unreadCount: 0};
+    return {loaded: false, unreadCount: 0};
   },
 
   componentWillMount: function() {
@@ -20,16 +20,23 @@ var FeedSourceItem = React.createClass({
     }
   },
 
+  loadedInFeedStore: function() {
+    return (FeedItemStore.areFeedSourceItemsLoaded(this.props.feedSource.id));
+  },
+
   handleReceivedFeeds: function() {
     this.setState({unreadCount: FeedItemStore.unreadCount(this.props.feedSource.id)});
+    if (this.loadedInFeedStore()) {
+      this.setState({loaded: true});
+    }
   },
 
   handleClick: function() {
-    if (this.state.clicked === false) {
+    if (this.state.loaded === false) {
       ApiActions.switchFeedSource(this.props.feedSource.id);
       ApiUtil.fetchFeedItems(this.props.feedSource.id,
                              FeedSourceStore.getFeedSourceNextPageById(this.props.feedSource.id));
-      this.setState({clicked: true});
+      this.setState({loaded: true});
     } else {
       ApiActions.changeDisplayedFeeds(this.props.feedSource.id);
     }
@@ -42,7 +49,7 @@ var FeedSourceItem = React.createClass({
       <li className="feedSourceItem" onClick={this.handleClick}>
         <span className="verticalCenter"><img src={faviconURL} /></span>
         <span className="feedSourceItemTitle">{title}</span>
-        <span className="feedSourceItemCount">{this.state.unreadCount}</span>
+        <span className="feedSourceItemCount">{this.state.unreadCount === 0 ? '' : this.state.unreadCount}</span>
       </li>
     );
   }
