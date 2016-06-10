@@ -55,6 +55,10 @@ var addCreatedFeedSourceTo_feedSources = function(createdFeedSource) {
   _feedSources[category].push(createdFeedSource);
 };
 
+FeedSourceStore.allFeedSources = function() {
+  return _feedSourcesById;
+};
+
 FeedSourceStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case FeedSourceConstants.RECEIVED_FEED_SOURCES:
@@ -63,6 +67,9 @@ FeedSourceStore.__onDispatch = function(payload) {
       FeedSourceStore.__emitChange();
       break;
     case FeedItemConstants.RECEIVED_FEEDS:
+      _feedSourcesNextPageById[payload.feedSourceId] += 1;
+      break;
+    case FeedItemConstants.RECEIVED_FEEDS_UPDATE:
       _feedSourcesNextPageById[payload.feedSourceId] += 1;
       break;
     case FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE:
@@ -92,10 +99,6 @@ var resetStore = function() {
 
 FeedSourceStore.all = function() {
   return _feedSources;
-};
-
-FeedSourceStore.allFeedSources = function() {
-  return _feedSourcesById;
 };
 
 FeedSourceStore.feedSourcesLoaded = function() {

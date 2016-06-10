@@ -27,18 +27,28 @@ var handleInitialData = function(payload) {
   _switchingFeedSources = false;
 };
 
+var update_feeds = function(payload) {
+  var receivedId = payload.feedSourceId;
+  if (!_feeds.hasOwnProperty(receivedId)) {
+    _feeds[receivedId] = {};
+  }
+  _feeds[receivedId][Number(payload.feedsData.page)] = payload.feedsData.feeds;
+  usefulFunctions.updateObject(_unreadCount, JSON.parse(payload.feedsData.unreadCount));
+  _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.feedsData.todayFeeds;
+  _unreadCount = JSON.parse(payload.feedsData.unreadCount);
+  _unreadCount[FeedItemConstants.TODAY_FEEDS_ID] = payload.feedsData.todayFeedsUnreadCount;
+};
+
 FeedItemStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
+    case FeedItemConstants.RECEIVED_FEEDS_UPDATE:
+      update_feeds(payload);
+      FeedItemStore.__emitChange();
+      break;
     case FeedItemConstants.RECEIVED_FEEDS:
       _switching_to_feedsource_id = undefined;
       _lastReceivedId = payload.feedSourceId;
-      if (!_feeds.hasOwnProperty(_lastReceivedId)) {
-        _feeds[_lastReceivedId] = [];
-      }
-      _feeds[_lastReceivedId] =
-          _feeds[_lastReceivedId].concat(payload.feedsData.feeds);
-      usefulFunctions.updateObject(_unreadCount, JSON.parse(payload.feedsData.unreadCount));
-      _feeds[FeedItemConstants.TODAY_FEEDS_ID] = payload.feedsData.todayFeeds;
+      update_feeds(payload);
       _fetchingFeedItems = false;
       _fetchingFeedItemsOnScroll = false;
       _switchingFeedSources = false;
@@ -116,7 +126,17 @@ FeedItemStore.loadedInitialData = function() {
 };
 
 FeedItemStore.all = function(feedSourceId) {
-  return _feeds[feedSourceId];
+  if (feedSourceId === FeedItemConstants.TODAY_FEEDS_ID) {
+    return this.todayFeeds();
+  }
+  var feedsArray = [];
+  var feedsObject = _feeds[feedSourceId];
+  Object.keys(feedsObject).sort().forEach(function(key, idx) {
+    Array.prototype.push.apply(feedsArray,feedsObject[Number(key)]);
+    // feedsArray.concat(feedsObject[Number(key)]);
+  });
+  return feedsArray;
+  // return _feeds[feedSourceId];
 };
 
 FeedItemStore.lastReceivedId = function() {
@@ -124,7 +144,8 @@ FeedItemStore.lastReceivedId = function() {
 };
 
 FeedItemStore.lastReceivedFeeds = function() {
-  return _feeds[_lastReceivedId];
+  return this.all(_lastReceivedId);
+  // return _feeds[_lastReceivedId];
 };
 
 FeedItemStore.todayFeeds = function() {

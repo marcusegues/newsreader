@@ -20,7 +20,7 @@ class Api::FeedsourcesController < ApplicationController
 
   def update_feeds
     @user = params[:id]
-    
+
   end
 
   def feeds
@@ -49,8 +49,8 @@ class Api::FeedsourcesController < ApplicationController
     #   yComp = y.updated || y.published
     #   yComp <=> xComp
     # end
-
-    @orderedFeeds = feedSource.feeds.order('published DESC').reorder("updated DESC").page(params[:page]).per(25)
+    @page = params[:page]
+    @orderedFeeds = feedSource.feeds.order('published DESC').reorder("updated DESC").page(@page).per(25)
 
     # render json: orderedFeeds
     render :feeds_data

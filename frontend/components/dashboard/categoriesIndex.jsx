@@ -7,7 +7,8 @@ var CategoryItem = require('./categoryItem');
 var CategoriesIndex = React.createClass({
   getInitialState: function() {
     return {
-            feedSources: []
+            feedSources: [],
+            initialUpdateRequestsSent: false
           };
   },
 
@@ -15,6 +16,10 @@ var CategoriesIndex = React.createClass({
     this.feedStoreListener = FeedSourceStore.addListener(this.handleReceivedFeedSources);
     if (!FeedSourceStore.feedSourcesLoaded()) {
       ApiUtil.fetchUserFeedSources();
+    }
+    if (!this.state.initialUpdateRequestsSent) {
+      ApiUtil.updateAllFeeds();
+      this.setState({initialUpdateRequestsSent: true});
     }
   },
 
@@ -24,6 +29,10 @@ var CategoriesIndex = React.createClass({
 
   handleReceivedFeedSources: function() {
     this.setState({feedSources: FeedSourceStore.all()});
+    if (!this.state.initialUpdateRequestsSent) {
+      ApiUtil.updateAllFeeds();
+      this.setState({initialUpdateRequestsSent: true});
+    }
   },
 
   render: function() {

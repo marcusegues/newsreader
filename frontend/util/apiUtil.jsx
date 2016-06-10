@@ -1,6 +1,7 @@
 var ApiActions = require('../actions/apiActions.jsx');
 var FeedSourceStore = require('./../stores/feedSourceStore');
 var UserStore = require('./../stores/userStore');
+var FeedItemConstants = require('../constants/feedItemConstants');
 
 var ApiUtil = {
   createUser: function(newUser) {
@@ -88,13 +89,17 @@ var ApiUtil = {
     });
   },
 
-  updateAllFeedItems: function() {
+  updateAllFeeds: function() {
     Object.keys(FeedSourceStore.allFeedSources()).forEach(function(feedSourceId, id) {
+      if (feedSourceId === FeedItemConstants.TODAY_FEEDS_ID
+            || feedSourceId === FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID) {
+        return;
+      }
       $.ajax({
         method: 'GET',
         url:  'api/feeds/' + feedSourceId,
         success: function(feedsData) {
-          ApiActions.receiveFeeds(feedsData, feedSourceId);
+          ApiActions.receiveFeedsUpdate(feedsData, feedSourceId);
         }
       });
     });

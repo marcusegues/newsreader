@@ -39,6 +39,10 @@ var FeedItem = React.createClass({
                       this.props.feed.updated :
                       this.props.feed.published;
 
+    if (lastUpdated === null) {
+      return '';
+    }
+
     var days = (Date.now()/1000 - new Date(lastUpdated)/1000)/(24*3600);
 
     if (days < 1) {

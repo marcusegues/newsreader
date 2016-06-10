@@ -28,6 +28,14 @@ var ApiActions = {
     });
   },
 
+  receiveFeedsUpdate: function(feedsData, feedSourceId) {
+    AppDispatcher.dispatch({
+      actionType: FeedItemConstants.RECEIVED_FEEDS_UPDATE,
+      feedsData: feedsData,
+      feedSourceId: feedSourceId
+    });
+  },
+
   changeDisplayedFeeds: function(feedSourceId) {
     AppDispatcher.dispatch({
       actionType: FeedItemConstants.CHANGE_DISPLAYED_FEEDS,
