@@ -9,9 +9,11 @@ var BottomNav = React.createClass({
     return (
       <header id="bottomNav">
         <h1>
-          <img id="welcomeAvatar" src="http://res.cloudinary.com/dolgs87zk/image/upload/v1465478807/SFLogo_jscwfx.jpg">
-          </img>
-          <span><strong>Swiss Feeds.</strong> Read and Discover Switzerland.</span>
+          <div id="logoText">
+            <img id="welcomeAvatar" src="http://res.cloudinary.com/dolgs87zk/image/upload/v1465478807/SFLogo_jscwfx.jpg">
+            </img>
+            <div><strong>Swiss Feeds.</strong> Read and Discover Switzerland.</div>
+          </div>
         </h1>
         <nav>
           <ul>

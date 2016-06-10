@@ -490,11 +490,18 @@ header p {
     transform: translateY(4em);
   }
 
+  #logoText {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
   #bottomNav h1 {
     color: #a0a0a1;
     display: inline-block;
     font-size: 1em;
-    line-height: 1;
+    line-height: 1em;
     margin: 0;
     vertical-align: middle;
   }
