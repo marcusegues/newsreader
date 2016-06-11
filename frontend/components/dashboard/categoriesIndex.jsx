@@ -19,7 +19,6 @@ var CategoriesIndex = React.createClass({
     }
 
     if (FeedSourceStore.feedSourcesLoaded() && !this.state.initialUpdateRequestsSent) {
-      debugger;
       ApiUtil.updateAllFeeds();
       this.setState({initialUpdateRequestsSent: true});
     }
@@ -32,7 +31,6 @@ var CategoriesIndex = React.createClass({
   handleReceivedFeedSources: function() {
     this.setState({feedSources: FeedSourceStore.all()});
     if (!this.state.initialUpdateRequestsSent) {
-      debugger;
       ApiUtil.updateAllFeeds();
       this.setState({initialUpdateRequestsSent: true});
     }

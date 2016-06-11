@@ -2,11 +2,11 @@ var React = require('react');
 var CreateNewFeedSourceModal = require('./createNewFeedSourceModal');
 var ApiUtil = require('../../util/apiUtil');
 var UserStore = require('./../../stores/userStore');
+var AddContent = require('./addContent');
 
 var FeedOptions = React.createClass({
   getInitialState: function () {
-    return {modalOpen: false,
-            currentUser: UserStore.currentUser()};
+    return {currentUser: UserStore.currentUser()};
   },
 
   componentDidMount: function() {
@@ -26,8 +26,8 @@ var FeedOptions = React.createClass({
     this.setState({modalOpen: true});
   },
 
-  closeModal: function () {
-    this.setState({modalOpen: false});
+  openAddContentModal: function () {
+    this.props.toggleAddContentModalVisible();
   },
 
   handleSignOut: function() {
@@ -54,7 +54,7 @@ var FeedOptions = React.createClass({
               "via " + currentUser.login_method + " / "}
                 <span id="feedOptionsLogout" onClick={this.handleSignOut}>Logout</span></div>
           </div>
-            <a className="clickButton addFeeds" onClick={this.addFeed} >Add Feeds</a>
+            <a className="clickButton addFeeds" onClick={this.openAddContentModal} >Add Feeds</a>
         </div>
       </div>
     );

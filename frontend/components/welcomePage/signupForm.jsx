@@ -24,7 +24,6 @@ var SignupForm = React.createClass({
   },
 
   signInToFacebook: function() {
-    console.log("here");
     ApiUtil.signInToFacebook();
   },
 
@@ -33,13 +32,13 @@ var SignupForm = React.createClass({
       this.props.visible === false ? null :
       <div className="userSignForm">
         <form className="signup-form" onSubmit={this.handleSubmit}>
-        <div className="fb-login-button" onClick={this.signInToFacebook}>
-          <span className="fa fa-facebook fb-login-content-icon"></span>
-          <span className="fb-login-content-message">{"Sign up with Facebook"}</span>
-        </div>
-        <div className="lineorline">
-          <span className="halfSeparator"></span><span id="or">or</span><span className="halfSeparator"></span>
-        </div>
+          <div className="fb-login-button" onClick={this.signInToFacebook}>
+            <span className="fa fa-facebook fb-login-content-icon"></span>
+            <span className="fb-login-content-message">{"Sign up with Facebook"}</span>
+          </div>
+          <div className="lineorline">
+            <span className="halfSeparator"></span><span id="or">or</span><span className="halfSeparator"></span>
+          </div>
           <div className="inputIcon">
             <span className="fa fa-user"></span>
             <input type="text" name="username" id="username" placeholder="Username" valueLink={this.linkState('username')} />

@@ -647,3 +647,32 @@ button:focus {
 .modal-form > p {
   margin: 0 0 20px 0;
 }
+
+
+.addContentForm {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 500;
+}
+
+#addContentFormTitle {
+  display: inline-block;
+  width: 8em;
+  line-height: 2em;
+  color: $viewFeedSourcesMidGrey;
+  text-align: center;
+}
+
+.addContentFormTitleContainer {
+  display: flex;
+  align-content: stretch;
+  height: 2em;
+  margin: 0 0 0.5em 0;
+}
+
+.addContentFormTitleContainer .halfSeparator {
+  flex-grow: 1;
+}

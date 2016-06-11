@@ -28,7 +28,7 @@ var SideBarShow = React.createClass({
           <GeneralCategories />
           <CategoriesIndex />
           <div id="feedOptionsScrollPlaceholder"></div>
-          <FeedOptions />
+          <FeedOptions toggleAddContentModalVisible={this.props.toggleAddContentModalVisible}/>
         </div>
       </div>
     );

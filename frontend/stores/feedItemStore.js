@@ -42,7 +42,6 @@ var update_feeds = function(payload) {
 FeedItemStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case FeedItemConstants.RECEIVED_FEEDS_UPDATE:
-      debugger;
       update_feeds(payload);
       FeedItemStore.__emitChange();
       break;

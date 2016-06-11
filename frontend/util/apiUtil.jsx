@@ -159,6 +159,18 @@ var ApiUtil = {
       method: 'PATCH',
       url: 'api/setUnreadToFalse/' + feedId,
     });
+  },
+
+  addUserFeedSource: function(newUserFeedSource) {
+    $.ajax({
+      method: 'POST',
+      url: 'api/session',
+      data: {session: user},
+      success: function(initialData) {
+        window.CURRENT_USER_ID = initialData.id;
+        ApiActions.receiveCurrentUser(initialData);
+      }
+    });
   }
 };
 

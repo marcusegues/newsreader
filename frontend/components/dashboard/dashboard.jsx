@@ -4,13 +4,15 @@ var FeedItemStore = require('../../stores/feedItemStore');
 var ApiUtil = require('../../util/apiUtil');
 var UserStore = require('../../stores/userStore');
 var SideBarShow = require('./sideBarShow');
+var AddContent = require('./addContent');
 
 var Dashboard = React.createClass({
   getInitialState: function() {
     return (
       {
         sideBarPinned: true,
-        shrinkSideBar: false
+        shrinkSideBar: false,
+        addContentModalVisible: false
       }
     );
   },
@@ -67,6 +69,10 @@ var Dashboard = React.createClass({
     ApiUtil.signOutUser();
   },
 
+  toggleAddContentModalVisible: function() {
+    this.setState({addContentModalVisible: this.state.addContentModalVisible ? false : true});
+  },
+
   render: function() {
 
     var childrenWithProps = React.Children.map(this.props.children, function(child) {
@@ -77,7 +83,9 @@ var Dashboard = React.createClass({
       <div className="loggedInPage">
         <SideBarShow ref="SideBar" clickedPinButton={this.clickedPinButton}
                                    sideBarPinned={this.state.sideBarPinned}
-                                   shrinkSideBar={this.state.shrinkSideBar}/>
+                                   shrinkSideBar={this.state.shrinkSideBar}
+                                   toggleAddContentModalVisible={this.toggleAddContentModalVisible}/>
+        <AddContent visible={this.state.addContentModalVisible} closeModal={this.toggleAddContentModalVisible}/>
 
         {childrenWithProps}
       </div>
