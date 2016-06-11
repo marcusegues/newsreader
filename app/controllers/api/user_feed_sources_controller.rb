@@ -1,6 +1,5 @@
 class Api::UserFeedSourcesController < ApplicationController
   def create
-    debugger;
     @feedSource = FeedSource.find_by(userFeedSources_params) ||
                   FeedSource.new(userFeedSources_params)
 
