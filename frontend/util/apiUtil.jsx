@@ -116,6 +116,17 @@ var ApiUtil = {
     });
   },
 
+  addUserFeedSource: function(newUserFeedSource) {
+    $.ajax({
+      method: 'POST',
+      url: 'api/user_feed_sources',
+      data: {userFeedSource: newUserFeedSource},
+      success: function(feedsData) {
+        ApiActions.receiveAddedFeedSourceData(feedsData);
+      }
+    });
+  },
+
   createFeedSource: function(newFeedSource) {
     $.ajax({
       method: 'POST',
@@ -160,18 +171,6 @@ var ApiUtil = {
       url: 'api/setUnreadToFalse/' + feedId,
     });
   },
-
-  addUserFeedSource: function(newUserFeedSource) {
-    $.ajax({
-      method: 'POST',
-      url: 'api/session',
-      data: {session: user},
-      success: function(initialData) {
-        window.CURRENT_USER_ID = initialData.id;
-        ApiActions.receiveCurrentUser(initialData);
-      }
-    });
-  }
 };
 
 module.exports = ApiUtil;

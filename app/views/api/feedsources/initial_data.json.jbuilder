@@ -1,14 +1,14 @@
 todayFeedsAR = todayFeeds
 
-json.extract! current_user, :id
-
 json.todayFeeds todayFeedsAR
 
-json.feedSources current_user.feed_sources
+json.todayFeedsUnreadCount countUnread(todayFeedsAR)
 
 json.unreadCount allFeedSourcesUnreadCount
 
-json.todayFeedsUnreadCount countUnread(todayFeedsAR)
+json.extract! current_user, :id
+
+json.feedSources current_user.feed_sources
 
 json.avatar_url current_user.avatar_url
 

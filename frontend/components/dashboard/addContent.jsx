@@ -1,6 +1,8 @@
 var React = require('react');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
 var ApiUtil = require('../../util/apiUtil.jsx');
+var ApiActions = require('./../../actions/apiActions');
+var FeedSourceStore = require('./../../stores/feedSourceStore');
 
 var AddContent = React.createClass({
   mixins: [LinkedStateMixin],
@@ -9,8 +11,30 @@ var AddContent = React.createClass({
     return {title: "", url: "", category: ""};
   },
 
+  componentDidMount: function() {
+    this.feedStoreListener = FeedSourceStore.addListener(this.handleAddedFeedSource);
+  },
+
+  componentWillUnMount: function() {
+    this.feedStoreListener.remove();
+  },
+
   closeAddContent: function() {
     this.props.closeModal();
+  },
+
+  handleAddedFeedSource: function() {
+    if (FeedSourceStore.addingNewFeedSourceData().addedFeedSource === true) {
+      var payload = FeedSourceStore.addingNewFeedSourceData().payload;
+      // This setTimeout is a hack to prevent message
+      // Flux Dispatch.dispatch(…): Cannot dispatch in the middle of a dispatch
+      // http://stackoverflow.com/questions/26581587/flux-dispatch-dispatch-cannot-dispatch-in-the-middle-of-a-dispatch
+      window.setTimeout(function() {
+        ApiActions.updateFeedItemStoreAfterAddedNewFeedSource(payload);
+        FeedSourceStore.resetAddingNewFeedSourceData();
+      }, 1000);
+      this.closeAddContent();
+    }
   },
 
   handleSubmit: function(e) {
@@ -29,7 +53,7 @@ var AddContent = React.createClass({
           </div>
           <div className="inputIcon">
             <span className="fa fa-caret-right"></span>
-            <input type="text" name="title" id="addContentTitle" placeholder="Title" valueLink={this.linkState('username')} />
+            <input type="text" name="title" id="addContentTitle" placeholder="Title" valueLink={this.linkState('title')} />
           </div>
           <div className="inputIcon">
             <span className="fa fa-rss"></span>

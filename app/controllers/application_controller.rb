@@ -50,6 +50,30 @@ class ApplicationController < ActionController::Base
     session[:login_method] = nil
   end
 
+  def feedsById(feedSourceId, page)
+    feedSource = FeedSource.find(feedSourceId)
+    url = feedSource.url
+    parsedFeed = Feedjira::Feed.fetch_and_parse url
+    parsedFeed.entries.each do |feedItem|
+      # uniqueness of FeedItem is based on it's url
+      # the FeedItems in this loop will only be save to the database once
+
+      FeedItem.create(title: feedItem.title,
+                       feed_source_id: feedSourceId,
+                       author: feedItem.author,
+                       url: feedItem.url,
+                       published: feedItem.published,
+                       updated: (feedItem.updated || feedItem.published),
+                       summary: feedItem.summary,
+                       content: feedItem.content)
+    end
+
+    return orderedFeeds = feedSource.feeds.order('published DESC').reorder("updated DESC").page(page).per(25)
+
+  rescue
+    return []
+  end
+
   def sortFeeds(feeds)
     # sort from earliest to latest
     sortedFeeds =  feeds.sort do |x,y|

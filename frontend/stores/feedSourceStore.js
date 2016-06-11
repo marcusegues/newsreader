@@ -4,15 +4,21 @@ var FeedSourceStore = new Store(AppDispatcher);
 var FeedSourceConstants = require('../constants/feedSourceConstants');
 var FeedItemConstants = require('../constants/feedItemConstants');
 var UserConstants = require('../constants/userConstants');
+var ApiActions = require('./../actions/apiActions');
 
 var _feedSources = {};  // keys will be categories, values will be feed sources
 var _feedSourcesById = {}; //feedsourceid => feedsource, there are special keys for todayFeeds and savedForLaterFeeds
 var _feedSourcesNextPageById = {};
 var _feedSourcesLoaded = false;
+var _addingNewFeedSourceData = {
+  addedFeedSource: false,
+  payload: undefined };
 
 var populate_feedSources = function(feedSources) {
   FeedSourceStore.getUniqueCategories(feedSources).forEach(function(category, idx_cat) {
-    _feedSources[category] = [];
+    if (_feedSources[category] === undefined) {
+      _feedSources[category] = [];
+    }
     feedSources.forEach(function(feedSource, idx_fs) {
       if (feedSource.category === category) {
         _feedSources[category].push(feedSource);
@@ -25,6 +31,12 @@ var populate_feedSources = function(feedSources) {
     _feedSourcesById[feedSource.id] = feedSource;
     _feedSourcesNextPageById[feedSource.id] = 1;
   });
+};
+
+var updateFeedSources = function(feedSources) {
+  if (_feedSources[category] === undefined) {
+
+  }
 };
 
 FeedSourceStore.getFeedSourceById = function(id) {
@@ -72,15 +84,21 @@ FeedSourceStore.__onDispatch = function(payload) {
     case FeedItemConstants.RECEIVED_FEEDS_UPDATE:
       _feedSourcesNextPageById[payload.feedSourceId] += 1;
       break;
-    case FeedSourceConstants.RECEIVED_CREATED_FEED_SOURCE:
-      addCreatedFeedSourceTo_feedSources(payload.createdFeedSource);
+    case FeedItemConstants.ADDED_NEW_FEEDSOURCE:
+      populate_feedSources(payload.feedSource);
+      _feedSourcesNextPageById[payload.feedSourceId] += 1;
+      _addingNewFeedSourceData.addedFeedSource = true;
+      _addingNewFeedSourceData.payload = payload;
       FeedSourceStore.__emitChange();
+      // window.setTimeout(function() {
+      //   ApiActions.updateFeedItemStoreAfterAddedNewFeedSource(payload);
+      // }, 1000);
       break;
-    case FeedItemConstants.RECEIVED_INITIAL_DATA:
-      populate_feedSources(payload.initialData.feedSources);
-      _feedSourcesLoaded = true;
-      FeedSourceStore.__emitChange();
-      break;
+    // case FeedItemConstants.RECEIVED_INITIAL_DATA:
+    //   populate_feedSources(payload.initialData.feedSources);
+    //   _feedSourcesLoaded = true;
+    //   FeedSourceStore.__emitChange();
+    //   break;
     case UserConstants.USER_SIGNED_IN:
       populate_feedSources(payload.initialData.feedSources);
       _feedSourcesLoaded = true;
@@ -99,6 +117,17 @@ var resetStore = function() {
 
 FeedSourceStore.all = function() {
   return _feedSources;
+};
+
+FeedSourceStore.addingNewFeedSourceData = function() {
+  return _addingNewFeedSourceData;
+};
+
+FeedSourceStore.resetAddingNewFeedSourceData = function() {
+  _addingNewFeedSourceData = {
+    addedFeedSource: false,
+    payload: undefined
+  };
 };
 
 FeedSourceStore.feedSourcesLoaded = function() {

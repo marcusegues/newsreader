@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160609195943) do
+ActiveRecord::Schema.define(version: 20160611223756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 20160609195943) do
     t.string   "category",   default: "uncategorized"
   end
 
-  add_index "feed_sources", ["url"], name: "index_feed_sources_on_url", unique: true, using: :btree
+  add_index "feed_sources", ["title", "url", "category"], name: "index_feed_sources_on_title_and_url_and_category", unique: true, using: :btree
 
   create_table "user_feed_sources", force: :cascade do |t|
     t.integer  "user_id",        null: false

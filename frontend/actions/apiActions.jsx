@@ -2,7 +2,6 @@ var AppDispatcher = require('../dispatcher/dispatcher');
 var FeedSourceConstants = require('../constants/feedSourceConstants');
 var FeedItemConstants = require('../constants/feedItemConstants');
 var UserConstants = require('../constants/userConstants');
-var ApiUtil = require('../util/apiUtil');
 
 
 var ApiActions = {
@@ -17,6 +16,24 @@ var ApiActions = {
     AppDispatcher.dispatch({
       actionType: FeedSourceConstants.RECEIVED_FEED_SOURCES,
       feedSources: feedSources
+    });
+  },
+
+  receiveAddedFeedSourceData: function(feedsData) {
+    AppDispatcher.dispatch({
+      actionType: FeedItemConstants.ADDED_NEW_FEEDSOURCE,
+      feedsData: feedsData,
+      feedSource: [feedsData.feedSource],
+      feedSourceId: feedsData.feedSource.id
+    });
+  },
+
+  updateFeedItemStoreAfterAddedNewFeedSource: function(payload) {
+    AppDispatcher.dispatch({
+      actionType: FeedItemConstants.UPDATE_FEED_ITEM_STORE_AFTER_ADDED_NEW_FEEDSOURCE,
+      feedsData: payload.feedsData,
+      feedSource: payload.feedsData.feedSource,
+      feedSourceId: payload.feedsData.feedSource.id
     });
   },
 

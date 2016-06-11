@@ -45,6 +45,11 @@ FeedItemStore.__onDispatch = function(payload) {
       update_feeds(payload);
       FeedItemStore.__emitChange();
       break;
+    case FeedItemConstants.UPDATE_FEED_ITEM_STORE_AFTER_ADDED_NEW_FEEDSOURCE:
+      _lastReceivedId = payload.feedSourceId;
+      update_feeds(payload);
+      FeedItemStore.__emitChange();
+      break;
     case FeedItemConstants.RECEIVED_FEEDS:
       _switching_to_feedsource_id = undefined;
       _lastReceivedId = payload.feedSourceId;
