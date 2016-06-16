@@ -28,11 +28,12 @@ var WelcomeMainMessage = React.createClass({
           <p className="subMessage" >
             <a className="clickButton" onClick={this.signInDemo}>Demo</a>
           </p>
-          <RightArrow arrowClicked={this.props.arrowClicked}
-                      toggleArrowClicked={this.props.toggleArrowClicked} />
+
         </div>
       </header>
     );
+    // <RightArrow arrowClicked={this.props.arrowClicked}
+    //             toggleArrowClicked={this.props.toggleArrowClicked} />
   }
 });
 

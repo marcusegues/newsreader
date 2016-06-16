@@ -7,9 +7,9 @@ var SecondWelcomeBackground = React.createClass({
     return (
         {
           images: {
-            'http://res.cloudinary.com/dolgs87zk/image/upload/v1453240570/swiss_alps_night_sky-1920x1080_q0xhof.jpg': 'center',
-            'http://res.cloudinary.com/dolgs87zk/image/upload/v1453240221/swiss_alps_lake-1600x900_1_acal0r.jpg': 'center',
-            'http://res.cloudinary.com/dolgs87zk/image/upload/v1453241145/swiss_alps-1280x800_nqssim.jpg': 'center'
+            // 'http://res.cloudinary.com/dolgs87zk/image/upload/v1453240570/swiss_alps_night_sky-1920x1080_q0xhof.jpg': 'center',
+            // 'http://res.cloudinary.com/dolgs87zk/image/upload/v1453240221/swiss_alps_lake-1600x900_1_acal0r.jpg': 'center',
+            // 'http://res.cloudinary.com/dolgs87zk/image/upload/v1453241145/swiss_alps-1280x800_nqssim.jpg': 'center'
           },
           delay: 6000,
           currentVisible: [],

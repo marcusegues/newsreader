@@ -21,7 +21,6 @@ var BottomNav = React.createClass({
         </h1>
         <nav>
           <ul>
-              <li><a href="#">About</a></li>
               <li><a onClick={this.openSignUpForm}>Sign Up</a></li>
               <li><a onClick={this.openSignInForm}>Sign In</a></li>
           </ul>
