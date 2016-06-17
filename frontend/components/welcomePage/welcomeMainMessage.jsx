@@ -22,7 +22,7 @@ var WelcomeMainMessage = React.createClass({
       <header className={transitions} id="header">
         <h1>Swissfeeds.</h1>
         <p>{"A simple newsreader for all your daily reading"}<br />
-        {"Need a break? Discover beautiful"} <a>swiss mountains</a></p>
+        {"Need a break? Discover beautiful"} swiss mountains</p>
 
         <div className={divClasses}>
           <p className="subMessage" >
