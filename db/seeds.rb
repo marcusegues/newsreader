@@ -21,9 +21,7 @@ FeedSource.create!(title: "longandvariable", url: "https://longandvariable.wordp
 FeedSource.create!(title: "Mainly Macro", url: "http://feeds.feedburner.com/MainlyMacro", category: "Economics")
 FeedSource.create!(title: "Mashable", url: "http://feeds.mashable.com/Mashable?format=xml", category: "Tech")
 FeedSource.create!(title: "GigaOM", url: "https://gigaom.com/feed/", category: "Tech")
-FeedSource.create!(title: "ZDNet", url: "http://feeds.feedburner.com/zdnet/microsoft", category: "Tech")
-FeedSource.create!(title: "Computer World", url: "http://rss.computerworld.com/computerworld/news/feed?type=breaking_news", category: "Tech")
-FeedSource.create!(title: "LifeHacker", url: "http://feeds.gawker.com/lifehacker/full", category: "Tech")
+
 
 UserFeedSource.create!(user_id: 1, feed_source_id: 1)
 UserFeedSource.create!(user_id: 1, feed_source_id: 2)
