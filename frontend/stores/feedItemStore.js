@@ -74,6 +74,13 @@ FeedItemStore.__onDispatch = function(payload) {
     case FeedItemConstants.RECEIVED_SAVED_FOR_LATER_FEEDS:
       _lastReceivedId = FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID;
       _feeds[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = payload.savedForLaterFeeds;
+      var unread = 0;
+      payload.savedForLaterFeeds.forEach(function(feed, i) {
+        if (feed.saved_for_later === true) {
+          unread += 1;
+        }
+      });
+      _unreadCount[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID] = unread;
       FeedItemStore.__emitChange();
       break;
     case FeedItemConstants.INCREMENT_UNREAD:
@@ -147,6 +154,10 @@ FeedItemStore.all = function(feedSourceId) {
     return this.todayFeeds();
   }
 
+  if (feedSourceId === FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID) {
+    return this.savedForLaterFeeds();
+  }
+
   var feedsArray = [];
   var feedsObject = _feeds[feedSourceId];
   Object.keys(feedsObject).sort().forEach(function(key, idx) {
@@ -168,6 +179,10 @@ FeedItemStore.lastReceivedFeeds = function() {
 
 FeedItemStore.todayFeeds = function() {
   return _feeds[FeedItemConstants.TODAY_FEEDS_ID];
+};
+
+FeedItemStore.savedForLaterFeeds = function() {
+  return _feeds[FeedItemConstants.SAVED_FOR_LATER_FEEDS_ID];
 };
 
 module.exports = FeedItemStore;
